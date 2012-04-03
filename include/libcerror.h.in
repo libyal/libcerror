@@ -1,0 +1,132 @@
+/*
+ * Library to support cross-platform C error functions
+ *
+ * Copyright (c) 2008-2012, Joachim Metz <jbmetz@users.sourceforge.net>
+ *
+ * Refer to AUTHORS for acknowledgements.
+ *
+ * This software is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#if !defined( _LIBCERROR_H )
+#define _LIBCERROR_H
+
+#include <libcerror/definitions.h>
+#include <libcerror/extern.h>
+#include <libcerror/features.h>
+#include <libcerror/types.h>
+
+#if defined( __cplusplus )
+extern "C" {
+#endif
+
+/* -------------------------------------------------------------------------
+ * Support functions
+ * ------------------------------------------------------------------------- */
+
+/* Returns the library version as a string
+ */
+LIBCERROR_EXTERN \
+const char *libcerror_get_version(
+             void );
+
+/* -------------------------------------------------------------------------
+ * Error functions
+ * ------------------------------------------------------------------------- */
+
+/* Free an error and its elements
+ */
+LIBCERROR_EXTERN \
+void libcerror_error_free(
+      libcerror_error_t **error );
+
+/* Sets an error
+ * Initializes the error if necessary
+ * The error domain and code are set only the first time and the error message is appended for back tracing
+ */
+LIBCERROR_EXTERN \
+void libcerror_error_set(
+      libcerror_error_t **error,
+      int error_domain,
+      int error_code,
+      const char *format_string,
+      ... );
+
+/* Determines if an error equals a certain error code of a domain
+ * Returns 1 if error matches or 0 if not
+ */
+LIBCERROR_EXTERN \
+int libcerror_error_matches(
+     libcerror_error_t *error,
+     int error_domain,
+     int error_code );
+
+/* Prints a descriptive string of the error to the stream
+ * Returns the number of printed characters if successful or -1 on error
+ */
+LIBCERROR_EXTERN \
+int libcerror_error_fprint(
+     libcerror_error_t *error,
+     FILE *stream );
+
+/* Prints a descriptive string of the error to the string
+ * The end-of-string character is not included in the return value
+ * Returns the number of printed characters if successful or -1 on error
+ */
+LIBCERROR_EXTERN \
+int libcerror_error_sprint(
+     libcerror_error_t *error,
+     char *string,
+     size_t size );
+
+/* Prints a backtrace of the error to the stream
+ * Returns the number of printed characters if successful or -1 on error
+ */
+LIBCERROR_EXTERN \
+int libcerror_error_backtrace_fprint(
+     libcerror_error_t *error,
+     FILE *stream );
+
+/* Prints a backtrace of the error to the string
+ * The end-of-string character is not included in the return value
+ * Returns the number of printed characters if successful or -1 on error
+ */
+LIBCERROR_EXTERN \
+int libcerror_error_backtrace_sprint(
+     libcerror_error_t *error,
+     char *string,
+     size_t size );
+
+/* -------------------------------------------------------------------------
+ * System error functions
+ * ------------------------------------------------------------------------- */
+
+/* Retrieves a descriptive string of the error number
+ * Returns the string_length if successful or -1 on error
+ */
+LIBCERROR_EXTERN \
+void libcerror_system_set_error(
+      libcerror_error_t **error,
+      int error_domain,
+      int error_code,
+      uint32_t system_error_code,
+      const char *format_string,
+      ... );
+
+#if defined( __cplusplus )
+}
+#endif
+
+#endif
+
