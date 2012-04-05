@@ -2,7 +2,7 @@ AC_PREREQ( 2.59 )
 
 AC_INIT(
  [libcerror],
- [20120403],
+ [20120405],
  [jbmetz@users.sourceforge.net])
 
 AC_CONFIG_SRCDIR(
@@ -28,8 +28,13 @@ AC_PROG_CC
 AC_PROG_GCC_TRADITIONAL
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
+
+dnl Check for libtool
 AC_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
+
+dnl Check for pkg-config
+AC_PATH_PROG(PKGCONFIG,[pkg-config])
 
 dnl Support of internationalization (i18n)
 AM_GNU_GETTEXT([external])
@@ -57,16 +62,8 @@ AX_LIBCSTRING_CHECK_ENABLE
 dnl Check for library function support
 AX_LIBCERROR_CHECK_LOCAL
 
-dnl Check if requires and build requires should be set in spec file
-AS_IF(
- [test "x$ac_cv_libcstring" = xyes],
- [AC_SUBST(
-  [libcerror_spec_requires],
-  [Requires:])
- AC_SUBST(
-  [libcerror_spec_build_requires],
-  [BuildRequires:])
- ])
+dnl Set additional compiler flags
+CFLAGS="$CFLAGS -Wall";
 
 dnl Set memwatch support
 ac_cv_enable_memwatch=no
@@ -84,8 +81,21 @@ AM_CONDITIONAL(
  [HAVE_MEMWATCH],
  [test "x$ac_cv_enable_memwatch" != xno])
 
-dnl Set additional compiler flags
-CFLAGS="$CFLAGS -Wall";
+dnl Check if requires and build requires should be set in spec file
+AS_IF(
+ [test "x$ac_cv_libcstring" = xyes],
+ [AC_SUBST(
+  [libcerror_spec_requires],
+  [Requires:])
+ AC_SUBST(
+  [libcerror_spec_build_requires],
+  [BuildRequires:])
+ ])
+
+dnl Set the date for dpkg files
+AC_SUBST(
+ [DATE],
+ [`date -R 2> /dev/null`])
 
 dnl Have configure make the Makefiles
 AC_CONFIG_FILES([Makefile])
@@ -105,6 +115,8 @@ AC_CONFIG_FILES([include/libcerror/types.h])
 AC_CONFIG_FILES([libcerror/libcerror_definitions.h])
 dnl Have configure make distribution specific files
 AC_CONFIG_FILES([common/types.h])
+AC_CONFIG_FILES([dpkg/changelog])
+AC_CONFIG_FILES([dpkg/copyright])
 AC_CONFIG_FILES([libcerror/libcerror.rc])
 AC_CONFIG_FILES([libcerror.pc])
 AC_CONFIG_FILES([libcerror.spec])

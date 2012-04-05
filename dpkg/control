@@ -1,0 +1,22 @@
+Source: libcerror
+Section: unknown
+Priority: extra
+Maintainer: Joachim Metz <jbmetz@users.sourceforge.net>
+Build-Depends: debhelper (>= 7), autotools-dev
+Standards-Version: 3.8.3
+Homepage: https://sourceforge.net/projects/libctype/
+
+Package: libcerror
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Library to support cross-platform C error functions
+ libcerror is a library to support cross-platform C error functions.
+
+Package: libcerror-dev
+Section: libdevel
+Architecture: any
+Depends: libcerror (= ${Source-Version})
+Description: Header files and libraries for developing applications for libcerror
+ Header files and libraries for developing applications for libcerror.
+

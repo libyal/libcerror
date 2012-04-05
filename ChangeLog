@@ -4,6 +4,10 @@ TODO
 * add tests
 * add msvscpp, borlandc5 and codegear files
 
+20120405
+* added dpkg files
+* added support for pkg-config to configure
+
 20120403
 * Worked on stand-alone version
 
