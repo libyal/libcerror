@@ -7,7 +7,8 @@ SUBDIRS = \
 	libcerror \
 	po \
 	manuals \
-	tests
+	tests \
+	msvscpp
 
 DPKG_FILES = \
 	dpkg/changelog \

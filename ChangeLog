@@ -1,8 +1,12 @@
 TODO
 * WINAPI add LIBERROR_OUTPUT_ERROR_INSUFFICIENT_SPACE support
-* update man page
 * add tests
-* add msvscpp, borlandc5 and codegear files
+* add borlandc5 and codegear files
+
+20120406
+* worked on WINAPI fallback functions
+* updated man page
+* worked on msvscpp files
 
 20120405
 * added dpkg files

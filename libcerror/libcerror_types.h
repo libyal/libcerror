@@ -33,6 +33,9 @@
 
 /* The following type definitions hide internal data structures
  */
+typedef intptr_t libcerror_error_t;
+
+/* Currently not supported
 #if defined( HAVE_DEBUG_OUTPUT ) && !defined( WINAPI )
 typedef struct libcerror_error {}	libcerror_error_t;
 
@@ -40,6 +43,7 @@ typedef struct libcerror_error {}	libcerror_error_t;
 typedef intptr_t libcerror_error_t;
 
 #endif
+*/
 
 #endif
 

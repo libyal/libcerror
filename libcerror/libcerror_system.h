@@ -35,6 +35,26 @@
 extern "C" {
 #endif
 
+#if defined( WINAPI ) && ( WINVER <= 0x0500 ) && !defined( USE_CRT_FUNCTIONS )
+DWORD libcerror_FormatMessageA(
+       DWORD flags,
+       LPCVOID source,
+       DWORD message_identifier,
+       DWORD language_identifier,
+       LPCSTR string,
+       DWORD string_size,
+       va_list *argument_list );
+
+DWORD libcerror_FormatMessageW(
+       DWORD flags,
+       LPCVOID source,
+       DWORD message_identifier,
+       DWORD language_identifier,
+       LPWSTR string,
+       DWORD string_size,
+       va_list *argument_list );
+#endif
+
 ssize_t libcerror_system_copy_string_from_error_number(
          libcstring_system_character_t *string,
          size_t string_size,

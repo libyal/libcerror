@@ -1,6 +1,6 @@
 dnl Functions for libcstring
 dnl
-dnl Version: 20120405
+dnl Version: 20120406
 
 dnl Function to detect if libcstring is available
 dnl ac_libcstring_dummy is used to prevent AC_CHECK_LIB adding unnecessary -l<library> arguments
@@ -278,10 +278,10 @@ AC_DEFUN([AX_LIBCSTRING_CHECK_LOCAL],
    ])
   ])
 
-  ac_cv_libcstring_CPPFLAGS="-I../libcstring";
-  ac_cv_libcstring_LIBADD="../libcstring/libcstring.la";
+ ac_cv_libcstring_CPPFLAGS="-I../libcstring";
+ ac_cv_libcstring_LIBADD="../libcstring/libcstring.la";
 
-  ac_cv_libcstring=local
+ ac_cv_libcstring=local
  ])
 
 dnl Function to detect how to enable libcstring
@@ -295,7 +295,7 @@ AC_DEFUN([AX_LIBCSTRING_CHECK_ENABLE],
 
  dnl Check for a pkg-config file
  AS_IF(
-  [test "x$PKGCONFIG" != "x"],
+  [test "x$cross_compiling" != "xyes" && test "x$PKGCONFIG" != "x"],
   [PKG_CHECK_MODULES(
    [libcstring],
    [libcstring >= 20120405],

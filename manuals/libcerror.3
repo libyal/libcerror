@@ -1,4 +1,4 @@
-.Dd April 3, 2012
+.Dd April 6, 2012
 .Dt libcerror 3
 .Os libcerror
 .Sh NAME
@@ -16,6 +16,10 @@ Support functions
 Error functions
 .Ft void
 .Fn libcerror_error_free "libcerror_error_t **error"
+.Ft void
+.Fn libcerror_error_set "libcerror_error_t **error, int error_domain, int error_code, const char *format_string, ..."
+.Ft int
+.Fn libcerror_error_matches "libcerror_error_t *error, int error_domain, int error_code"
 .Ft int
 .Fn libcerror_error_fprint "libcerror_error_t *error, FILE *stream"
 .Ft int
@@ -24,6 +28,10 @@ Error functions
 .Fn libcerror_error_backtrace_fprint "libcerror_error_t *error, FILE *stream"
 .Ft int
 .Fn libcerror_error_backtrace_sprint "libcerror_error_t *error, char *string, size_t size"
+.Pp
+System error functions
+.Ft void
+.Fn libcerror_system_set_error "libcerror_error_t **error, int error_domain, int error_code, uint32_t system_error_code, const char *format_string, ..."
 .Sh DESCRIPTION
 The
 .Fn libcerror_get_version
