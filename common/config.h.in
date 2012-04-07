@@ -57,9 +57,6 @@
 /* Define to 1 if you have the `fwrite' function. */
 #undef HAVE_FWRITE
 
-/* Define to 1 if you have the `getenv' function. */
-#undef HAVE_GETENV
-
 /* Define if the GNU gettext() function is already present or preinstalled. */
 #undef HAVE_GETTEXT
 
@@ -68,12 +65,6 @@
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
-
-/* Define if nl_langinfo has CODESET support. */
-#undef HAVE_LANGINFO_CODESET
-
-/* Define to 1 if you have the <langinfo.h> header file. */
-#undef HAVE_LANGINFO_H
 
 /* Define to 1 if you have the `cstring' library (-lcstring). */
 #undef HAVE_LIBCSTRING
@@ -86,12 +77,6 @@
 
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H
-
-/* Define to 1 if you have the `localeconv' function. */
-#undef HAVE_LOCALECONV
-
-/* Define to 1 if you have the <locale.h> header file. */
-#undef HAVE_LOCALE_H
 
 /* Define to 1 if the local version of libcstring is used. */
 #undef HAVE_LOCAL_LIBCSTRING
@@ -117,9 +102,6 @@
 /* Define to 1 if you have the `memset' function. */
 #undef HAVE_MEMSET
 
-/* Define to 1 if you have the `nl_langinfo' function. */
-#undef HAVE_NL_LANGINFO
-
 /* Define to 1 whether printf supports the conversion specifier "%jd". */
 #undef HAVE_PRINTF_JD
 
@@ -128,9 +110,6 @@
 
 /* Define to 1 if you have the `realloc' function. */
 #undef HAVE_REALLOC
-
-/* Define to 1 if you have the `setlocale' function. */
-#undef HAVE_SETLOCALE
 
 /* Define to 1 if you have the `snprintf' function. */
 #undef HAVE_SNPRINTF

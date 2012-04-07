@@ -3,6 +3,9 @@ TODO
 * add tests
 * add borlandc5 and codegear files
 
+20120407
+* updated dependencies
+
 20120406
 * worked on WINAPI fallback functions
 * updated man page
