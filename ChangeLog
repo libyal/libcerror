@@ -3,6 +3,9 @@ TODO
 * add tests
 * add borlandc5 and codegear files
 
+20120507
+* email and project site change
+
 20120425
 * fixes for pkg-config detection of libraries
 
