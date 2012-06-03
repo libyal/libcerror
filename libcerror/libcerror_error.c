@@ -119,7 +119,7 @@ void VARARGS(
 	int message_index                                   = 0;
 	int print_count                                     = 0;
 
-#if defined( WINAPI )
+#if defined( __BORLANDC__ ) || defined( _MSC_VER )
 	size_t string_index                                 = 0;
 #endif
 
@@ -152,7 +152,7 @@ void VARARGS(
 		}
 		system_format_string = (libcstring_system_character_t *) reallocation;
 
-#if defined( WINAPI )
+#if defined( __BORLANDC__ ) || defined( _MSC_VER )
 		print_count = libcstring_wide_string_snwprintf(
 		               system_format_string,
 		               format_string_length + 1,
@@ -165,7 +165,6 @@ void VARARGS(
 		               L"%s",
 		               format_string );
 #endif
-
 		if( print_count <= -1 )
 		{
 			format_string_length += LIBCERROR_MESSAGE_INCREMENT_SIZE;
@@ -186,7 +185,7 @@ void VARARGS(
 	system_format_string = (libcstring_system_character_t *) format_string;
 #endif
 
-#if defined( WINAPI )
+#if defined( __BORLANDC__ ) || defined( _MSC_VER )
 	/* Rewrite %s to %S
 	 */
 	string_index  = 0;

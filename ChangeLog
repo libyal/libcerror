@@ -3,6 +3,9 @@ TODO
 * add tests
 * add borlandc5 and codegear files
 
+20120603
+* fix for %S in MinGW
+
 20120507
 * email and project site change
 
