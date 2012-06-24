@@ -511,7 +511,7 @@ void VARARGS(
 	system_format_string = (libcstring_system_character_t *) format_string;
 #endif
 
-#if defined( WINAPI )
+#if defined( __BORLANDC__ ) || defined( _MSC_VER )
 	/* Rewrite %s to %S
 	 */
 	string_index  = 0;
