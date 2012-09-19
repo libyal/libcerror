@@ -1,8 +1,7 @@
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/common \
-	@LIBCSTRING_CPPFLAGS@ \
-	@MEMWATCH_CPPFLAGS@
+	@LIBCSTRING_CPPFLAGS@
 
 lib_LTLIBRARIES = libcerror.la
 
