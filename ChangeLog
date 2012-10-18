@@ -3,6 +3,9 @@ TODO
 * add tests
 * add borlandc5 and codegear files
 
+20121018
+* fixed read beyound string issue
+
 20120630
 * worked on fix for %S in MinGW in system
 
