@@ -142,9 +142,9 @@ void VARARGS(
 #if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
 	do
 	{
-		reallocation = libcstring_system_string_reallocate(
+		reallocation = memory_reallocate(
 		                system_format_string,
-		                format_string_length + 1 );
+		                sizeof( libcstring_system_character_t ) * ( format_string_length + 1 ) );
 
 		if( reallocation == NULL )
 		{
@@ -256,9 +256,9 @@ void VARARGS(
 
 	do
 	{
-		reallocation = libcstring_system_string_reallocate(
+		reallocation = memory_reallocate(
 		                internal_error->messages[ message_index ],
-		                message_size );
+		                sizeof( libcstring_system_character_t ) * message_size );
 
 		if( reallocation == NULL )
 		{

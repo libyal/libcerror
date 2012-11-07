@@ -55,10 +55,10 @@ DWORD libcerror_FormatMessageW(
        va_list *argument_list );
 #endif
 
-ssize_t libcerror_system_copy_string_from_error_number(
-         libcstring_system_character_t *string,
-         size_t string_size,
-         uint32_t error_number );
+int libcerror_system_copy_string_from_error_number(
+     libcstring_system_character_t *string,
+     size_t string_size,
+     uint32_t error_number );
 
 LIBCERROR_EXTERN \
 void libcerror_system_set_error(

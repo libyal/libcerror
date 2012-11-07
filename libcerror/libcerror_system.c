@@ -174,10 +174,10 @@ DWORD libcerror_FormatMessageW(
  * This function uses the WINAPI functions for Windows XP or later
  * Returns the string_length if successful or -1 on error
  */
-ssize_t libcerror_system_copy_string_from_error_number(
-         libcstring_system_character_t *string,
-         size_t string_size,
-         uint32_t error_number )
+int libcerror_system_copy_string_from_error_number(
+     libcstring_system_character_t *string,
+     size_t string_size,
+     uint32_t error_number )
 {
 	DWORD print_count = 0;
 
@@ -185,11 +185,7 @@ ssize_t libcerror_system_copy_string_from_error_number(
 	{
 		return( -1 );
 	}
-#if UINT32_MAX < SSIZE_MAX
-	if( string_size > (size_t) UINT32_MAX )
-#else
-	if( string_size > (size_t) SSIZE_MAX )
-#endif
+	if( string_size > (size_t) INT_MAX )
 	{
 		return( -1 );
 	}
@@ -248,7 +244,7 @@ ssize_t libcerror_system_copy_string_from_error_number(
 	{
 		return( -1 );
 	}
-	return( (ssize_t) print_count );
+	return( (int) print_count );
 }
 
 #elif defined( WINAPI ) && defined( USE_CRT_FUNCTIONS ) && defined( _MSC_VER )
@@ -257,10 +253,10 @@ ssize_t libcerror_system_copy_string_from_error_number(
  * This function uses the Visual Studio C runtime library functions
  * Returns the string_length if successful or -1 on error
  */
-ssize_t libcerror_system_copy_string_from_error_number(
-         libcstring_system_character_t *string,
-         size_t string_size,
-         uint32_t error_number )
+int libcerror_system_copy_string_from_error_number(
+     libcstring_system_character_t *string,
+     size_t string_size,
+     uint32_t error_number )
 {
 	size_t string_length = 0;
 
@@ -268,7 +264,7 @@ ssize_t libcerror_system_copy_string_from_error_number(
 	{
 		return( -1 );
 	}
-	if( string_size > (size_t) SSIZE_MAX )
+	if( string_size > (size_t) INT_MAX )
 	{
 		return( -1 );
 	}
@@ -291,7 +287,7 @@ ssize_t libcerror_system_copy_string_from_error_number(
 	string_length = libcstring_system_string_length(
 	                 string );
 
-	return( (ssize_t) string_length );
+	return( (int) string_length );
 }
 
 #elif defined( HAVE_STRERROR_R )
@@ -300,10 +296,10 @@ ssize_t libcerror_system_copy_string_from_error_number(
  * This function uses the POSIX strerror_r function or equivalent
  * Returns the string_length if successful or -1 on error
  */
-ssize_t libcerror_system_copy_string_from_error_number(
-         libcstring_system_character_t *string,
-         size_t string_size,
-         uint32_t error_number )
+int libcerror_system_copy_string_from_error_number(
+     libcstring_system_character_t *string,
+     size_t string_size,
+     uint32_t error_number )
 {
 	size_t string_length = 0;
 
@@ -311,7 +307,7 @@ ssize_t libcerror_system_copy_string_from_error_number(
 	{
 		return( -1 );
 	}
-	if( string_size > (size_t) SSIZE_MAX )
+	if( string_size > (size_t) INT_MAX )
 	{
 		return( -1 );
 	}
@@ -340,7 +336,7 @@ ssize_t libcerror_system_copy_string_from_error_number(
 	string_length = libcstring_system_string_length(
 	                 string );
 
-	return( (ssize_t) string_length );
+	return( (int) string_length );
 }
 
 #elif defined( HAVE_STRERROR ) || defined( WINAPI )
@@ -349,10 +345,10 @@ ssize_t libcerror_system_copy_string_from_error_number(
  * This function uses the POSIX strerror function or equivalent
  * Returns the string_length if successful or -1 on error
  */
-ssize_t libcerror_system_copy_string_from_error_number(
-         libcstring_system_character_t *string,
-         size_t string_size,
-         uint32_t error_number )
+int libcerror_system_copy_string_from_error_number(
+     libcstring_system_character_t *string,
+     size_t string_size,
+     uint32_t error_number )
 {
 #if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
 	const wchar_t *static_error_string = NULL;
@@ -365,7 +361,7 @@ ssize_t libcerror_system_copy_string_from_error_number(
 	{
 		return( -1 );
 	}
-	if( string_size > (size_t) SSIZE_MAX )
+	if( string_size > (size_t) INT_MAX )
 	{
 		return( -1 );
 	}
@@ -399,7 +395,7 @@ ssize_t libcerror_system_copy_string_from_error_number(
 	}
 	string[ static_error_string_length ] = 0;
 
-	return( (ssize_t) static_error_string_length );
+	return( (int) static_error_string_length );
 }
 
 #else
@@ -467,9 +463,9 @@ void VARARGS(
 #if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
 	do
 	{
-		reallocation = libcstring_system_string_reallocate(
+		reallocation = memory_reallocate(
 		                system_format_string,
-		                format_string_length + 1 );
+		                sizeof( libcstring_system_character_t ) * ( format_string_length + 1 ) );
 
 		if( reallocation == NULL )
 		{
@@ -582,9 +578,9 @@ void VARARGS(
 
 	do
 	{
-		reallocation = libcstring_system_string_reallocate(
+		reallocation = memory_reallocate(
 		                internal_error->messages[ message_index ],
-		                message_size );
+		                sizeof( libcstring_system_character_t ) * message_size );
 
 		if( reallocation == NULL )
 		{
@@ -648,9 +644,9 @@ void VARARGS(
 	{
 		string_index -= 1;
 	}
-	reallocation = libcstring_system_string_reallocate(
+	reallocation = memory_reallocate(
 			internal_error->messages[ message_index ],
-			message_size + 13 + 512 );
+			sizeof( libcstring_system_character_t ) * ( message_size + 13 + 512 ) );
 
 	if( reallocation == NULL )
 	{

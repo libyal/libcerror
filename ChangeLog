@@ -3,6 +3,9 @@ TODO
 * add tests
 * add borlandc5 and codegear files
 
+20121107
+* changes for warnings in msvscpp 2010 64-bit build
+
 20121018
 * fixed read beyound string issue
 
