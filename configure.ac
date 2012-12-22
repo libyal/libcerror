@@ -2,7 +2,7 @@ AC_PREREQ( 2.59 )
 
 AC_INIT(
  [libcerror],
- [20121107],
+ [20121222],
  [joachim.metz@gmail.com])
 
 AC_CONFIG_SRCDIR(
@@ -74,10 +74,15 @@ AS_IF(
   [BuildRequires:])
  ])
 
-dnl Set the date for dpkg files
+dnl Set the date for the dpkg files
 AC_SUBST(
- [DATE],
+ [DPKG_DATE],
  [`date -R 2> /dev/null`])
+
+dnl Set the date for the spec file
+AC_SUBST(
+ [SPEC_DATE],
+ [`date +"%a %b %e %Y" 2> /dev/null`])
 
 dnl Have configure make the Makefiles
 AC_CONFIG_FILES([Makefile])
