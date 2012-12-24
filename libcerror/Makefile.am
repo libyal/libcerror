@@ -16,7 +16,7 @@ libcerror_la_SOURCES = \
 	libcerror_types.h \
 	libcerror_unused.h
 
-libcerror_la_LIBADD  = \
+libcerror_la_LIBADD = \
 	@LIBCSTRING_LIBADD@
 
 libcerror_la_LDFLAGS = -no-undefined -version-info 1:0:0
