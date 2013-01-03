@@ -2,6 +2,10 @@ TODO
 * WINAPI add LIBERROR_OUTPUT_ERROR_INSUFFICIENT_SPACE support
 * add tests
 
+20130103
+* 2013 update
+* changes to .gitignore
+
 20121222
 * added .gitignore
 * changes for new project site
