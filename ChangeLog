@@ -2,6 +2,9 @@ TODO
 * WINAPI add LIBERROR_OUTPUT_ERROR_INSUFFICIENT_SPACE support
 * add tests
 
+20130113
+* updated msvscpp files
+
 20130103
 * 2013 update
 * changes to .gitignore
