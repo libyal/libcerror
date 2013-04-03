@@ -1,6 +1,10 @@
 TODO
 * WINAPI add LIBERROR_OUTPUT_ERROR_INSUFFICIENT_SPACE support
 * add tests
+* add libcerror_system_copy_string_from_error_number to API?
+
+20130403
+* updated dependencies
 
 20130113
 * updated msvscpp files

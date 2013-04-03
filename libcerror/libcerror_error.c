@@ -188,7 +188,7 @@ void VARARGS(
 #if defined( __BORLANDC__ ) || defined( _MSC_VER )
 	/* Rewrite %s to %S
 	 */
-	string_index  = 0;
+	string_index = 0;
 
 	while( string_index < format_string_length )
 	{

@@ -35,6 +35,6 @@ distclean: clean
 	/bin/rm -f Makefile
 
 splint:
-	@echo "Running splint on libcerror ..." 
-	-splint -preproc -redef $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(libcerror_la_SOURCES) 
+	@echo "Running splint on libcerror ..."
+	-splint -preproc -redef $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(libcerror_la_SOURCES)
 
