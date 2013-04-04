@@ -421,7 +421,7 @@ int libcerror_system_copy_string_from_error_number(
 #endif
 
 /* Sets an error and adds a system specific error string if possible
- * Initializes the error if necessary
+ * Creates the error if necessary
  * The error domain and code are set only the first time and the error message is appended for back tracing
  */
 void VARARGS(

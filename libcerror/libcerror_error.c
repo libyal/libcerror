@@ -98,7 +98,7 @@ void libcerror_error_free(
 #endif
 
 /* Sets an error
- * Initializes the error if necessary
+ * Creates the error if necessary
  * The error domain and code are set only the first time and the error message is appended for back tracing
  */
 void VARARGS(

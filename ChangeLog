@@ -3,6 +3,9 @@ TODO
 * add tests
 * add libcerror_system_copy_string_from_error_number to API?
 
+20130404
+* textual changes
+
 20130403
 * updated dependencies
 
