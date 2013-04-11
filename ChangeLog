@@ -3,6 +3,14 @@ TODO
 * add tests
 * add libcerror_system_copy_string_from_error_number to API?
 
+Notes:
+* FormatMessage
+  - http://msdn.microsoft.com/en-us/library/windows/desktop/ms679351(v=vs.85).aspx
+  - http://blogs.msdn.com/b/oldnewthing/archive/2007/11/28/6564257.aspx
+
+20130411
+* added FORMAT_MESSAGE_IGNORE_INSERTS to FormatMessage calls
+
 20130404
 * textual changes
 

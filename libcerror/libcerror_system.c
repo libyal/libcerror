@@ -179,12 +179,15 @@ int libcerror_system_copy_string_from_error_number(
      size_t string_size,
      uint32_t error_number )
 {
+	DWORD flags       = 0;
 	DWORD print_count = 0;
 
 	if( string == NULL )
 	{
 		return( -1 );
 	}
+	flags = FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS;
+
 	if( string_size > (size_t) INT_MAX )
 	{
 		return( -1 );
@@ -192,7 +195,7 @@ int libcerror_system_copy_string_from_error_number(
 #if ( WINVER <= 0x0500 )
 #if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
 	print_count = libcerror_FormatMessageW(
-	               FORMAT_MESSAGE_FROM_SYSTEM,
+	               flags,
 	               NULL,
 	               (DWORD) error_number,
 	               MAKELANGID(
@@ -203,7 +206,7 @@ int libcerror_system_copy_string_from_error_number(
 	               NULL );
 #else
 	print_count = libcerror_FormatMessageA(
-	               FORMAT_MESSAGE_FROM_SYSTEM,
+	               flags,
 	               NULL,
 	               (DWORD) error_number,
 	               MAKELANGID(
@@ -216,7 +219,7 @@ int libcerror_system_copy_string_from_error_number(
 #else
 #if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
 	print_count = FormatMessageW(
-	               FORMAT_MESSAGE_FROM_SYSTEM,
+	               flags,
 	               NULL,
 	               (DWORD) error_number,
 	               MAKELANGID(
@@ -227,7 +230,7 @@ int libcerror_system_copy_string_from_error_number(
 	               NULL );
 #else
 	print_count = FormatMessageA(
-	               FORMAT_MESSAGE_FROM_SYSTEM,
+	               flags,
 	               NULL,
 	               (DWORD) error_number,
 	               MAKELANGID(
