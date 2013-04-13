@@ -431,6 +431,14 @@ int libcerror_error_sprint(
 	{
 		return( -1 );
 	}
+#if INT_MAX < SSIZE_MAX
+	if( size > (size_t) INT_MAX )
+#else
+	if( size > (size_t) SSIZE_MAX )
+#endif
+	{
+		return( -1 );
+	}
 	message_index = internal_error->number_of_messages - 1;
 
 	if( internal_error->messages[ message_index ] != NULL )
@@ -568,6 +576,14 @@ int libcerror_error_backtrace_sprint(
 		return( -1 );
 	}
 	if( string == NULL )
+	{
+		return( -1 );
+	}
+#if INT_MAX < SSIZE_MAX
+	if( size > (size_t) INT_MAX )
+#else
+	if( size > (size_t) SSIZE_MAX )
+#endif
 	{
 		return( -1 );
 	}
