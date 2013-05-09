@@ -66,11 +66,23 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
+/* Define to 1 if you have the `cerror' library (-lcerror). */
+#undef HAVE_LIBCERROR
+
+/* Define to 1 if you have the <libcerror.h> header file. */
+#undef HAVE_LIBCERROR_H
+
 /* Define to 1 if you have the `cstring' library (-lcstring). */
 #undef HAVE_LIBCSTRING
 
 /* Define to 1 if you have the <libcstring.h> header file. */
 #undef HAVE_LIBCSTRING_H
+
+/* Define to 1 if you have the `cthreads' library (-lcthreads). */
+#undef HAVE_LIBCTHREADS
+
+/* Define to 1 if you have the <libcthreads.h> header file. */
+#undef HAVE_LIBCTHREADS_H
 
 /* Define to 1 if you have the <libintl.h> header file. */
 #undef HAVE_LIBINTL_H
@@ -78,8 +90,14 @@
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H
 
+/* Define to 1 if the local version of libcerror is used. */
+#undef HAVE_LOCAL_LIBCERROR
+
 /* Define to 1 if the local version of libcstring is used. */
 #undef HAVE_LOCAL_LIBCSTRING
+
+/* Define to 1 if the local version of libcthreads is used. */
+#undef HAVE_LOCAL_LIBCTHREADS
 
 /* Define to 1 if you have the `malloc' function. */
 #undef HAVE_MALLOC
@@ -102,11 +120,20 @@
 /* Define to 1 if you have the `memset' function. */
 #undef HAVE_MEMSET
 
+/* Define to 1 if multi thread support should be used. */
+#undef HAVE_MULTI_THREAD_SUPPORT
+
 /* Define to 1 whether printf supports the conversion specifier "%jd". */
 #undef HAVE_PRINTF_JD
 
 /* Define to 1 whether printf supports the conversion specifier "%zd". */
 #undef HAVE_PRINTF_ZD
+
+/* Define to 1 if you have the 'pthread' library (-lpthread). */
+#undef HAVE_PTHREAD
+
+/* Define to 1 if you have the <pthread.h> header file. */
+#undef HAVE_PTHREAD_H
 
 /* Define to 1 if you have the `realloc' function. */
 #undef HAVE_REALLOC
