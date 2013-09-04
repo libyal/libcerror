@@ -334,7 +334,7 @@ int libcerror_system_copy_string_from_error_number(
 	{
 		return( -1 );
 	}
-	string[ string_size - 1 ] = 0;
+	string[ string_size - 1 ] = (libcstring_system_character_t) 0;
 
 	string_length = libcstring_system_string_length(
 	                 string );
@@ -643,7 +643,8 @@ void VARARGS(
 
 	string_index = internal_error->sizes[ message_index ] - 1;
 
-	if( ( internal_error->messages[ message_index ] )[ string_index - 1 ] == (libcstring_system_character_t) '.' )
+	if( ( internal_error->messages[ message_index ] != NULL )
+	 && ( ( internal_error->messages[ message_index ] )[ string_index - 1 ] == (libcstring_system_character_t) '.' ) )
 	{
 		string_index -= 1;
 	}

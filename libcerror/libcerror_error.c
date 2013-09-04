@@ -290,7 +290,7 @@ void VARARGS(
 			message_size += LIBCERROR_MESSAGE_INCREMENT_SIZE;
 		}
 		else if( ( (size_t) print_count >= message_size )
-		      || ( ( internal_error->messages[ message_index ] )[ print_count ] != 0 ) )
+		      || ( ( internal_error->messages[ message_index ] )[ print_count ] != (libcstring_system_character_t) 0 ) )
 		{
 			message_size = (size_t) ( print_count + 1 );
 			print_count  = -1;
@@ -481,13 +481,13 @@ int libcerror_error_sprint(
 		     internal_error->messages[ message_index ],
 		     internal_error->sizes[ message_index ] ) == NULL )
 		{
-			string[ string_index ] = 0;
+			string[ string_index ] = (libcstring_system_character_t) 0;
 
 			return( -1 );
 		}
 		string_index += internal_error->sizes[ message_index ];
 
-		string[ string_index ] = 0;
+		string[ string_index ] = (libcstring_system_character_t) 0;
 #endif /* defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER ) */
 	}
 	if( string_index > (size_t) INT_MAX )
@@ -631,13 +631,13 @@ int libcerror_error_backtrace_sprint(
 			     internal_error->messages[ message_index ],
 			     internal_error->sizes[ message_index ] ) == NULL )
 			{
-				string[ string_index ] = 0;
+				string[ string_index ] = (libcstring_system_character_t) 0;
 
 				return( -1 );
 			}
 			string_index += internal_error->sizes[ message_index ];
 
-			string[ string_index ] = 0;
+			string[ string_index ] = (libcstring_system_character_t) 0;
 #endif /* defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER ) */
 		}
 	}
