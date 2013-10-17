@@ -8,6 +8,9 @@ Notes:
   - http://msdn.microsoft.com/en-us/library/windows/desktop/ms679351(v=vs.85).aspx
   - http://blogs.msdn.com/b/oldnewthing/archive/2007/11/28/6564257.aspx
 
+20131017
+* updated libcstring
+
 20130904
 * bug fix for issue under memory limitations
 * code clean up
