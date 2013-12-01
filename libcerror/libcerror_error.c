@@ -626,6 +626,10 @@ int libcerror_error_backtrace_sprint(
 			{
 				return( -1 );
 			}
+			if( string_index > 0 )
+			{
+				string[ string_index++ ] = (libcstring_system_character_t) '\n';
+			}
 			if( libcstring_narrow_string_copy(
 			     &( string[ string_index ] ),
 			     internal_error->messages[ message_index ],
@@ -635,7 +639,7 @@ int libcerror_error_backtrace_sprint(
 
 				return( -1 );
 			}
-			string_index += internal_error->sizes[ message_index ];
+			string_index += internal_error->sizes[ message_index ] - 1;
 
 			string[ string_index ] = (libcstring_system_character_t) 0;
 #endif /* defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER ) */
