@@ -101,3 +101,4 @@ stamp-h1
 /include/libcerror/types.h
 /libcerror/libcerror.rc
 /libcerror/libcerror_definitions.h
+/tests/tmp
