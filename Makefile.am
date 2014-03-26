@@ -74,4 +74,5 @@ splint:
 	(cd $(srcdir)/libcstring && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
+	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))
 
