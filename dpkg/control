@@ -10,8 +10,16 @@ Package: libcerror
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Suggests: libcerror-dbg
 Description: Library to support cross-platform C error functions
  libcerror is a library to support cross-platform C error functions.
+
+Package: libcerror-dbg
+Architecture: any
+Section: debug
+Depends: libcerror (= ${Source-Version}), ${misc:Depends}
+Description: Debugging symbols for libcerror
+ Debugging symbols for libcerror.
 
 Package: libcerror-dev
 Section: libdevel
