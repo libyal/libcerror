@@ -1,6 +1,6 @@
-For project documentation see:
-* https://github.com/libyal/libcerror/wiki/Home
+libcerror is a library for cross-platform C error functions.
 
-For how to build from source see:
-* https://github.com/libyal/libcerror/wiki/Building
+For more information see:
+* Project documentation: https://github.com/libyal/libcerror/wiki/Home
+* How to build from source: https://github.com/libyal/libcerror/wiki/Building
 
