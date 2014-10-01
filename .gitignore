@@ -102,3 +102,6 @@ stamp-h1
 /libcerror/libcerror.rc
 /libcerror/libcerror_definitions.h
 /tests/tmp
+
+# Local library dependencies specific files
+/libcstring

@@ -4,7 +4,7 @@
 # Version: 20140915
 
 GIT_URL_PREFIX="https://github.com/libyal";
-LOCAL_LIBS="";
+LOCAL_LIBS="libcstring";
 
 OLDIFS=$IFS;
 IFS=" ";
