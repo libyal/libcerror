@@ -1,7 +1,8 @@
 libcerror is a library for cross-platform C error functions.
 
-Project status: alpha
-Licence: LGPLv3+
+Project information:
+* Status: alpha
+* Licence: LGPLv3+
 
 For more information see:
 * Project documentation: https://github.com/libyal/libcerror/wiki/Home
