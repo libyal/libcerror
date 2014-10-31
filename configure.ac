@@ -74,6 +74,11 @@ AS_IF(
   AC_SUBST(
    [HAVE_DLLMAIN],
    [1])
+
+  dnl Used in tests
+  AC_SUBST(
+   [LIBCERROR_DLL_IMPORT],
+   ["-DLIBCERROR_DLL_IMPORT"])
   ])
  ])
 
