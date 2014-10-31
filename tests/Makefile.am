@@ -1,7 +1,8 @@
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/common \
-	@LIBCSTRING_CPPFLAGS@
+	@LIBCSTRING_CPPFLAGS@ \
+	@LIBCERROR_DLL_IMPORT@
 
 TESTS =
 
