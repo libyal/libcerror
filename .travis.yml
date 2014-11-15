@@ -1,0 +1,11 @@
+language: c
+compiler:
+  - clang
+  - gcc
+install:
+  - ./synclibs.sh
+  - ./autogen.sh
+script:
+  - ./configure
+  - make
+  - make check
