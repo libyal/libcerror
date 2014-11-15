@@ -2,8 +2,9 @@ language: c
 compiler:
   - clang
   - gcc
-install:
+before_install:
   - sudo apt-get install autopoint
+install:
   - ./synclibs.sh
   - ./autogen.sh
 script:
