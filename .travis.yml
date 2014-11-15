@@ -3,6 +3,7 @@ compiler:
   - clang
   - gcc
 install:
+  - sudo apt-get install autopoint
   - ./synclibs.sh
   - ./autogen.sh
 script:
