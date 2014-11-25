@@ -6,7 +6,7 @@ compiler:
   - clang
   - gcc
 before_install:
-  - test `uname -s` = 'Linux' && sudo apt-get install autopoint
+  - if test `uname -s` = 'Linux' then; sudo apt-get install autopoint; fi
 install:
   - ./synclibs.sh && ./autogen.sh
 script:
