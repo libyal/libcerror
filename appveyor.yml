@@ -20,7 +20,7 @@ before_build:
       $version = cat configure.ac | where { $_ -match " \[[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]\]," } | % { $_ -replace " \[([0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])\],","$1" }
       cat include\${library}.h.in > include\${library}.h
       cat include\${library}\definitions.h.in | % { $_ -replace "@VERSION@",${version} } > include\${library}\definitions.h
-      cat include\${library}\features.h.in | % { $_ -replace "@[A-Z0-9_]@","0" } > include\${library}\features.h
+      cat include\${library}\features.h.in | % { $_ -replace "@[A-Z0-9_]*@","0" } > include\${library}\features.h
       cat include\${library}\types.h.in | % { $_ -replace "@[A-Z0-9_]*@","0" } > include\${library}\types.h
       cat common\types.h.in | % { $_ -replace "@PACKAGE@",${library} } > common\types.h
       cat ${library}\${library}_definitions.h.in | % { $_ -replace "@VERSION@",${version} } > ${library}\${library}_definitions.h
