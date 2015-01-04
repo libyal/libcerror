@@ -1,5 +1,5 @@
 environment:
-  - VisualStudioVersion: 10.0
+  VisualStudioVersion: 11.0
 
 platform:
   - x86
