@@ -16,7 +16,7 @@ before_build:
   - cmd: git clone https://github.com/libyal/libcstring libcstring.git
   - cmd: move libcstring.git\libcstring .
   - cmd: rmdir /q /s libcstring.git
-  - cmd: C:\Python27\python.exe libyal\msvscpp-convert.py --to vs2010
+  - cmd: C:\Python27\python.exe libyal\msvscpp-convert.py --to 2010
 
 build:
   project: vs2010\libcerror.sln
