@@ -13,9 +13,9 @@ install:
   - cmd: git clone https://github.com/libyal/libyal
 
 before_build:
-  - cmd: git clone https://github.com/libyal/libcstring libcstring.tmp
-  - cmd: move libcstring\libcstring .
-  - cmd: rmdir /s libcstring.tmp
+  - cmd: git clone https://github.com/libyal/libcstring libcstring.git
+  - cmd: move libcstring.git\libcstring .
+  - cmd: rmdir /s libcstring.git
   - cmd: C:\Python27\python.exe libyal\msvscpp-convert.py --to vs2010
 
 build:
