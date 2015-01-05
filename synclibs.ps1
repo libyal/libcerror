@@ -7,7 +7,8 @@ $LocalLibs = @("libcstring")
 
 foreach (${LocalLib} in ${LocalLibs})
 {
-	Invoke-Expression "git clone ${GitUrlPrefix}/${LocalLib}.git ${LocalLib}-${pid} 2>${null}"
+	# PowerShell will raise NativeCommandError if git writes to stderr therefore 2>&1 is added
+	Invoke-Expression -Command "git clone ${GitUrlPrefix}/${LocalLib}.git ${LocalLib}-${pid} 2>&1"
 
 	if (Test-Path ${LocalLib}-${pid})
 	{
