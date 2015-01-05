@@ -7,11 +7,11 @@ $LocalLibs = @("libcstring")
 
 foreach (${LocalLib} in ${LocalLibs})
 {
-	git clone ${GitUrlPrefix}\${LocalLib} ${LocalLib}-${pid}
+	git clone ${GitUrlPrefix}/${LocalLib}.git ${LocalLib}-${pid}
 
 	if (Test-Path ${LocalLib}-${pid})
 	{
-		$LocalLibVersion = Get-Content -Path ${LocalLib}-${pid}\configure.ac | where { $_ -Match " \[[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]\]," } | % { $_ -Replace " \[([0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])\],","$1" }
+		$LocalLibVersion = Get-Content -Path ${LocalLib}-${pid}\configure.ac | select -skip 4 -first 1 | % { $_ -Replace " \[","" } | % { $_ -Replace "\],","" }
 
 		if (Test-Path ${LocalLib})
 		{
