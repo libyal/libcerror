@@ -7,7 +7,7 @@ $LocalLibs = @("libcstring")
 
 foreach (${LocalLib} in ${LocalLibs})
 {
-	git clone ${GitUrlPrefix}/${LocalLib}.git ${LocalLib}-${pid}
+	Invoke-Expression "git clone ${GitUrlPrefix}/${LocalLib}.git ${LocalLib}-${pid}"
 
 	if (Test-Path ${LocalLib}-${pid})
 	{
