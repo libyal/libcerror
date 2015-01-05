@@ -7,7 +7,7 @@ $LocalLibs = @("libcstring")
 
 foreach (${LocalLib} in ${LocalLibs})
 {
-	Invoke-Expression "git clone ${GitUrlPrefix}/${LocalLib}.git ${LocalLib}-${pid}"
+	Invoke-Expression "git clone ${GitUrlPrefix}/${LocalLib}.git ${LocalLib}-${pid} 2>${null}"
 
 	if (Test-Path ${LocalLib}-${pid})
 	{
@@ -22,7 +22,7 @@ foreach (${LocalLib} in ${LocalLibs})
 		if (Test-Path ${LocalLib})
 		{
 			Copy-Item -Path ${LocalLib}-${pid}\${LocalLib}\*.[ch] -Destination ${LocalLib}\
-			Get-Content -Path ${LocalLib}-${pid}${LocalLib}\${LocalLib}_definitions.h.in | % { $_ -Replace "@VERSION@",${LocalLibVersion} } > ${LocalLib}\${LocalLib}_definitions.h
+			Get-Content -Path ${LocalLib}-${pid}\${LocalLib}\${LocalLib}_definitions.h.in | % { $_ -Replace "@VERSION@",${LocalLibVersion} } > ${LocalLib}\${LocalLib}_definitions.h
 		}
 		Remove-Item -Path ${LocalLib}-${pid} -Force -Recurse
 	}
