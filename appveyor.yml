@@ -13,23 +13,8 @@ install:
   - cmd: git clone https://github.com/libyal/libyal
 
 before_build:
-  - cmd: git clone https://github.com/libyal/libcstring libcstring_git
-  - cmd: move libcstring_git\libcstring .
-  - ps: |
-      $library = "libcstring"
-      $version = cat ${library}_git\configure.ac | where { $_ -match " \[[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]\]," } | % { $_ -replace " \[([0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])\],","$1" }
-      cat ${library}\${library}_definitions.h.in | % { $_ -replace "@VERSION@",${version} } > ${library}\${library}_definitions.h
-  - cmd: rmdir /q /s libcstring_git
-  - ps: |
-      $library = "libcerror"
-      $version = cat configure.ac | where { $_ -match " \[[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]\]," } | % { $_ -replace " \[([0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])\],","$1" }
-      cat include\${library}.h.in > include\${library}.h
-      cat include\${library}\definitions.h.in | % { $_ -replace "@VERSION@",${version} } > include\${library}\definitions.h
-      cat include\${library}\features.h.in | % { $_ -replace "@[A-Z0-9_]*@","0" } > include\${library}\features.h
-      cat include\${library}\types.h.in | % { $_ -replace "@[A-Z0-9_]*@","0" } > include\${library}\types.h
-      cat common\types.h.in | % { $_ -replace "@PACKAGE@",${library} } > common\types.h
-      cat ${library}\${library}_definitions.h.in | % { $_ -replace "@VERSION@",${version} } > ${library}\${library}_definitions.h
-      cat ${library}\${library}.rc.in | % { $_ -replace "@VERSION@",${version} } > ${library}\${library}.rc
+  - ps: .\synclibs.ps1
+  - ps: .\autogen.ps1
   - cmd: C:\Python27\python.exe libyal\msvscpp-convert.py --to 2010 msvscpp\libcerror.sln
 
 build:
