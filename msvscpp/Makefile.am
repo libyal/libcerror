@@ -1,4 +1,5 @@
 MSVSCPP_FILES = \
+	cerror_test_error/cerror_test_error.vcproj \
 	libcerror/libcerror.vcproj \
 	libcstring/libcstring.vcproj \
 	libcerror.sln

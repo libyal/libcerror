@@ -1,6 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual C++ Express 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cerror_test_error", "cerror_test_error\cerror_test_error.vcproj", "{E2F616EC-1326-453F-8FC5-29701EC5A031}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C42F5217-137D-4F10-9D6A-3C6D44E43453} = {C42F5217-137D-4F10-9D6A-3C6D44E43453}
+		{20FFC4C9-F44C-45F6-A827-4819B4DF3C9F} = {20FFC4C9-F44C-45F6-A827-4819B4DF3C9F}
+	EndProjectSection
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcstring", "libcstring\libcstring.vcproj", "{20FFC4C9-F44C-45F6-A827-4819B4DF3C9F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcerror", "libcerror\libcerror.vcproj", "{C42F5217-137D-4F10-9D6A-3C6D44E43453}"
@@ -14,6 +20,10 @@ Global
 		VSDebug|Win32 = VSDebug|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E2F616EC-1326-453F-8FC5-29701EC5A031}.Release|Win32.ActiveCfg = Release|Win32
+		{E2F616EC-1326-453F-8FC5-29701EC5A031}.Release|Win32.Build.0 = Release|Win32
+		{E2F616EC-1326-453F-8FC5-29701EC5A031}.VSDebug|Win32.ActiveCfg = VSDebug|Win32
+		{E2F616EC-1326-453F-8FC5-29701EC5A031}.VSDebug|Win32.Build.0 = VSDebug|Win32
 		{20FFC4C9-F44C-45F6-A827-4819B4DF3C9F}.Release|Win32.ActiveCfg = Release|Win32
 		{20FFC4C9-F44C-45F6-A827-4819B4DF3C9F}.Release|Win32.Build.0 = Release|Win32
 		{20FFC4C9-F44C-45F6-A827-4819B4DF3C9F}.VSDebug|Win32.ActiveCfg = VSDebug|Win32
