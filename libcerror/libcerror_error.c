@@ -641,6 +641,8 @@ int libcerror_error_backtrace_sprint(
 #endif /* defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER ) */
 		}
 	}
+	string_index += 1;
+
 	if( string_index > (size_t) INT_MAX )
 	{
 		return( -1 );
