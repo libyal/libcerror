@@ -31,11 +31,10 @@
 #include "cerror_test_libcstring.h"
 #include "cerror_test_unused.h"
 
-/* Tests setting the error once
- * Make sure the value error is referencing, is set to NULL
+/* Tests the libcerror_error_set function
  * Returns 1 if successful, 0 if not or -1 on error
  */
-int cerror_test_error_set_single(
+int cerror_test_error_set(
      void )
 {
 	libcerror_error_t *error = NULL;
@@ -57,7 +56,7 @@ int cerror_test_error_set_single(
 	}
 	fprintf(
 	 stdout,
-	 "Testing set single\t" );
+	 "Testing set\t" );
 
 	if( result == 0 )
 	{
@@ -87,22 +86,13 @@ int cerror_test_error_set_single(
 			 stderr,
 			 "Unable to free error.\n" );
 
-			result = 0;
+			result = -1;
 		}
 	}
-	return( result );
-}
-
-/* Tests setting the error multiple times
- * Make sure the value error is referencing, is set to NULL
- * Returns 1 if successful, 0 if not or -1 on error
- */
-int cerror_test_error_set_multiple(
-     void )
-{
-	libcerror_error_t *error = NULL;
-	int result               = 1;
-
+	if( result != 1 )
+	{
+		return( result );
+	}
 	libcerror_error_set(
 	 &error,
 	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
@@ -135,7 +125,7 @@ int cerror_test_error_set_multiple(
 	}
 	fprintf(
 	 stdout,
-	 "Testing set multiple\t" );
+	 "Testing set multiple times\t" );
 
 	if( result == 0 )
 	{
@@ -164,10 +154,98 @@ int cerror_test_error_set_multiple(
 			 stderr,
 			 "Unable to free error.\n" );
 
-			result = 0;
+			result = -1;
 		}
 	}
-	return( result );
+	if( result != 1 )
+	{
+		return( result );
+	}
+	return( 1 );
+}
+
+/* Tests the libcerror_error_matches function
+ * Returns 1 if successful, 0 if not or -1 on error
+ */
+int cerror_test_error_matches(
+     void )
+{
+	libcerror_error_t *error = NULL;
+	int result               = 1;
+
+	libcerror_error_set(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 "Test error." );
+
+	if( error == NULL )
+	{
+		fprintf(
+		 stderr,
+		 "Unable to set error.\n" );
+
+		return( -1 );
+	}
+	result = libcerror_error_matches(
+	          error,
+	          LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	          LIBCERROR_RUNTIME_ERROR_GENERIC );
+
+	fprintf(
+	 stdout,
+	 "Testing matches\t" );
+
+	if( result == 0 )
+	{
+		fprintf(
+		 stdout,
+		 "(FAIL)" );
+	}
+	else
+	{
+		fprintf(
+		 stdout,
+		 "(PASS)" );
+	}
+	fprintf(
+	 stdout,
+	 "\n" );
+
+	if( result != 1 )
+	{
+		return( 0 );
+	}
+	result = libcerror_error_matches(
+	          error,
+	          LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+	          LIBCERROR_ARGUMENT_ERROR_GENERIC );
+
+	fprintf(
+	 stdout,
+	 "Testing not matches\t" );
+
+	if( result != 0 )
+	{
+		fprintf(
+		 stdout,
+		 "(FAIL)" );
+	}
+	else
+	{
+		fprintf(
+		 stdout,
+		 "(PASS)" );
+	}
+	fprintf(
+	 stdout,
+	 "\n" );
+
+	if( result != 0 )
+	{
+		return( 0 );
+	}
+	return( 1 );
 }
 
 /* The main program
@@ -188,26 +266,23 @@ int main( int argc, char * const argv[] CERROR_TEST_ATTRIBUTE_UNUSED )
 
 		return( EXIT_FAILURE );
 	}
-	/* Set tests
-	 */
-	if( cerror_test_error_set_single() != 1 )
+	if( cerror_test_error_set() != 1 )
 	{
 		fprintf(
 		 stderr,
-		 "Unable to test set single.\n" );
+		 "Unable to test set.\n" );
 
 		return( EXIT_FAILURE );
 	}
-	if( cerror_test_error_set_multiple() != 1 )
+	if( cerror_test_error_matches() != 1 )
 	{
 		fprintf(
 		 stderr,
-		 "Unable to test set multiple.\n" );
+		 "Unable to test matches.\n" );
 
 		return( EXIT_FAILURE );
 	}
 	/* TODO: add tests for:
-	 * libcerror_error_matches
 	 * libcerror_error_fprint
 	 * libcerror_error_sprint
 	 * libcerror_error_backtrace_fprint

@@ -28,7 +28,7 @@ test_error()
 { 
 	echo "Testing error type";
 
-	./${CERROR_TEST_ARRAY};
+	./${CERROR_TEST_ERROR};
 
 	RESULT=$?;
 
@@ -37,16 +37,16 @@ test_error()
 	return ${RESULT};
 }
 
-CERROR_TEST_ARRAY="cerror_test_error";
+CERROR_TEST_ERROR="cerror_test_error";
 
-if ! test -x ${CERROR_TEST_ARRAY};
+if ! test -x ${CERROR_TEST_ERROR};
 then
-	CERROR_TEST_ARRAY="cerror_test_error.exe";
+	CERROR_TEST_ERROR="cerror_test_error.exe";
 fi
 
-if ! test -x ${CERROR_TEST_ARRAY};
+if ! test -x ${CERROR_TEST_ERROR};
 then
-	echo "Missing executable: ${CERROR_TEST_ARRAY}";
+	echo "Missing executable: ${CERROR_TEST_ERROR}";
 
 	exit ${EXIT_FAILURE};
 fi
