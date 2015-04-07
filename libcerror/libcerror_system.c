@@ -59,7 +59,7 @@
 #define SUBLANG_DEFAULT		1
 #endif
 
-#if defined( WINAPI ) && ( WINVER <= 0x0500 ) && !defined( USE_CRT_FUNCTIONS )
+#if defined( WINAPI ) && ( WINVER <= 0x0500 )
 
 /* Cross Windows safe version of FormatMessageA
  * Returns TRUE if successful or FALSE on error
@@ -169,7 +169,7 @@ DWORD libcerror_FormatMessageW(
 
 #endif
 
-#if defined( WINAPI ) && ( WINVER >= 0x0501 ) && !defined( USE_CRT_FUNCTIONS )
+#if defined( WINAPI ) && ( WINVER >= 0x0501 )
 
 /* Retrieves a descriptive string of the error number
  * This function uses the WINAPI functions for Windows XP or later
@@ -249,49 +249,6 @@ int libcerror_system_copy_string_from_error_number(
 		return( -1 );
 	}
 	return( (int) print_count );
-}
-
-#elif defined( WINAPI ) && defined( USE_CRT_FUNCTIONS ) && defined( _MSC_VER )
-
-/* Retrieves a descriptive string of the error number
- * This function uses the Visual Studio C runtime library functions
- * Returns the string_length if successful or -1 on error
- */
-int libcerror_system_copy_string_from_error_number(
-     libcstring_system_character_t *string,
-     size_t string_size,
-     uint32_t error_number )
-{
-	size_t string_length = 0;
-
-	if( string == NULL )
-	{
-		return( -1 );
-	}
-	if( string_size > (size_t) INT_MAX )
-	{
-		return( -1 );
-	}
-#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
-	if( _wcserror_s(
-	     string,
-	     string_size,
-	     (int) error_number ) != 0 )
-#else
-	if( strerror_s(
-	     string,
-	     string_size,
-	     (int) error_number ) != 0 )
-#endif
-	{
-		return( -1 );
-	}
-	string[ string_size - 1 ] = 0;
-
-	string_length = libcstring_system_string_length(
-	                 string );
-
-	return( (int) string_length );
 }
 
 #elif defined( HAVE_STRERROR_R )

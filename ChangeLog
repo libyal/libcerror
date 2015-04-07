@@ -2,10 +2,6 @@ TODO
 * WINAPI add LIBERROR_OUTPUT_ERROR_INSUFFICIENT_SPACE support
 * add libcerror_system_copy_string_from_error_number to API?
 
-Tests:
-* add error type tests
-* add system error tests
-
 Notes:
 * FormatMessage
   - http://msdn.microsoft.com/en-us/library/windows/desktop/ms679351(v=vs.85).aspx
@@ -13,6 +9,7 @@ Notes:
 
 20150407
 * worked on tests
+* removed USE_CRT_FUNCTIONS support
 
 20150406
 * code clean up

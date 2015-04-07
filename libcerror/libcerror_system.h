@@ -35,7 +35,7 @@
 extern "C" {
 #endif
 
-#if defined( WINAPI ) && ( WINVER <= 0x0500 ) && !defined( USE_CRT_FUNCTIONS )
+#if defined( WINAPI ) && ( WINVER <= 0x0500 )
 DWORD libcerror_FormatMessageA(
        DWORD flags,
        LPCVOID source,

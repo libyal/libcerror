@@ -644,6 +644,73 @@ int cerror_test_error_backtrace_sprint(
 	return( 1 );
 }
 
+/* Tests the libcerror_system_set_error function
+ * Returns 1 if successful, 0 if not or -1 on error
+ */
+int cerror_test_system_set_error(
+     void )
+{
+	libcerror_error_t *error = NULL;
+	uint32_t error_code      = 0;
+	int result               = 1;
+
+	libcerror_system_set_error(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 error_code,
+	 "Test system error." );
+
+	if( error == NULL )
+	{
+		fprintf(
+		 stderr,
+		 "Unable to set system error.\n" );
+
+		result = 0;
+	}
+	fprintf(
+	 stdout,
+	 "Testing set\t" );
+
+	if( result == 0 )
+	{
+		fprintf(
+		 stdout,
+		 "(FAIL)" );
+
+	}
+	else
+	{
+		fprintf(
+		 stdout,
+		 "(PASS)" );
+	}
+	fprintf(
+	 stdout,
+	 "\n" );
+
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		  &error );
+
+		if( error != NULL )
+		{
+			fprintf(
+			 stderr,
+			 "Unable to free error.\n" );
+
+			result = -1;
+		}
+	}
+	if( result != 1 )
+	{
+		return( result );
+	}
+	return( 1 );
+}
+
 /* The main program
  */
 #if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
@@ -666,7 +733,7 @@ int main( int argc, char * const argv[] CERROR_TEST_ATTRIBUTE_UNUSED )
 	{
 		fprintf(
 		 stderr,
-		 "Unable to test set.\n" );
+		 "Unable to test error set.\n" );
 
 		return( EXIT_FAILURE );
 	}
@@ -674,7 +741,7 @@ int main( int argc, char * const argv[] CERROR_TEST_ATTRIBUTE_UNUSED )
 	{
 		fprintf(
 		 stderr,
-		 "Unable to test matches.\n" );
+		 "Unable to test error matches.\n" );
 
 		return( EXIT_FAILURE );
 	}
@@ -683,7 +750,7 @@ int main( int argc, char * const argv[] CERROR_TEST_ATTRIBUTE_UNUSED )
 	{
 		fprintf(
 		 stderr,
-		 "Unable to test fprint.\n" );
+		 "Unable to test error fprint.\n" );
 
 		return( EXIT_FAILURE );
 	}
@@ -691,7 +758,7 @@ int main( int argc, char * const argv[] CERROR_TEST_ATTRIBUTE_UNUSED )
 	{
 		fprintf(
 		 stderr,
-		 "Unable to test backtrace fprint.\n" );
+		 "Unable to test error backtrace fprint.\n" );
 
 		return( EXIT_FAILURE );
 	}
@@ -701,7 +768,7 @@ int main( int argc, char * const argv[] CERROR_TEST_ATTRIBUTE_UNUSED )
 	{
 		fprintf(
 		 stderr,
-		 "Unable to test sprint.\n" );
+		 "Unable to test error sprint.\n" );
 
 		return( EXIT_FAILURE );
 	}
@@ -709,7 +776,15 @@ int main( int argc, char * const argv[] CERROR_TEST_ATTRIBUTE_UNUSED )
 	{
 		fprintf(
 		 stderr,
-		 "Unable to test backtrace sprint.\n" );
+		 "Unable to test error backtrace sprint.\n" );
+
+		return( EXIT_FAILURE );
+	}
+	if( cerror_test_system_set_error() != 1 )
+	{
+		fprintf(
+		 stderr,
+		 "Unable to test system set error.\n" );
 
 		return( EXIT_FAILURE );
 	}
