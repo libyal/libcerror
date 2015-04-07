@@ -262,6 +262,100 @@ int cerror_test_error_matches(
 	return( 1 );
 }
 
+/* Tests the libcerror_error_fprint function
+ * Returns 1 if successful, 0 if not or -1 on error
+ */
+int cerror_test_error_fprint(
+     void )
+{
+	char string[ 128 ];
+
+	libcerror_error_t *error = NULL;
+	FILE *stream             = NULL;
+	int print_count          = 0;
+	int result               = 1;
+
+	libcerror_error_set(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 "Test error." );
+
+	if( error == NULL )
+	{
+		fprintf(
+		 stderr,
+		 "Unable to set error.\n" );
+
+		return( -1 );
+	}
+	stream = fmemopen(
+	          string,
+	          128,
+	          "w+");
+
+	print_count = libcerror_error_fprint(
+	               error,
+	               stream );
+
+	fclose(
+	 stream );
+
+	if( print_count != 12 )
+	{
+		result = 0;
+	}
+	else if( libcstring_narrow_string_compare(
+	          string,
+	          "Test error.",
+	          11 ) != 0 )
+	{
+		result = 0;
+	}
+	fprintf(
+	 stdout,
+	 "Testing fprint\t" );
+
+	if( result == 0 )
+	{
+		fprintf(
+		 stdout,
+		 "(FAIL)" );
+	}
+	else
+	{
+		fprintf(
+		 stdout,
+		 "(PASS)" );
+	}
+	fprintf(
+	 stdout,
+	 "\n" );
+
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		  &error );
+
+		if( error != NULL )
+		{
+			fprintf(
+			 stderr,
+			 "Unable to free error.\n" );
+
+			result = -1;
+		}
+	}
+	if( result != 1 )
+	{
+		return( 0 );
+	}
+	return( 1 );
+
+on_error:
+	return( -1 );
+}
+
 /* Tests the libcerror_error_sprint function
  * Returns 1 if successful, 0 if not or -1 on error
  */
@@ -307,6 +401,111 @@ int cerror_test_error_sprint(
 	fprintf(
 	 stdout,
 	 "Testing sprint\t" );
+
+	if( result == 0 )
+	{
+		fprintf(
+		 stdout,
+		 "(FAIL)" );
+	}
+	else
+	{
+		fprintf(
+		 stdout,
+		 "(PASS)" );
+	}
+	fprintf(
+	 stdout,
+	 "\n" );
+
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		  &error );
+
+		if( error != NULL )
+		{
+			fprintf(
+			 stderr,
+			 "Unable to free error.\n" );
+
+			result = -1;
+		}
+	}
+	if( result != 1 )
+	{
+		return( 0 );
+	}
+	return( 1 );
+}
+
+/* Tests the libcerror_error_backtrace_fprint function
+ * Returns 1 if successful, 0 if not or -1 on error
+ */
+int cerror_test_error_backtrace_fprint(
+     void )
+{
+	char string[ 128 ];
+
+	libcerror_error_t *error = NULL;
+	FILE *stream             = NULL;
+	int print_count          = 0;
+	int result               = 1;
+
+	libcerror_error_set(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 "Test error 1." );
+
+	if( error == NULL )
+	{
+		fprintf(
+		 stderr,
+		 "Unable to set error.\n" );
+
+		return( -1 );
+	}
+	libcerror_error_set(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 "Test error 2." );
+
+	if( error == NULL )
+	{
+		fprintf(
+		 stderr,
+		 "Unable to set error.\n" );
+
+		return( -1 );
+	}
+	stream = fmemopen(
+	          string,
+	          128,
+	          "w+");
+
+	print_count = libcerror_error_backtrace_fprint(
+	               error,
+	               stream );
+
+	fclose(
+	 stream );
+
+	if( print_count != 28 )
+	{
+		result = 0;
+	}
+	else if( libcstring_narrow_string_compare(
+	          string,
+	          "Test error 1.\nTest error 2.",
+	          27 ) != 0 )
+	{
+		result = 0;
+	}
+	fprintf(
+	 stdout,
+	 "Testing backtrace fprint\t" );
 
 	if( result == 0 )
 	{
@@ -476,9 +675,14 @@ int main( int argc, char * const argv[] CERROR_TEST_ATTRIBUTE_UNUSED )
 
 		return( EXIT_FAILURE );
 	}
-	/* TODO: add tests for:
-	 * libcerror_error_fprint
-	 */
+	if( cerror_test_error_fprint() != 1 )
+	{
+		fprintf(
+		 stderr,
+		 "Unable to test fprint.\n" );
+
+		return( EXIT_FAILURE );
+	}
 	if( cerror_test_error_sprint() != 1 )
 	{
 		fprintf(
@@ -487,9 +691,14 @@ int main( int argc, char * const argv[] CERROR_TEST_ATTRIBUTE_UNUSED )
 
 		return( EXIT_FAILURE );
 	}
-	/* TODO: add tests for:
-	 * libcerror_error_backtrace_fprint
-	 */
+	if( cerror_test_error_backtrace_fprint() != 1 )
+	{
+		fprintf(
+		 stderr,
+		 "Unable to test backtrace fprint.\n" );
+
+		return( EXIT_FAILURE );
+	}
 	if( cerror_test_error_backtrace_sprint() != 1 )
 	{
 		fprintf(
