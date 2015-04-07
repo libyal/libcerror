@@ -61,6 +61,9 @@ AX_LIBCSTRING_CHECK_ENABLE
 dnl Check for library function support
 AX_LIBCERROR_CHECK_LOCAL
 
+dnl Check for tests function support
+AC_CHECK_FUNCS([fmemopen])
+
 dnl Check if DLL support is needed
 AS_IF(
  [test "x$enable_shared" = xyes],
