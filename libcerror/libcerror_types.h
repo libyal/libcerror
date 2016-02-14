@@ -19,17 +19,17 @@
  * along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBCERROR_TYPES_H )
-#define _LIBCERROR_TYPES_H
+#if !defined( _LIBCERROR_INTERNAL_TYPES_H )
+#define _LIBCERROR_INTERNAL_TYPES_H
 
 #include <common.h>
 #include <types.h>
 
-/* Define HAVE_LOCAL_LIBCSTRING for local use of libcstring
- * The definitions in <libcstring/types.h> are copied here
- * for local use of libcstring
+/* Define HAVE_LOCAL_LIBCERROR for local use of libcerror
+ * The definitions in <libcerror/types.h> are copied here
+ * for local use of libcerror
  */
-#if defined( HAVE_LOCAL_LIBCSTRING )
+#if defined( HAVE_LOCAL_LIBCERROR )
 
 /* The following type definitions hide internal data structures
  */
@@ -45,7 +45,7 @@ typedef intptr_t libcerror_error_t;
 #endif
 */
 
-#endif
+#endif /* defined( HAVE_LOCAL_LIBCERROR ) */
 
-#endif
+#endif /* !defined( _LIBCERROR_INTERNAL_TYPES_H ) */
 
