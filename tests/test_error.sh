@@ -1,60 +1,79 @@
 #!/bin/bash
-#
 # Library error type testing script
 #
-# Copyright (C) 2008-2016, Joachim Metz <joachim.metz@gmail.com>
-#
-# Refer to AUTHORS for acknowledgements.
-#
-# This software is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This software is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with this software.  If not, see <http://www.gnu.org/licenses/>.
-#
+# Version: 20160326
 
 EXIT_SUCCESS=0;
 EXIT_FAILURE=1;
 EXIT_IGNORE=77;
 
-test_error()
-{ 
+TEST_PREFIX=`dirname ${PWD}`;
+TEST_PREFIX=`basename ${TEST_PREFIX} | sed 's/^lib\([^-]*\)/\1/'`;
+
+TEST_PROFILE="lib${TEST_PREFIX}";
+TEST_DESCRIPTION="error type";
+OPTION_SETS="";
+
+TEST_TOOL_DIRECTORY=".";
+TEST_TOOL="${TEST_PREFIX}_test_error";
+
+test_error_type()
+{
+	local TEST_EXECUTABLE=$1;
+
 	echo "Testing error type";
 
-	./${CERROR_TEST_ERROR};
+	run_test_with_arguments ${TEST_EXECUTABLE};
+	local RESULT=$?;
 
-	RESULT=$?;
-
+	if test ${RESULT} -ne 0;
+	then
+		echo "(FAIL)";
+	else
+		echo "(PASS)";
+	fi
 	echo "";
 
 	return ${RESULT};
 }
 
-CERROR_TEST_ERROR="cerror_test_error";
-
-if ! test -x ${CERROR_TEST_ERROR};
+if ! test -z ${SKIP_LIBRARY_TESTS};
 then
-	CERROR_TEST_ERROR="cerror_test_error.exe";
+	exit ${EXIT_IGNORE};
 fi
 
-if ! test -x ${CERROR_TEST_ERROR};
+TEST_EXECUTABLE="${TEST_TOOL_DIRECTORY}/${TEST_TOOL}";
+
+if ! test -x "${TEST_EXECUTABLE}";
 then
-	echo "Missing executable: ${CERROR_TEST_ERROR}";
+	TEST_EXECUTABLE="${TEST_TOOL_DIRECTORY}/${TEST_TOOL}.exe";
+fi
+
+if ! test -x "${TEST_EXECUTABLE}";
+then
+	echo "Missing test executable: ${TEST_EXECUTABLE}";
 
 	exit ${EXIT_FAILURE};
 fi
 
-if ! test_error;
+TEST_RUNNER="tests/test_runner.sh";
+
+if ! test -f "${TEST_RUNNER}";
 then
+	TEST_RUNNER="./test_runner.sh";
+fi
+
+if ! test -f "${TEST_RUNNER}";
+then
+	echo "Missing test runner: ${TEST_RUNNER}";
+
 	exit ${EXIT_FAILURE};
 fi
 
-exit ${EXIT_SUCCESS};
+source ${TEST_RUNNER};
+
+test_error_type "${TEST_EXECUTABLE}";
+RESULT=$?;
+
+exit ${RESULT};
 

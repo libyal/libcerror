@@ -8,7 +8,8 @@ TESTS = \
 	test_error.sh
 
 check_SCRIPTS = \
-	test_error.sh
+	test_error.sh \
+	test_runner.sh
 
 EXTRA_DIST = \
 	$(check_SCRIPTS)
