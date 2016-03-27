@@ -1,7 +1,7 @@
 #!/bin/bash
-# Library error type testing script
+# Library type testing script
 #
-# Version: 20160326
+# Version: 20160327
 
 EXIT_SUCCESS=0;
 EXIT_FAILURE=1;
@@ -9,19 +9,20 @@ EXIT_IGNORE=77;
 
 TEST_PREFIX=`dirname ${PWD}`;
 TEST_PREFIX=`basename ${TEST_PREFIX} | sed 's/^lib\([^-]*\)/\1/'`;
+TEST_TYPE="error";
 
 TEST_PROFILE="lib${TEST_PREFIX}";
-TEST_DESCRIPTION="error type";
+TEST_DESCRIPTION="${TEST_TYPE} type";
 OPTION_SETS="";
 
 TEST_TOOL_DIRECTORY=".";
-TEST_TOOL="${TEST_PREFIX}_test_error";
+TEST_TOOL="${TEST_PREFIX}_test_${TEST_TYPE}";
 
-test_error_type()
+test_type()
 {
 	local TEST_EXECUTABLE=$1;
 
-	echo "Testing error type:";
+	echo "Testing ${TEST_TYPE} type:";
 
 	run_test_with_arguments ${TEST_EXECUTABLE};
 	local RESULT=$?;
@@ -66,7 +67,7 @@ fi
 
 source ${TEST_RUNNER};
 
-test_error_type "${TEST_EXECUTABLE}";
+test_type "${TEST_EXECUTABLE}";
 RESULT=$?;
 
 exit ${RESULT};
