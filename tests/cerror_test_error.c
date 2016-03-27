@@ -40,6 +40,8 @@ int cerror_test_error_set(
 	libcerror_error_t *error = NULL;
 	int result               = 1;
 
+	/* Test libcerror_error_set once
+	 */
 	libcerror_error_set(
 	 &error,
 	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
@@ -56,7 +58,7 @@ int cerror_test_error_set(
 	}
 	fprintf(
 	 stdout,
-	 "Testing set\t" );
+	 "Testing: libcerror_error_set\t\t\t" );
 
 	if( result == 0 )
 	{
@@ -93,6 +95,8 @@ int cerror_test_error_set(
 	{
 		return( result );
 	}
+	/* Test libcerror_error_set multiple times
+	 */
 	libcerror_error_set(
 	 &error,
 	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
@@ -125,7 +129,7 @@ int cerror_test_error_set(
 	}
 	fprintf(
 	 stdout,
-	 "Testing set multiple times\t" );
+	 "Testing: libcerror_error_set\t\t\t" );
 
 	if( result == 0 )
 	{
@@ -194,7 +198,7 @@ int cerror_test_error_matches(
 
 	fprintf(
 	 stdout,
-	 "Testing matches\t" );
+	 "Testing: libcerror_error_matches\t\t" );
 
 	if( result == 0 )
 	{
@@ -223,7 +227,7 @@ int cerror_test_error_matches(
 
 	fprintf(
 	 stdout,
-	 "Testing not matches\t" );
+	 "Testing: libcerror_error_matches\t\t" );
 
 	if( result != 0 )
 	{
@@ -318,7 +322,7 @@ int cerror_test_error_fprint(
 	}
 	fprintf(
 	 stdout,
-	 "Testing fprint\t" );
+	 "Testing: libcerror_error_fprint\t\t\t" );
 
 	if( result == 0 )
 	{
@@ -423,7 +427,7 @@ int cerror_test_error_backtrace_fprint(
 	}
 	fprintf(
 	 stdout,
-	 "Testing backtrace fprint\t" );
+	 "Testing: libcerror_error_backtrace_fprint\t" );
 
 	if( result == 0 )
 	{
@@ -508,7 +512,7 @@ int cerror_test_error_sprint(
 	}
 	fprintf(
 	 stdout,
-	 "Testing sprint\t" );
+	 "Testing: libcerror_error_sprint\t\t\t" );
 
 	if( result == 0 )
 	{
@@ -605,7 +609,7 @@ int cerror_test_error_backtrace_sprint(
 	}
 	fprintf(
 	 stdout,
-	 "Testing backtrace sprint\t" );
+	 "Testing: libcerror_error_backtrace_sprint\t" );
 
 	if( result == 0 )
 	{
@@ -671,7 +675,7 @@ int cerror_test_system_set_error(
 	}
 	fprintf(
 	 stdout,
-	 "Testing set\t" );
+	 "Testing: libcerror_system_set_error\t\t" );
 
 	if( result == 0 )
 	{
