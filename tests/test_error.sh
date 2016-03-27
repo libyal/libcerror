@@ -21,17 +21,11 @@ test_error_type()
 {
 	local TEST_EXECUTABLE=$1;
 
-	echo "Testing error type";
+	echo "Testing error type:";
 
 	run_test_with_arguments ${TEST_EXECUTABLE};
 	local RESULT=$?;
 
-	if test ${RESULT} -ne 0;
-	then
-		echo "(FAIL)";
-	else
-		echo "(PASS)";
-	fi
 	echo "";
 
 	return ${RESULT};
