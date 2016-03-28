@@ -24,14 +24,27 @@
 
 #include <common.h>
 
-/* If Cygwin libtool DLL support is enabled set LIBCERROR_DLL_IMPORT
+/* Define HAVE_LOCAL_LIBCERROR for local use of libcerror
+ */
+#if defined( HAVE_LOCAL_LIBCERROR )
+
+#include <libcerror_definitions.h>
+#include <libcerror_error.h>
+#include <libcerror_system.h>
+#include <libcerror_types.h>
+
+#else
+
+/* If libtool DLL support is enabled set LIBCERROR_DLL_IMPORT
  * before including libcerror.h
  */
-#if defined( _WIN32 ) && defined( DLL_EXPORT )
+#if defined( _WIN32 ) && defined( DLL_IMPORT )
 #define LIBCERROR_DLL_IMPORT
 #endif
 
 #include <libcerror.h>
 
-#endif
+#endif /* defined( HAVE_LOCAL_LIBCERROR ) */
+
+#endif /* !defined( _CERROR_TEST_LIBCERROR_H ) */
 
