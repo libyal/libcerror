@@ -20,12 +20,11 @@
  */
 
 #include <common.h>
+#include <file_stream.h>
 
 #if defined( HAVE_STDLIB_H ) || defined( WINAPI )
 #include <stdlib.h>
 #endif
-
-#include <stdio.h>
 
 #include "cerror_test_libcerror.h"
 #include "cerror_test_libcstring.h"
@@ -34,7 +33,7 @@
 #include "cerror_test_unused.h"
 
 /* Tests the libcerror_error_set function
- * Returns 1 if successful, 0 if not or -1 on error
+ * Returns 1 if successful or 0 if not
  */
 int cerror_test_error_set(
      void )
@@ -218,10 +217,18 @@ int cerror_test_error_set(
 	 error );
 
 	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		  &error );
+	}
+	return( 0 );
 }
 
 /* Tests the libcerror_error_matches function
- * Returns 1 if successful, 0 if not or -1 on error
+ * Returns 1 if successful or 0 if not
  */
 int cerror_test_error_matches(
      void )
@@ -277,6 +284,14 @@ int cerror_test_error_matches(
 	 0 );
 
 	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		  &error );
+	}
+	return( 0 );
 }
 
 /* TODO: if fmemopen is missing use a temporary file instead? */
@@ -284,7 +299,7 @@ int cerror_test_error_matches(
 #if defined( HAVE_FMEMOPEN ) && ! defined( WINAPI )
 
 /* Tests the libcerror_error_fprint function
- * Returns 1 if successful, 0 if not or -1 on error
+ * Returns 1 if successful or 0 if not
  */
 int cerror_test_error_fprint(
      void )
@@ -361,10 +376,18 @@ int cerror_test_error_fprint(
 	 error );
 
 	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		  &error );
+	}
+	return( 0 );
 }
 
 /* Tests the libcerror_error_backtrace_fprint function
- * Returns 1 if successful, 0 if not or -1 on error
+ * Returns 1 if successful or 0 if not
  */
 int cerror_test_error_backtrace_fprint(
      void )
@@ -374,7 +397,7 @@ int cerror_test_error_backtrace_fprint(
 	libcerror_error_t *error = NULL;
 	FILE *stream             = NULL;
 	int print_count          = 0;
-	int result               = 1;
+	int result               = 0;
 
 	libcerror_error_set(
 	 &error,
@@ -451,12 +474,20 @@ int cerror_test_error_backtrace_fprint(
 	 error );
 
 	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		  &error );
+	}
+	return( 0 );
 }
 
 #endif /* defined( HAVE_FMEMOPEN ) && ! defined( WINAPI ) */
 
 /* Tests the libcerror_error_sprint function
- * Returns 1 if successful, 0 if not or -1 on error
+ * Returns 1 if successful or 0 if not
  */
 int cerror_test_error_sprint(
      void )
@@ -537,10 +568,18 @@ int cerror_test_error_sprint(
 	 error );
 
 	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		  &error );
+	}
+	return( 0 );
 }
 
 /* Tests the libcerror_error_backtrace_sprint function
- * Returns 1 if successful, 0 if not or -1 on error
+ * Returns 1 if successful or 0 if not
  */
 int cerror_test_error_backtrace_sprint(
      void )
@@ -631,10 +670,18 @@ int cerror_test_error_backtrace_sprint(
 	 error );
 
 	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		  &error );
+	}
+	return( 0 );
 }
 
 /* Tests the libcerror_system_set_error function
- * Returns 1 if successful, 0 if not or -1 on error
+ * Returns 1 if successful or 0 if not
  */
 int cerror_test_system_set_error(
      void )
@@ -824,6 +871,14 @@ int cerror_test_system_set_error(
 #endif /* defined( HAVE_CERROR_TEST_MALLOC ) */
 
 	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		  &error );
+	}
+	return( 0 );
 }
 
 /* The main program
@@ -853,6 +908,7 @@ int main( int argc, char * const argv[] CERROR_TEST_ATTRIBUTE_UNUSED )
 	 cerror_test_error_matches() )
 
 #if defined( HAVE_FMEMOPEN ) && !defined( WINAPI )
+
 	CERROR_TEST_RUN(
 	 "libcerror_error_fprint",
 	 cerror_test_error_fprint() )
@@ -876,5 +932,8 @@ int main( int argc, char * const argv[] CERROR_TEST_ATTRIBUTE_UNUSED )
 	 cerror_test_system_set_error() )
 
 	return( EXIT_SUCCESS );
+
+on_error:
+	return( EXIT_FAILURE );
 }
 

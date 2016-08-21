@@ -22,28 +22,30 @@
 #if !defined( _CERROR_TEST_MACROS_H )
 #define _CERROR_TEST_MACROS_H
 
+#include <file_stream.h>
+
 #define CERROR_TEST_ASSERT_EQUAL( name, value, expected_value ) \
 	if( value != expected_value ) { \
 		fprintf( stdout, "%s:%d %s != %d\n", __FILE__, __LINE__, name, expected_value ); \
-		return( 0 ); \
+		goto on_error; \
 	}
 
 #define CERROR_TEST_ASSERT_IS_NOT_NULL( name, value ) \
 	if( value == NULL ) { \
 		fprintf( stdout, "%s:%d %s == NULL\n", __FILE__, __LINE__, name ); \
-		return( 0 ); \
+		goto on_error; \
 	}
 
 #define CERROR_TEST_ASSERT_IS_NULL( name, value ) \
 	if( value != NULL ) { \
 		fprintf( stdout, "%s:%d %s != NULL\n", __FILE__, __LINE__, name ); \
-		return( 0 ); \
+		goto on_error; \
 	}
 
 #define CERROR_TEST_RUN( name, function ) \
 	if( function != 1 ) { \
 		fprintf( stdout, "Unable to run test: %s\n", name ); \
-		return( EXIT_FAILURE ); \
+		goto on_error; \
 	}
 
 #endif /* !defined( _CERROR_TEST_MACROS_H ) */

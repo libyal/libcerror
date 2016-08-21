@@ -20,7 +20,6 @@
  */
 
 #include <common.h>
-#include <file_stream.h>
 
 #if defined( HAVE_STDLIB_H ) || defined( WINAPI )
 #include <stdlib.h>
@@ -53,6 +52,9 @@ int cerror_test_get_version(
 	 0 );
 
 	return( 1 );
+
+on_error:
+	return( 0 );
 }
 
 /* The main program
@@ -75,5 +77,8 @@ int main(
          cerror_test_get_version() )
 
 	return( EXIT_SUCCESS );
+
+on_error:
+	return( EXIT_FAILURE );
 }
 
