@@ -62,7 +62,7 @@ dnl Check for library function support
 AX_LIBCERROR_CHECK_LOCAL
 
 dnl Check for test function support
-AC_CHECK_FUNCS([fmemopen])
+AX_TESTS_CHECK_LOCAL
 
 dnl Check if DLL support is needed
 AS_IF(

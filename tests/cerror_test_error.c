@@ -25,6 +25,10 @@
 #include <stdlib.h>
 #endif
 
+#if defined( HAVE_MALLOC_H ) && !defined( WINAPI )
+#include <malloc.h>
+#endif
+
 #include <stdio.h>
 
 #include "cerror_test_libcerror.h"
@@ -32,13 +36,36 @@
 #include "cerror_test_macros.h"
 #include "cerror_test_unused.h"
 
+#if defined( HAVE_MALLOC_H ) && !defined( WINAPI )
+
+void *cerror_test_malloc(
+       size_t size CERROR_TEST_ATTRIBUTE_UNUSED,
+       const void *caller CERROR_TEST_ATTRIBUTE_UNUSED )
+{
+	return( NULL );
+}
+
+void *cerror_test_realloc(
+       void *ptr CERROR_TEST_ATTRIBUTE_UNUSED,
+       size_t size CERROR_TEST_ATTRIBUTE_UNUSED,
+       const void *caller CERROR_TEST_ATTRIBUTE_UNUSED )
+{
+	return( NULL );
+}
+
+#endif
+
 /* Tests the libcerror_error_set function
  * Returns 1 if successful, 0 if not or -1 on error
  */
 int cerror_test_error_set(
      void )
 {
-	libcerror_error_t *error = NULL;
+	libcerror_error_t *error   = NULL;
+
+#if defined( HAVE_MALLOC_H ) && !defined( WINAPI )
+	intptr_t *orignal_function = NULL;
+#endif
 
 	/* Test libcerror_error_set
 	 */
@@ -130,6 +157,62 @@ int cerror_test_error_set(
 	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 NULL );
+
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+#if defined( HAVE_MALLOC_H ) && !defined( WINAPI )
+	/* Test libcerror_error_set with malloc failing
+	 */
+	orignal_function = (intptr_t *) __malloc_hook;
+
+	__malloc_hook = &cerror_test_malloc;
+
+	libcerror_error_set(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 "Test error." );
+
+	__malloc_hook = (void *(*)(size_t, const void *)) orignal_function;
+
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test libcerror_error_set with realloc failing
+	 */
+	libcerror_error_set(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 "Test error 1." );
+
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	orignal_function = (intptr_t *) __realloc_hook;
+
+	__realloc_hook = &cerror_test_realloc;
+
+	libcerror_error_set(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 "Test error 2." );
+
+	__realloc_hook = (void *(*)(void *, size_t, const void *)) orignal_function;
+
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+#endif /* defined( HAVE_MALLOC_H ) && !defined( WINAPI ) */
+
+	libcerror_error_free(
+	  &error );
 
 	CERROR_TEST_ASSERT_IS_NULL(
 	 "error",
@@ -557,8 +640,12 @@ int cerror_test_error_backtrace_sprint(
 int cerror_test_system_set_error(
      void )
 {
-	libcerror_error_t *error = NULL;
-	uint32_t error_code      = 0;
+	libcerror_error_t *error   = NULL;
+	uint32_t error_code        = 0;
+
+#if defined( HAVE_MALLOC_H ) && !defined( WINAPI )
+	intptr_t *orignal_function = NULL;
+#endif
 
 	/* Test libcerror_system_set_error
 	 */
@@ -661,6 +748,58 @@ int cerror_test_system_set_error(
 	CERROR_TEST_ASSERT_IS_NULL(
 	 "error",
 	 error );
+
+#if defined( HAVE_MALLOC_H ) && !defined( WINAPI )
+	/* Test libcerror_system_set_error with malloc failing
+	 */
+	orignal_function = (intptr_t *) __malloc_hook;
+
+	__malloc_hook = &cerror_test_malloc;
+
+	libcerror_system_set_error(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 error_code,
+	 "Test error." );
+
+	__malloc_hook = (void *(*)(size_t, const void *)) orignal_function;
+
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test libcerror_system_set_error with realloc failing
+	 */
+	libcerror_system_set_error(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 error_code,
+	 "Test error 1." );
+
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	orignal_function = (intptr_t *) __realloc_hook;
+
+	__realloc_hook = &cerror_test_realloc;
+
+	libcerror_system_set_error(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 error_code,
+	 "Test error 2." );
+
+	__realloc_hook = (void *(*)(void *, size_t, const void *)) orignal_function;
+
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+#endif /* defined( HAVE_MALLOC_H ) && !defined( WINAPI ) */
 
 	return( 1 );
 }
