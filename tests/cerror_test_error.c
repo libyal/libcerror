@@ -31,6 +31,37 @@
 #include "cerror_test_libcstring.h"
 #include "cerror_test_unused.h"
 
+
+#define CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL( error ) \
+	if( error == NULL ) { \
+		fprintf( stdout, "%s:%d error == NULL\n", __FILE__, __LINE__ ); \
+		return( 0 ); \
+	}
+
+#define CERROR_TEST_ASSERT_ERROR_IS_NULL( error ) \
+	if( error != NULL ) { \
+		fprintf( stdout, "%s:%d error != NULL\n", __FILE__, __LINE__ ); \
+		return( 0 ); \
+	}
+
+#define CERROR_TEST_ASSERT_RESULT_IS_ERROR( result ) \
+	if( result != -1 ) { \
+		fprintf( stdout, "%s:%d result != -1\n", __FILE__, __LINE__ ); \
+		return( 0 ); \
+	}
+
+#define CERROR_TEST_ASSERT_RESULT_IS_FAILURE( result ) \
+	if( result != 0 ) { \
+		fprintf( stdout, "%s:%d result != 0\n", __FILE__, __LINE__ ); \
+		return( 0 ); \
+	}
+
+#define CERROR_TEST_ASSERT_RESULT_IS_SUCCESS( result ) \
+	if( result != 1 ) { \
+		fprintf( stdout, "%s:%d result != 1\n", __FILE__, __LINE__ ); \
+		return( 0 ); \
+	}
+
 /* Tests the libcerror_error_set function
  * Returns 1 if successful, 0 if not or -1 on error
  */
@@ -38,9 +69,8 @@ int cerror_test_error_set(
      void )
 {
 	libcerror_error_t *error = NULL;
-	int result               = 1;
 
-	/* Test libcerror_error_set once
+	/* Test libcerror_error_set
 	 */
 	libcerror_error_set(
 	 &error,
@@ -48,53 +78,32 @@ int cerror_test_error_set(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error." );
 
-	if( error == NULL )
-	{
-		fprintf(
-		 stderr,
-		 "Unable to set error.\n" );
+	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	 error );
 
-		result = 0;
-	}
-	fprintf(
-	 stdout,
-	 "Testing: libcerror_error_set\t\t\t" );
+	libcerror_error_free(
+	  &error );
 
-	if( result == 0 )
-	{
-		fprintf(
-		 stdout,
-		 "(FAIL)" );
+	CERROR_TEST_ASSERT_ERROR_IS_NULL(
+	 error );
 
-	}
-	else
-	{
-		fprintf(
-		 stdout,
-		 "(PASS)" );
-	}
-	fprintf(
-	 stdout,
-	 "\n" );
+	/* Test libcerror_error_set with format string larger than LIBCERROR_MESSAGE_INCREMENT_SIZE
+	 */
+	libcerror_error_set(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 "The aim of science is not to open the door to infinite wisdom, but to set a limit to infinite error." );
 
-	if( error != NULL )
-	{
-		libcerror_error_free(
-		  &error );
+	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	 error );
 
-		if( error != NULL )
-		{
-			fprintf(
-			 stderr,
-			 "Unable to free error.\n" );
+	libcerror_error_free(
+	  &error );
 
-			result = -1;
-		}
-	}
-	if( result != 1 )
-	{
-		return( result );
-	}
+	CERROR_TEST_ASSERT_ERROR_IS_NULL(
+	 error );
+
 	/* Test libcerror_error_set multiple times
 	 */
 	libcerror_error_set(
@@ -103,68 +112,50 @@ int cerror_test_error_set(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error 1." );
 
-	if( error != NULL )
-	{
-		libcerror_error_set(
-		 &error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GENERIC,
-		 "Test error 2." );
-	}
-	if( error != NULL )
-	{
-		libcerror_error_set(
-		 &error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GENERIC,
-		 "Test error 3." );
-	}
-	if( error == NULL )
-	{
-		fprintf(
-		 stderr,
-		 "Unable to set error.\n" );
+	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	 error );
 
-		result = 0;
-	}
-	fprintf(
-	 stdout,
-	 "Testing: libcerror_error_set\t\t\t" );
+	libcerror_error_set(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 "Test error 2." );
 
-	if( result == 0 )
-	{
-		fprintf(
-		 stdout,
-		 "(FAIL)" );
-	}
-	else
-	{
-		fprintf(
-		 stdout,
-		 "(PASS)" );
-	}
-	fprintf(
-	 stdout,
-	 "\n" );
+	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	 error );
 
-	if( error != NULL )
-	{
-		libcerror_error_free(
-		  &error );
+	libcerror_error_set(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 "Test error 3." );
 
-		if( error != NULL )
-		{
-			fprintf(
-			 stderr,
-			 "Unable to free error.\n" );
+	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	 error );
 
-			result = -1;
-		}
-	}
-	if( result != 1 )
-	{
-		return( result );
-	}
+	libcerror_error_free(
+	  &error );
+
+	CERROR_TEST_ASSERT_ERROR_IS_NULL(
+	 error );
+
+	/* Test error cases
+	 */
+	libcerror_error_set(
+	 NULL,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 "Test error." );
+
+	libcerror_error_set(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 NULL );
+
+	CERROR_TEST_ASSERT_ERROR_IS_NULL(
+	 error );
+
 	return( 1 );
 }
 
@@ -175,7 +166,7 @@ int cerror_test_error_matches(
      void )
 {
 	libcerror_error_t *error = NULL;
-	int result               = 1;
+	int result               = 0;
 
 	libcerror_error_set(
 	 &error,
@@ -183,86 +174,39 @@ int cerror_test_error_matches(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error." );
 
-	if( error == NULL )
-	{
-		fprintf(
-		 stderr,
-		 "Unable to set error.\n" );
+	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	 error );
 
-		return( -1 );
-	}
 	result = libcerror_error_matches(
 	          error,
 	          LIBCERROR_ERROR_DOMAIN_RUNTIME,
 	          LIBCERROR_RUNTIME_ERROR_GENERIC );
 
-	fprintf(
-	 stdout,
-	 "Testing: libcerror_error_matches\t\t" );
+	CERROR_TEST_ASSERT_RESULT_IS_SUCCESS(
+	 result );
 
-	if( result == 0 )
-	{
-		fprintf(
-		 stdout,
-		 "(FAIL)" );
-	}
-	else
-	{
-		fprintf(
-		 stdout,
-		 "(PASS)" );
-	}
-	fprintf(
-	 stdout,
-	 "\n" );
-
-	if( result != 1 )
-	{
-		return( 0 );
-	}
 	result = libcerror_error_matches(
 	          error,
 	          LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 	          LIBCERROR_ARGUMENT_ERROR_GENERIC );
 
-	fprintf(
-	 stdout,
-	 "Testing: libcerror_error_matches\t\t" );
+	CERROR_TEST_ASSERT_RESULT_IS_FAILURE(
+	 result );
 
-	if( result != 0 )
-	{
-		fprintf(
-		 stdout,
-		 "(FAIL)" );
-	}
-	else
-	{
-		fprintf(
-		 stdout,
-		 "(PASS)" );
-	}
-	fprintf(
-	 stdout,
-	 "\n" );
+	libcerror_error_free(
+	  &error );
 
-	if( error != NULL )
-	{
-		libcerror_error_free(
-		  &error );
+	CERROR_TEST_ASSERT_ERROR_IS_NULL(
+	 error );
 
-		if( error != NULL )
-		{
-			fprintf(
-			 stderr,
-			 "Unable to free error.\n" );
+	result = libcerror_error_matches(
+	          NULL,
+	          LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+	          LIBCERROR_ARGUMENT_ERROR_GENERIC );
 
-			result = -1;
-		}
-	}
-	if( result != 0 )
-	{
-		return( 0 );
-	}
+	CERROR_TEST_ASSERT_RESULT_IS_FAILURE(
+	 result );
+
 	return( 1 );
 }
 
