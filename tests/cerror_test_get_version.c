@@ -28,6 +28,7 @@
 
 #include "cerror_test_libcerror.h"
 #include "cerror_test_libcstring.h"
+#include "cerror_test_macros.h"
 #include "cerror_test_unused.h"
 
 /* Tests retrieving the library version
@@ -46,10 +47,11 @@ int cerror_test_get_version(
 	          LIBCERROR_VERSION_STRING,
 	          9 );
 
-	if( result != 0 )
-	{
-		return( 0 );
-	}
+	CERROR_TEST_ASSERT_EQUAL(
+	 "result",
+	 result,
+	 0 );
+
 	return( 1 );
 }
 
@@ -68,10 +70,10 @@ int main(
 	CERROR_TEST_UNREFERENCED_PARAMETER( argc )
 	CERROR_TEST_UNREFERENCED_PARAMETER( argv )
 
-	if( cerror_test_get_version() != 1 )
-	{
-		return( EXIT_FAILURE );
-	}
+        CERROR_TEST_RUN(
+         "libcerror_get_version",
+         cerror_test_get_version() )
+
 	return( EXIT_SUCCESS );
 }
 

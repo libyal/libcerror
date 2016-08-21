@@ -29,26 +29,8 @@
 
 #include "cerror_test_libcerror.h"
 #include "cerror_test_libcstring.h"
+#include "cerror_test_macros.h"
 #include "cerror_test_unused.h"
-
-
-#define CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL( error ) \
-	if( error == NULL ) { \
-		fprintf( stdout, "%s:%d error == NULL\n", __FILE__, __LINE__ ); \
-		return( 0 ); \
-	}
-
-#define CERROR_TEST_ASSERT_ERROR_IS_NULL( error ) \
-	if( error != NULL ) { \
-		fprintf( stdout, "%s:%d error != NULL\n", __FILE__, __LINE__ ); \
-		return( 0 ); \
-	}
-
-#define CERROR_TEST_ASSERT_EQUAL( name, value, expected_value ) \
-	if( value != expected_value ) { \
-		fprintf( stdout, "%s:%d %s != %d\n", __FILE__, __LINE__, name, expected_value ); \
-		return( 0 ); \
-	}
 
 /* Tests the libcerror_error_set function
  * Returns 1 if successful, 0 if not or -1 on error
@@ -66,13 +48,15 @@ int cerror_test_error_set(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error." );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
 	 error );
 
 	libcerror_error_free(
 	  &error );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NULL(
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error",
 	 error );
 
 	/* Test libcerror_error_set with format string larger than LIBCERROR_MESSAGE_INCREMENT_SIZE
@@ -83,13 +67,15 @@ int cerror_test_error_set(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "The aim of science is not to open the door to infinite wisdom, but to set a limit to infinite error." );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
 	 error );
 
 	libcerror_error_free(
 	  &error );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NULL(
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error",
 	 error );
 
 	/* Test libcerror_error_set multiple times
@@ -100,7 +86,8 @@ int cerror_test_error_set(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error 1." );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
 	 error );
 
 	libcerror_error_set(
@@ -109,7 +96,8 @@ int cerror_test_error_set(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error 2." );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
 	 error );
 
 	libcerror_error_set(
@@ -118,13 +106,15 @@ int cerror_test_error_set(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error 3." );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
 	 error );
 
 	libcerror_error_free(
 	  &error );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NULL(
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error",
 	 error );
 
 	/* Test error cases
@@ -141,7 +131,8 @@ int cerror_test_error_set(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 NULL );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NULL(
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error",
 	 error );
 
 	return( 1 );
@@ -162,7 +153,8 @@ int cerror_test_error_matches(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error." );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
 	 error );
 
 	result = libcerror_error_matches(
@@ -188,7 +180,8 @@ int cerror_test_error_matches(
 	libcerror_error_free(
 	  &error );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NULL(
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error",
 	 error );
 
 	result = libcerror_error_matches(
@@ -227,7 +220,8 @@ int cerror_test_error_fprint(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error." );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
 	 error );
 
 	stream = fmemopen(
@@ -280,7 +274,8 @@ int cerror_test_error_fprint(
 	libcerror_error_free(
 	  &error );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NULL(
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error",
 	 error );
 
 	return( 1 );
@@ -305,7 +300,8 @@ int cerror_test_error_backtrace_fprint(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error 1." );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
 	 error );
 
 	libcerror_error_set(
@@ -314,7 +310,8 @@ int cerror_test_error_backtrace_fprint(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error 2." );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
 	 error );
 
 	stream = fmemopen(
@@ -367,7 +364,8 @@ int cerror_test_error_backtrace_fprint(
 	libcerror_error_free(
 	  &error );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NULL(
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error",
 	 error );
 
 	return( 1 );
@@ -393,7 +391,8 @@ int cerror_test_error_sprint(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error." );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
 	 error );
 
 	print_count = libcerror_error_sprint(
@@ -451,7 +450,8 @@ int cerror_test_error_sprint(
 	libcerror_error_free(
 	  &error );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NULL(
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error",
 	 error );
 
 	return( 1 );
@@ -475,7 +475,8 @@ int cerror_test_error_backtrace_sprint(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error 1." );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
 	 error );
 
 	libcerror_error_set(
@@ -484,7 +485,8 @@ int cerror_test_error_backtrace_sprint(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error 2." );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
 	 error );
 
 	print_count = libcerror_error_backtrace_sprint(
@@ -542,7 +544,8 @@ int cerror_test_error_backtrace_sprint(
 	libcerror_error_free(
 	  &error );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NULL(
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error",
 	 error );
 
 	return( 1 );
@@ -566,13 +569,15 @@ int cerror_test_system_set_error(
 	 error_code,
 	 "Test system error." );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
 	 error );
 
 	libcerror_error_free(
 	  &error );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NULL(
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error",
 	 error );
 
 	/* Test libcerror_system_set_error with format string larger than LIBCERROR_MESSAGE_INCREMENT_SIZE
@@ -584,13 +589,15 @@ int cerror_test_system_set_error(
 	 error_code,
 	 "The aim of science is not to open the door to infinite wisdom, but to set a limit to infinite error." );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
 	 error );
 
 	libcerror_error_free(
 	  &error );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NULL(
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error",
 	 error );
 
 	/* Test libcerror_system_set_error multiple times
@@ -602,7 +609,8 @@ int cerror_test_system_set_error(
 	 error_code,
 	 "Test error 1." );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
 	 error );
 
 	libcerror_system_set_error(
@@ -612,7 +620,8 @@ int cerror_test_system_set_error(
 	 error_code,
 	 "Test error 2." );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
 	 error );
 
 	libcerror_system_set_error(
@@ -622,13 +631,15 @@ int cerror_test_system_set_error(
 	 error_code,
 	 "Test error 3." );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NOT_NULL(
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
 	 error );
 
 	libcerror_error_free(
 	  &error );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NULL(
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error",
 	 error );
 
 	/* Test error cases
@@ -647,7 +658,8 @@ int cerror_test_system_set_error(
 	 error_code,
 	 NULL );
 
-	CERROR_TEST_ASSERT_ERROR_IS_NULL(
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error",
 	 error );
 
 	return( 1 );
@@ -671,65 +683,37 @@ int main( int argc, char * const argv[] CERROR_TEST_ATTRIBUTE_UNUSED )
 
 		return( EXIT_FAILURE );
 	}
-	if( cerror_test_error_set() != 1 )
-	{
-		fprintf(
-		 stderr,
-		 "Unable to test: libcerror_error_set.\n" );
+	CERROR_TEST_RUN(
+	 "libcerror_error_set",
+	 cerror_test_error_set() )
 
-		return( EXIT_FAILURE );
-	}
-	if( cerror_test_error_matches() != 1 )
-	{
-		fprintf(
-		 stderr,
-		 "Unable to test: libcerror_error_matches.\n" );
+	CERROR_TEST_RUN(
+	 "libcerror_error_matches",
+	 cerror_test_error_matches() )
 
-		return( EXIT_FAILURE );
-	}
 #if defined( HAVE_FMEMOPEN ) && !defined( WINAPI )
-	if( cerror_test_error_fprint() != 1 )
-	{
-		fprintf(
-		 stderr,
-		 "Unable to test: libcerror_error_fprint.\n" );
+	CERROR_TEST_RUN(
+	 "libcerror_error_fprint",
+	 cerror_test_error_fprint() )
 
-		return( EXIT_FAILURE );
-	}
-	if( cerror_test_error_backtrace_fprint() != 1 )
-	{
-		fprintf(
-		 stderr,
-		 "Unable to test: libcerror_error_backtrace_fprint.\n" );
+	CERROR_TEST_RUN(
+	 "libcerror_error_backtrace_fprint",
+	 cerror_test_error_backtrace_fprint() )
 
-		return( EXIT_FAILURE );
-	}
 #endif /* defined( HAVE_FMEMOPEN ) && !defined( WINAPI ) */
 
-	if( cerror_test_error_sprint() != 1 )
-	{
-		fprintf(
-		 stderr,
-		 "Unable to test: libcerror_error_sprint.\n" );
+	CERROR_TEST_RUN(
+	 "libcerror_error_sprint",
+	 cerror_test_error_sprint() )
 
-		return( EXIT_FAILURE );
-	}
-	if( cerror_test_error_backtrace_sprint() != 1 )
-	{
-		fprintf(
-		 stderr,
-		 "Unable to test: libcerror_error_backtrace_sprint.\n" );
+	CERROR_TEST_RUN(
+	 "libcerror_error_backtrace_sprint",
+	 cerror_test_error_backtrace_sprint() )
 
-		return( EXIT_FAILURE );
-	}
-	if( cerror_test_system_set_error() != 1 )
-	{
-		fprintf(
-		 stderr,
-		 "Unable to test: libcerror_system_set_error.\n" );
+	CERROR_TEST_RUN(
+	 "libcerror_system_set_error",
+	 cerror_test_system_set_error() )
 
-		return( EXIT_FAILURE );
-	}
 	return( EXIT_SUCCESS );
 }
 

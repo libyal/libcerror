@@ -194,6 +194,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tests\cerror_test_macros.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tests\cerror_test_unused.h"
 				>
 			</File>
