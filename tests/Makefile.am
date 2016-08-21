@@ -25,6 +25,7 @@ cerror_test_error_SOURCES = \
 	cerror_test_libcerror.h \
 	cerror_test_libcstring.h \
 	cerror_test_macros.h \
+	cerror_test_malloc.c cerror_test_malloc.h \
 	cerror_test_unused.h
 
 cerror_test_error_LDADD = \

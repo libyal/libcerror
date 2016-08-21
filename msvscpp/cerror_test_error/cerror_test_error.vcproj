@@ -179,6 +179,10 @@
 				RelativePath="..\..\tests\cerror_test_error.c"
 				>
 			</File>
+			<File
+				RelativePath="..\..\tests\cerror_test_malloc.c"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -195,6 +199,10 @@
 			</File>
 			<File
 				RelativePath="..\..\tests\cerror_test_macros.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tests\cerror_test_malloc.h"
 				>
 			</File>
 			<File

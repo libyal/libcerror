@@ -25,35 +25,13 @@
 #include <stdlib.h>
 #endif
 
-#if defined( HAVE_MALLOC_H ) && !defined( WINAPI )
-#include <malloc.h>
-#endif
-
 #include <stdio.h>
 
 #include "cerror_test_libcerror.h"
 #include "cerror_test_libcstring.h"
 #include "cerror_test_macros.h"
+#include "cerror_test_malloc.h"
 #include "cerror_test_unused.h"
-
-#if defined( HAVE_MALLOC_H ) && !defined( WINAPI )
-
-void *cerror_test_malloc(
-       size_t size CERROR_TEST_ATTRIBUTE_UNUSED,
-       const void *caller CERROR_TEST_ATTRIBUTE_UNUSED )
-{
-	return( NULL );
-}
-
-void *cerror_test_realloc(
-       void *ptr CERROR_TEST_ATTRIBUTE_UNUSED,
-       size_t size CERROR_TEST_ATTRIBUTE_UNUSED,
-       const void *caller CERROR_TEST_ATTRIBUTE_UNUSED )
-{
-	return( NULL );
-}
-
-#endif
 
 /* Tests the libcerror_error_set function
  * Returns 1 if successful, 0 if not or -1 on error
@@ -61,11 +39,7 @@ void *cerror_test_realloc(
 int cerror_test_error_set(
      void )
 {
-	libcerror_error_t *error   = NULL;
-
-#if defined( HAVE_MALLOC_H ) && !defined( WINAPI )
-	intptr_t *orignal_function = NULL;
-#endif
+	libcerror_error_t *error = NULL;
 
 	/* Test libcerror_error_set
 	 */
@@ -162,12 +136,11 @@ int cerror_test_error_set(
 	 "error",
 	 error );
 
-#if defined( HAVE_MALLOC_H ) && !defined( WINAPI )
+#if defined( HAVE_CERROR_TEST_MALLOC )
+
 	/* Test libcerror_error_set with malloc failing
 	 */
-	orignal_function = (intptr_t *) __malloc_hook;
-
-	__malloc_hook = &cerror_test_malloc;
+	cerror_test_malloc_attempts_before_fail = 0;
 
 	libcerror_error_set(
 	 &error,
@@ -175,7 +148,7 @@ int cerror_test_error_set(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error." );
 
-	__malloc_hook = (void *(*)(size_t, const void *)) orignal_function;
+	cerror_test_malloc_attempts_before_fail = -1;
 
 	CERROR_TEST_ASSERT_IS_NULL(
 	 "error",
@@ -193,9 +166,7 @@ int cerror_test_error_set(
 	 "error",
 	 error );
 
-	orignal_function = (intptr_t *) __realloc_hook;
-
-	__realloc_hook = &cerror_test_realloc;
+	cerror_test_realloc_attempts_before_fail = 0;
 
 	libcerror_error_set(
 	 &error,
@@ -203,13 +174,41 @@ int cerror_test_error_set(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error 2." );
 
-	__realloc_hook = (void *(*)(void *, size_t, const void *)) orignal_function;
+	cerror_test_realloc_attempts_before_fail = -1;
 
 	CERROR_TEST_ASSERT_IS_NOT_NULL(
 	 "error",
 	 error );
 
-#endif /* defined( HAVE_MALLOC_H ) && !defined( WINAPI ) */
+	cerror_test_realloc_attempts_before_fail = 1;
+
+	libcerror_error_set(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 "Test error 3." );
+
+	cerror_test_realloc_attempts_before_fail = -1;
+
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	cerror_test_realloc_attempts_before_fail = 2;
+
+	libcerror_error_set(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 "Test error 4." );
+
+	cerror_test_realloc_attempts_before_fail = -1;
+
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+#endif /* defined( HAVE_CERROR_TEST_MALLOC ) */
 
 	libcerror_error_free(
 	  &error );
@@ -640,12 +639,8 @@ int cerror_test_error_backtrace_sprint(
 int cerror_test_system_set_error(
      void )
 {
-	libcerror_error_t *error   = NULL;
-	uint32_t error_code        = 0;
-
-#if defined( HAVE_MALLOC_H ) && !defined( WINAPI )
-	intptr_t *orignal_function = NULL;
-#endif
+	libcerror_error_t *error = NULL;
+	uint32_t error_code      = 0;
 
 	/* Test libcerror_system_set_error
 	 */
@@ -749,12 +744,11 @@ int cerror_test_system_set_error(
 	 "error",
 	 error );
 
-#if defined( HAVE_MALLOC_H ) && !defined( WINAPI )
+#if defined( HAVE_CERROR_TEST_MALLOC )
+
 	/* Test libcerror_system_set_error with malloc failing
 	 */
-	orignal_function = (intptr_t *) __malloc_hook;
-
-	__malloc_hook = &cerror_test_malloc;
+	cerror_test_malloc_attempts_before_fail = 0;
 
 	libcerror_system_set_error(
 	 &error,
@@ -763,7 +757,7 @@ int cerror_test_system_set_error(
 	 error_code,
 	 "Test error." );
 
-	__malloc_hook = (void *(*)(size_t, const void *)) orignal_function;
+	cerror_test_malloc_attempts_before_fail = -1;
 
 	CERROR_TEST_ASSERT_IS_NULL(
 	 "error",
@@ -782,9 +776,7 @@ int cerror_test_system_set_error(
 	 "error",
 	 error );
 
-	orignal_function = (intptr_t *) __realloc_hook;
-
-	__realloc_hook = &cerror_test_realloc;
+	cerror_test_realloc_attempts_before_fail = 0;
 
 	libcerror_system_set_error(
 	 &error,
@@ -793,13 +785,43 @@ int cerror_test_system_set_error(
 	 error_code,
 	 "Test error 2." );
 
-	__realloc_hook = (void *(*)(void *, size_t, const void *)) orignal_function;
+	cerror_test_realloc_attempts_before_fail = -1;
 
 	CERROR_TEST_ASSERT_IS_NOT_NULL(
 	 "error",
 	 error );
 
-#endif /* defined( HAVE_MALLOC_H ) && !defined( WINAPI ) */
+	cerror_test_realloc_attempts_before_fail = 1;
+
+	libcerror_system_set_error(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 error_code,
+	 "Test error 3." );
+
+	cerror_test_realloc_attempts_before_fail = -1;
+
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	cerror_test_realloc_attempts_before_fail = 2;
+
+	libcerror_system_set_error(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 error_code,
+	 "Test error 4." );
+
+	cerror_test_realloc_attempts_before_fail = -1;
+
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+#endif /* defined( HAVE_CERROR_TEST_MALLOC ) */
 
 	return( 1 );
 }

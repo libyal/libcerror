@@ -128,5 +128,5 @@ void libcerror_system_set_error(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBCERROR_H ) */
 
