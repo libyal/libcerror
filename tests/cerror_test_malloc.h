@@ -22,6 +22,8 @@
 #if !defined( _CERROR_TEST_MALLOC_H )
 #define _CERROR_TEST_MALLOC_H
 
+#include <common.h>
+
 #if defined( __cplusplus )
 extern "C" {
 #endif
