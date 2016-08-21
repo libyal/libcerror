@@ -1,5 +1,5 @@
 /*
- * Library error type testing program
+ * Memory allocation functions for testing
  *
  * Copyright (C) 2008-2016, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -25,13 +25,13 @@
 #include <stdlib.h>
 #endif
 
-#if defined( HAVE_DLFCN_H ) && !defined( WINAPI )
+#if defined( HAVE_GNU_DL_DLSYM ) && !defined( WINAPI )
 #define __USE_GNU
 #include <dlfcn.h>
 #undef __USE_GNU
 #endif
 
-#if defined( HAVE_DL_DLSYM ) && !defined( WINAPI )
+#if defined( HAVE_GNU_DL_DLSYM ) && !defined( WINAPI )
 
 static void *(*cerror_test_real_malloc)(size_t)             = NULL;
 static void *(*cerror_test_real_realloc)(void *ptr, size_t) = NULL;
@@ -91,5 +91,5 @@ void *realloc(
 	  size ) );
 }
 
-#endif /* defined( HAVE_DL_DLSYM ) && !defined( WINAPI ) */
+#endif /* defined( HAVE_GNU_DL_DLSYM ) && !defined( WINAPI ) */
 

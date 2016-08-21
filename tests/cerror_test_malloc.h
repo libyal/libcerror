@@ -28,7 +28,7 @@
 extern "C" {
 #endif
 
-#if defined( HAVE_DL_DLSYM ) && !defined( WINAPI )
+#if defined( HAVE_GNU_DL_DLSYM ) && !defined( WINAPI )
 
 #define HAVE_CERROR_TEST_MALLOC		1
 
@@ -36,7 +36,7 @@ extern int cerror_test_malloc_attempts_before_fail;
 
 extern int cerror_test_realloc_attempts_before_fail;
 
-#endif /* defined( HAVE_DL_DLSYM ) && !defined( WINAPI ) */
+#endif /* defined( HAVE_GNU_DL_DLSYM ) && !defined( WINAPI ) */
 
 #if defined( __cplusplus )
 }

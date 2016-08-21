@@ -13,11 +13,11 @@ AC_DEFUN([AX_TESTS_CHECK_LOCAL],
   dlsym)
 
   AS_IF(
-   [test "x$ac_cv_lib_dl_dlsym" = xyes],
+   [test "x$lt_cv_prog_gnu_ld" = xyes && test "x$ac_cv_lib_dl_dlsym" = xyes],
    [AC_DEFINE(
-    [HAVE_DL_DLSYM],
+    [HAVE_GNU_DL_DLSYM],
     [1],
-    [Define to 1 if dlsym funtion is available in dl.])
+    [Define to 1 if dlsym funtion is available in GNU dl.])
    ])
  ])
 
