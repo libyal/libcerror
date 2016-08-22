@@ -40,6 +40,7 @@ int cerror_test_malloc_attempts_before_fail                 = -1;
 int cerror_test_realloc_attempts_before_fail                = -1;
 
 /* Custom malloc for testing memory error cases
+ * Note this function might fail if compiled with optimation
  * Returns a pointer to newly allocated data or NULL
  */
 void *malloc(
@@ -48,14 +49,16 @@ void *malloc(
 	if( cerror_test_real_malloc == NULL )
 	{
 		cerror_test_real_malloc = dlsym(
-		 RTLD_NEXT,
-		 "malloc" );
+		                           RTLD_NEXT,
+		                           "malloc" );
 	}
 	if( cerror_test_malloc_attempts_before_fail == 0 )
 	{
+		cerror_test_malloc_attempts_before_fail = -1;
+
 		return( NULL );
 	}
-	if( cerror_test_malloc_attempts_before_fail > 0 )
+	else if( cerror_test_malloc_attempts_before_fail > 0 )
 	{
 		cerror_test_malloc_attempts_before_fail--;
 	}
@@ -65,6 +68,7 @@ void *malloc(
 }
 
 /* Custom realloc for testing memory error cases
+ * Note this function might fail if compiled with optimation
  * Returns a pointer to reallocated data or NULL
  */
 void *realloc(
@@ -74,11 +78,13 @@ void *realloc(
 	if( cerror_test_real_realloc == NULL )
 	{
 		cerror_test_real_realloc = dlsym(
-		 RTLD_NEXT,
-		 "realloc" );
+		                            RTLD_NEXT,
+		                            "realloc" );
 	}
-	if( cerror_test_realloc_attempts_before_fail == 0 )
+	else if( cerror_test_realloc_attempts_before_fail == 0 )
 	{
+		cerror_test_realloc_attempts_before_fail = -1;
+
 		return( NULL );
 	}
 	if( cerror_test_realloc_attempts_before_fail > 0 )

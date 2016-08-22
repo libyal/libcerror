@@ -147,12 +147,16 @@ int cerror_test_error_set(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error." );
 
-	cerror_test_malloc_attempts_before_fail = -1;
-
-	CERROR_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
+	if( cerror_test_malloc_attempts_before_fail != -1 )
+	{
+		cerror_test_malloc_attempts_before_fail = -1;
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+	}
 	/* Test libcerror_error_set with realloc failing
 	 */
 	libcerror_error_set(
@@ -173,12 +177,16 @@ int cerror_test_error_set(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error 2." );
 
-	cerror_test_realloc_attempts_before_fail = -1;
-
-	CERROR_TEST_ASSERT_IS_NOT_NULL(
-	 "error",
-	 error );
-
+	if( cerror_test_realloc_attempts_before_fail != -1 )
+	{
+		cerror_test_realloc_attempts_before_fail = -1;
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+	}
 	cerror_test_realloc_attempts_before_fail = 1;
 
 	libcerror_error_set(
@@ -187,12 +195,16 @@ int cerror_test_error_set(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error 3." );
 
-	cerror_test_realloc_attempts_before_fail = -1;
-
-	CERROR_TEST_ASSERT_IS_NOT_NULL(
-	 "error",
-	 error );
-
+	if( cerror_test_realloc_attempts_before_fail != -1 )
+	{
+		cerror_test_realloc_attempts_before_fail = -1;
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+	}
 	cerror_test_realloc_attempts_before_fail = 2;
 
 	libcerror_error_set(
@@ -201,12 +213,16 @@ int cerror_test_error_set(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error 4." );
 
-	cerror_test_realloc_attempts_before_fail = -1;
-
-	CERROR_TEST_ASSERT_IS_NOT_NULL(
-	 "error",
-	 error );
-
+	if( cerror_test_realloc_attempts_before_fail != -1 )
+	{
+		cerror_test_realloc_attempts_before_fail = -1;
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+	}
 #endif /* defined( HAVE_CERROR_TEST_MALLOC ) */
 
 	libcerror_error_free(
@@ -804,12 +820,16 @@ int cerror_test_system_set_error(
 	 error_code,
 	 "Test error." );
 
-	cerror_test_malloc_attempts_before_fail = -1;
-
-	CERROR_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
+	if( cerror_test_malloc_attempts_before_fail != -1 )
+	{
+		cerror_test_malloc_attempts_before_fail = -1;
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+	}
 	/* Test libcerror_system_set_error with realloc failing
 	 */
 	libcerror_system_set_error(
@@ -832,12 +852,16 @@ int cerror_test_system_set_error(
 	 error_code,
 	 "Test error 2." );
 
-	cerror_test_realloc_attempts_before_fail = -1;
-
-	CERROR_TEST_ASSERT_IS_NOT_NULL(
-	 "error",
-	 error );
-
+	if( cerror_test_realloc_attempts_before_fail != -1 )
+	{
+		cerror_test_realloc_attempts_before_fail = -1;
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+	}
 	cerror_test_realloc_attempts_before_fail = 1;
 
 	libcerror_system_set_error(
@@ -847,12 +871,16 @@ int cerror_test_system_set_error(
 	 error_code,
 	 "Test error 3." );
 
-	cerror_test_realloc_attempts_before_fail = -1;
-
-	CERROR_TEST_ASSERT_IS_NOT_NULL(
-	 "error",
-	 error );
-
+	if( cerror_test_realloc_attempts_before_fail != -1 )
+	{
+		cerror_test_realloc_attempts_before_fail = -1;
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+	}
 	cerror_test_realloc_attempts_before_fail = 2;
 
 	libcerror_system_set_error(
@@ -862,12 +890,16 @@ int cerror_test_system_set_error(
 	 error_code,
 	 "Test error 4." );
 
-	cerror_test_realloc_attempts_before_fail = -1;
-
-	CERROR_TEST_ASSERT_IS_NOT_NULL(
-	 "error",
-	 error );
-
+	if( cerror_test_realloc_attempts_before_fail != -1 )
+	{
+		cerror_test_realloc_attempts_before_fail = -1;
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+	}
 #endif /* defined( HAVE_CERROR_TEST_MALLOC ) */
 
 	return( 1 );
