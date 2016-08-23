@@ -135,7 +135,7 @@ int cerror_test_error_set(
 	 "error",
 	 error );
 
-#if defined( HAVE_CERROR_TEST_MALLOC )
+#if defined( HAVE_CERROR_TEST_MEMORY )
 
 	/* Test libcerror_error_set with malloc failing
 	 */
@@ -223,7 +223,7 @@ int cerror_test_error_set(
 		 "error",
 		 error );
 	}
-#endif /* defined( HAVE_CERROR_TEST_MALLOC ) */
+#endif /* defined( HAVE_CERROR_TEST_MEMORY ) */
 
 	libcerror_error_free(
 	  &error );
@@ -807,7 +807,7 @@ int cerror_test_system_set_error(
 	 "error",
 	 error );
 
-#if defined( HAVE_CERROR_TEST_MALLOC )
+#if defined( HAVE_CERROR_TEST_MEMORY )
 
 	/* Test libcerror_system_set_error with malloc failing
 	 */
@@ -900,7 +900,7 @@ int cerror_test_system_set_error(
 		 "error",
 		 error );
 	}
-#endif /* defined( HAVE_CERROR_TEST_MALLOC ) */
+#endif /* defined( HAVE_CERROR_TEST_MEMORY ) */
 
 	return( 1 );
 
