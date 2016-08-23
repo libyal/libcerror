@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script that runs the tests
 #
-# Version: 20160816
+# Version: 20160822
 
 EXIT_SUCCESS=0;
 EXIT_FAILURE=1;
@@ -115,7 +115,7 @@ run_setup_py_tests()
 export CFLAGS="--coverage -O0";
 export LDFLAGS="--coverage";
 
-run_configure_make_check;
+run_configure_make_check --enable-shared=no;
 RESULT=$?;
 
 export CFLAGS=;

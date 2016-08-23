@@ -72,9 +72,9 @@ int main(
 	CERROR_TEST_UNREFERENCED_PARAMETER( argc )
 	CERROR_TEST_UNREFERENCED_PARAMETER( argv )
 
-        CERROR_TEST_RUN(
-         "libcerror_get_version",
-         cerror_test_get_version() )
+	CERROR_TEST_RUN(
+	 "libcerror_get_version",
+	 cerror_test_get_version() )
 
 	return( EXIT_SUCCESS );
 

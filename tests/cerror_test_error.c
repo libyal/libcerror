@@ -20,7 +20,7 @@
  */
 
 #include <common.h>
-#include <file_stream.h>
+#include <memory.h>
 
 #if defined( HAVE_STDLIB_H ) || defined( WINAPI )
 #include <stdlib.h>
@@ -29,7 +29,7 @@
 #include "cerror_test_libcerror.h"
 #include "cerror_test_libcstring.h"
 #include "cerror_test_macros.h"
-#include "cerror_test_malloc.h"
+#include "cerror_test_memory.h"
 #include "cerror_test_unused.h"
 
 /* Tests the libcerror_error_set function
@@ -648,7 +648,7 @@ int cerror_test_error_backtrace_sprint(
 
 	/* Test error cases
 	 */
-	print_count = libcerror_error_sprint(
+	print_count = libcerror_error_backtrace_sprint(
 	               NULL,
 	               string,
 	               128 );
@@ -658,7 +658,7 @@ int cerror_test_error_backtrace_sprint(
 	 print_count,
 	 -1 )
 
-	print_count = libcerror_error_sprint(
+	print_count = libcerror_error_backtrace_sprint(
 	               error,
 	               NULL,
 	               128 );
@@ -668,7 +668,7 @@ int cerror_test_error_backtrace_sprint(
 	 print_count,
 	 -1 )
 
-	print_count = libcerror_error_sprint(
+	print_count = libcerror_error_backtrace_sprint(
 	               error,
 	               string,
 	               (size_t) SSIZE_MAX + 1 );
@@ -916,21 +916,18 @@ on_error:
 /* The main program
  */
 #if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
-int wmain( int argc, wchar_t * const argv[] CERROR_TEST_ATTRIBUTE_UNUSED )
+int wmain(
+     int argc CERROR_TEST_ATTRIBUTE_UNUSED,
+     wchar_t * const argv[] CERROR_TEST_ATTRIBUTE_UNUSED )
 #else
-int main( int argc, char * const argv[] CERROR_TEST_ATTRIBUTE_UNUSED )
+int main(
+     int argc CERROR_TEST_ATTRIBUTE_UNUSED,
+     char * const argv[] CERROR_TEST_ATTRIBUTE_UNUSED )
 #endif
 {
+	CERROR_TEST_UNREFERENCED_PARAMETER( argc )
 	CERROR_TEST_UNREFERENCED_PARAMETER( argv )
 
-	if( argc != 1 )
-	{
-		fprintf(
-		 stderr,
-		 "Unsupported number of arguments.\n" );
-
-		return( EXIT_FAILURE );
-	}
 	CERROR_TEST_RUN(
 	 "libcerror_error_set",
 	 cerror_test_error_set() )

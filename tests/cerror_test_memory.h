@@ -19,8 +19,8 @@
  * along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined( _CERROR_TEST_MALLOC_H )
-#define _CERROR_TEST_MALLOC_H
+#if !defined( _CERROR_TEST_MEMORY_H )
+#define _CERROR_TEST_MEMORY_H
 
 #include <common.h>
 
@@ -30,9 +30,11 @@ extern "C" {
 
 #if defined( HAVE_GNU_DL_DLSYM ) && !defined( WINAPI )
 
-#define HAVE_CERROR_TEST_MALLOC		1
+#define HAVE_CERROR_TEST_MEMORY		1
 
 extern int cerror_test_malloc_attempts_before_fail;
+
+extern int cerror_test_memset_attempts_before_fail;
 
 extern int cerror_test_realloc_attempts_before_fail;
 
@@ -42,5 +44,5 @@ extern int cerror_test_realloc_attempts_before_fail;
 }
 #endif
 
-#endif /* !defined( _CERROR_TEST_MALLOC_H ) */
+#endif /* !defined( _CERROR_TEST_MEMORY_H ) */
 

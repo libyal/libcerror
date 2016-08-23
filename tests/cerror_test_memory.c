@@ -33,19 +33,23 @@
 
 #if defined( HAVE_GNU_DL_DLSYM ) && !defined( WINAPI )
 
-static void *(*cerror_test_real_malloc)(size_t)             = NULL;
-static void *(*cerror_test_real_realloc)(void *ptr, size_t) = NULL;
+static void *(*cerror_test_real_malloc)(size_t)              = NULL;
+static void *(*cerror_test_real_memset)(void *, int, size_t) = NULL;
+static void *(*cerror_test_real_realloc)(void *, size_t)     = NULL;
 
-int cerror_test_malloc_attempts_before_fail                 = -1;
-int cerror_test_realloc_attempts_before_fail                = -1;
+int cerror_test_malloc_attempts_before_fail                  = -1;
+int cerror_test_memset_attempts_before_fail                  = -1;
+int cerror_test_realloc_attempts_before_fail                 = -1;
 
 /* Custom malloc for testing memory error cases
  * Note this function might fail if compiled with optimation
  * Returns a pointer to newly allocated data or NULL
  */
 void *malloc(
-       size_t size)
+       size_t size )
 {
+	void *ptr = NULL;
+
 	if( cerror_test_real_malloc == NULL )
 	{
 		cerror_test_real_malloc = dlsym(
@@ -62,9 +66,43 @@ void *malloc(
 	{
 		cerror_test_malloc_attempts_before_fail--;
 	}
-	return(
-	 cerror_test_real_malloc(
-	  size ) );
+	ptr = cerror_test_real_malloc(
+	       size );
+
+	return( ptr );
+}
+
+/* Custom memset for testing memory error cases
+ * Note this function might fail if compiled with optimation and as a shared libary
+ * Returns a pointer to newly allocated data or NULL
+ */
+void *memset(
+       void *ptr,
+       int constant,
+       size_t size )
+{
+	if( cerror_test_real_memset == NULL )
+	{
+		cerror_test_real_memset = dlsym(
+		                           RTLD_NEXT,
+		                           "memset" );
+	}
+	if( cerror_test_memset_attempts_before_fail == 0 )
+	{
+		cerror_test_memset_attempts_before_fail = -1;
+
+		return( NULL );
+	}
+	else if( cerror_test_memset_attempts_before_fail > 0 )
+	{
+		cerror_test_memset_attempts_before_fail--;
+	}
+	ptr = cerror_test_real_memset(
+	       ptr,
+	       constant,
+	       size );
+
+	return( ptr );
 }
 
 /* Custom realloc for testing memory error cases
@@ -73,7 +111,7 @@ void *malloc(
  */
 void *realloc(
        void *ptr,
-       size_t size)
+       size_t size )
 {
 	if( cerror_test_real_realloc == NULL )
 	{
@@ -81,20 +119,21 @@ void *realloc(
 		                            RTLD_NEXT,
 		                            "realloc" );
 	}
-	else if( cerror_test_realloc_attempts_before_fail == 0 )
+	if( cerror_test_realloc_attempts_before_fail == 0 )
 	{
 		cerror_test_realloc_attempts_before_fail = -1;
 
 		return( NULL );
 	}
-	if( cerror_test_realloc_attempts_before_fail > 0 )
+	else if( cerror_test_realloc_attempts_before_fail > 0 )
 	{
 		cerror_test_realloc_attempts_before_fail--;
 	}
-	return(
-	 cerror_test_real_realloc(
-	  ptr,
-	  size ) );
+	ptr = cerror_test_real_realloc(
+	       ptr,
+	       size );
+
+	return( ptr );
 }
 
 #endif /* defined( HAVE_GNU_DL_DLSYM ) && !defined( WINAPI ) */

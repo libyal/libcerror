@@ -25,25 +25,29 @@
 #include <file_stream.h>
 
 #define CERROR_TEST_ASSERT_EQUAL( name, value, expected_value ) \
-	if( value != expected_value ) { \
+	if( value != expected_value ) \
+	{ \
 		fprintf( stdout, "%s:%d %s != %d\n", __FILE__, __LINE__, name, expected_value ); \
 		goto on_error; \
 	}
 
 #define CERROR_TEST_ASSERT_IS_NOT_NULL( name, value ) \
-	if( value == NULL ) { \
+	if( value == NULL ) \
+	{ \
 		fprintf( stdout, "%s:%d %s == NULL\n", __FILE__, __LINE__, name ); \
 		goto on_error; \
 	}
 
 #define CERROR_TEST_ASSERT_IS_NULL( name, value ) \
-	if( value != NULL ) { \
+	if( value != NULL ) \
+	{ \
 		fprintf( stdout, "%s:%d %s != NULL\n", __FILE__, __LINE__, name ); \
 		goto on_error; \
 	}
 
 #define CERROR_TEST_RUN( name, function ) \
-	if( function != 1 ) { \
+	if( function != 1 ) \
+	{ \
 		fprintf( stdout, "Unable to run test: %s\n", name ); \
 		goto on_error; \
 	}

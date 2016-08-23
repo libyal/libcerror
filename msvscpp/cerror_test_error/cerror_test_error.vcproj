@@ -180,7 +180,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\tests\cerror_test_malloc.c"
+				RelativePath="..\..\tests\cerror_test_memory.c"
 				>
 			</File>
 		</Filter>
@@ -202,7 +202,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\tests\cerror_test_malloc.h"
+				RelativePath="..\..\tests\cerror_test_memory.h"
 				>
 			</File>
 			<File
