@@ -46,7 +46,7 @@ int cerror_test_get_version(
 	          LIBCERROR_VERSION_STRING,
 	          9 );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
 	 0 );

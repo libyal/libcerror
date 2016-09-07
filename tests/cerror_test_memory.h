@@ -34,6 +34,8 @@ extern "C" {
 
 extern int cerror_test_malloc_attempts_before_fail;
 
+extern int cerror_test_memcpy_attempts_before_fail;
+
 extern int cerror_test_memset_attempts_before_fail;
 
 extern int cerror_test_realloc_attempts_before_fail;
