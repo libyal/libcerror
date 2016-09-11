@@ -2,6 +2,10 @@
 #
 # Version: 20160911
 
+$ExitSuccess = 0
+$ExitFailure = 1
+$ExitIgnore = 77
+
 Set-Location -Path "tests"
 
 Try
@@ -31,6 +35,11 @@ Try
 				${Line} = ".\${Line}.ps1"
 			}
 			Invoke-Expression ${Line}
+
+			if (${LastExitCode} -ne ${ExitSuccess})
+			{
+				Break
+			}
 		}
 		ElseIf (${Line}.StartsWith("TESTS = "))
 		{
@@ -43,3 +52,4 @@ Finally
 	Set-Location -Path ".."
 }
 
+Exit ${LastExitCode}

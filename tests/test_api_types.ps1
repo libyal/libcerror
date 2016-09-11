@@ -2,6 +2,10 @@
 #
 # Version: 20160911
 
+$ExitSuccess = 0
+$ExitFailure = 1
+$ExitIgnore = 77
+
 $TestPrefix = Split-Path -path ${Pwd}.Path -parent
 $TestPrefix = Split-Path -path ${TestPrefix} -leaf
 $TestPrefix = ${TestPrefix}.Substring(3)
@@ -19,8 +23,15 @@ Function TestAPIType
 	Invoke-Expression ${TestExecutable}
 }
 
-foreach (${TestType} in ${TestTypes})
+Foreach (${TestType} in ${TestTypes})
 {
 	TestAPIType ${TestType}
+
+	if (${LastExitCode} -ne ${ExitSuccess})
+	{
+		Break
+	}
 }
+
+Exit ${LastExitCode}
 
