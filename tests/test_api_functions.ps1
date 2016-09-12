@@ -1,6 +1,6 @@
 # Library API functions testing script
 #
-# Version: 20160911
+# Version: 20160912
 
 $ExitSuccess = 0
 $ExitFailure = 1
@@ -10,7 +10,7 @@ $TestPrefix = Split-Path -path ${Pwd}.Path -parent
 $TestPrefix = Split-Path -path ${TestPrefix} -leaf
 $TestPrefix = ${TestPrefix}.Substring(3)
 
-$TestFunctions = @("get_version")
+$TestFunctions = "get_version" -split " "
 
 $TestToolDirectory = "..\vs2010\Release"
 
