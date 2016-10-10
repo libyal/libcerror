@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="cerror_test_get_version"
-	ProjectGUID="{CFB5664B-A935-4648-B8EC-F461D5182779}"
-	RootNamespace="cerror_test_get_version"
+	Name="cerror_test_support"
+	ProjectGUID="{588FDE97-36E5-4721-93E4-C5A4DB45401F}"
+	RootNamespace="cerror_test_support"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -176,7 +176,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\tests\cerror_test_get_version.c"
+				RelativePath="..\..\tests\cerror_test_support.c"
 				>
 			</File>
 		</Filter>

@@ -18,7 +18,7 @@ EXTRA_DIST = \
 
 check_PROGRAMS = \
 	cerror_test_error \
-	cerror_test_get_version
+	cerror_test_support
 
 cerror_test_error_SOURCES = \
 	cerror_test_error.c \
@@ -32,14 +32,14 @@ cerror_test_error_LDADD = \
 	../libcerror/libcerror.la \
 	@LIBCSTRING_LIBADD@
 
-cerror_test_get_version_SOURCES = \
-	cerror_test_get_version.c \
+cerror_test_support_SOURCES = \
 	cerror_test_libcerror.h \
 	cerror_test_libcstring.h \
 	cerror_test_macros.h \
+	cerror_test_support.c \
 	cerror_test_unused.h
 
-cerror_test_get_version_LDADD = \
+cerror_test_support_LDADD = \
 	../libcerror/libcerror.la \
 	@LIBCSTRING_LIBADD@
 

@@ -120,7 +120,7 @@ stamp-h[1-9]
 /libcerror/libcerror.rc
 /libcerror/libcerror_definitions.h
 /tests/cerror_test_error
-/tests/cerror_test_get_version
+/tests/cerror_test_support
 /tests/tmp*
 
 # Local library dependencies specific files

@@ -267,7 +267,7 @@ int cerror_test_error_matches(
 	          LIBCERROR_ERROR_DOMAIN_RUNTIME,
 	          LIBCERROR_RUNTIME_ERROR_GENERIC );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
 	 1 );
@@ -277,7 +277,7 @@ int cerror_test_error_matches(
 	          LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 	          LIBCERROR_ARGUMENT_ERROR_GENERIC );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
 	 0 );
@@ -294,7 +294,7 @@ int cerror_test_error_matches(
 	          LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 	          LIBCERROR_ARGUMENT_ERROR_GENERIC );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
 	 0 );
@@ -349,7 +349,7 @@ int cerror_test_error_fprint(
 	fclose(
 	 stream );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
 	 12 )
@@ -359,7 +359,7 @@ int cerror_test_error_fprint(
 	          "Test error.",
 	          11 );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
 	 0 );
@@ -370,7 +370,7 @@ int cerror_test_error_fprint(
 	               NULL,
 	               stream );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
 	 -1 )
@@ -379,7 +379,7 @@ int cerror_test_error_fprint(
 	               error,
 	               NULL );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
 	 -1 )
@@ -447,7 +447,7 @@ int cerror_test_error_backtrace_fprint(
 	fclose(
 	 stream );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
 	 28 )
@@ -457,7 +457,7 @@ int cerror_test_error_backtrace_fprint(
 	          "Test error 1.\nTest error 2.",
 	          27 );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
 	 0 );
@@ -468,7 +468,7 @@ int cerror_test_error_backtrace_fprint(
 	               NULL,
 	               stream );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
 	 -1 )
@@ -477,7 +477,7 @@ int cerror_test_error_backtrace_fprint(
 	               error,
 	               NULL );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
 	 -1 )
@@ -529,7 +529,7 @@ int cerror_test_error_sprint(
 	               string,
 	               128 );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
 	 12 )
@@ -539,7 +539,7 @@ int cerror_test_error_sprint(
 	          "Test error.",
 	          11 );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
 	 0 );
@@ -551,7 +551,7 @@ int cerror_test_error_sprint(
 	               string,
 	               128 );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
 	 -1 )
@@ -561,7 +561,7 @@ int cerror_test_error_sprint(
 	               NULL,
 	               128 );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
 	 -1 )
@@ -571,7 +571,7 @@ int cerror_test_error_sprint(
 	               string,
 	               (size_t) SSIZE_MAX + 1 );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
 	 -1 )
@@ -631,7 +631,7 @@ int cerror_test_error_backtrace_sprint(
 	               string,
 	               128 );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
 	 28 )
@@ -641,7 +641,7 @@ int cerror_test_error_backtrace_sprint(
 	          "Test error 1.\nTest error 2.",
 	          27 );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
 	 0 );
@@ -653,7 +653,7 @@ int cerror_test_error_backtrace_sprint(
 	               string,
 	               128 );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
 	 -1 )
@@ -663,7 +663,7 @@ int cerror_test_error_backtrace_sprint(
 	               NULL,
 	               128 );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
 	 -1 )
@@ -673,7 +673,7 @@ int cerror_test_error_backtrace_sprint(
 	               string,
 	               (size_t) SSIZE_MAX + 1 );
 
-	CERROR_TEST_ASSERT_EQUAL(
+	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
 	 -1 )
@@ -930,35 +930,35 @@ int main(
 
 	CERROR_TEST_RUN(
 	 "libcerror_error_set",
-	 cerror_test_error_set() )
+	 cerror_test_error_set );
 
 	CERROR_TEST_RUN(
 	 "libcerror_error_matches",
-	 cerror_test_error_matches() )
+	 cerror_test_error_matches );
 
 #if defined( HAVE_FMEMOPEN ) && !defined( WINAPI )
 
 	CERROR_TEST_RUN(
 	 "libcerror_error_fprint",
-	 cerror_test_error_fprint() )
+	 cerror_test_error_fprint );
 
 	CERROR_TEST_RUN(
 	 "libcerror_error_backtrace_fprint",
-	 cerror_test_error_backtrace_fprint() )
+	 cerror_test_error_backtrace_fprint );
 
 #endif /* defined( HAVE_FMEMOPEN ) && !defined( WINAPI ) */
 
 	CERROR_TEST_RUN(
 	 "libcerror_error_sprint",
-	 cerror_test_error_sprint() )
+	 cerror_test_error_sprint );
 
 	CERROR_TEST_RUN(
 	 "libcerror_error_backtrace_sprint",
-	 cerror_test_error_backtrace_sprint() )
+	 cerror_test_error_backtrace_sprint );
 
 	CERROR_TEST_RUN(
 	 "libcerror_system_set_error",
-	 cerror_test_system_set_error() )
+	 cerror_test_system_set_error );
 
 	return( EXIT_SUCCESS );
 

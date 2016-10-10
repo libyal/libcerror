@@ -1,5 +1,5 @@
 /*
- * Library get version test program
+ * Library support functions test program
  *
  * Copyright (C) 2008-2016, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -74,7 +74,7 @@ int main(
 
 	CERROR_TEST_RUN(
 	 "libcerror_get_version",
-	 cerror_test_get_version() )
+	 cerror_test_get_version );
 
 	return( EXIT_SUCCESS );
 
