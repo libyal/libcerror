@@ -30,7 +30,7 @@
 #include "cerror_test_macros.h"
 #include "cerror_test_unused.h"
 
-/* Tests retrieving the library version
+/* Tests the libcerror_get_version function
  * Returns 1 if successful or 0 if not
  */
 int cerror_test_get_version(
