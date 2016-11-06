@@ -25,8 +25,6 @@
 #include <common.h>
 #include <types.h>
 
-#include <stdio.h>
-
 #include "libcerror_extern.h"
 
 #if defined( __cplusplus )
