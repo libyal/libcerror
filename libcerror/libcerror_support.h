@@ -45,5 +45,5 @@ const char *libcerror_get_version(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBCERROR_SUPPORT_H ) */
 

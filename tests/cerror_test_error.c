@@ -21,6 +21,7 @@
 
 #include <common.h>
 #include <memory.h>
+#include <narrow_string.h>
 #include <types.h>
 
 #if defined( HAVE_STDLIB_H ) || defined( WINAPI )
@@ -28,7 +29,6 @@
 #endif
 
 #include "cerror_test_libcerror.h"
-#include "cerror_test_libcstring.h"
 #include "cerror_test_macros.h"
 #include "cerror_test_memory.h"
 #include "cerror_test_unused.h"
@@ -355,7 +355,7 @@ int cerror_test_error_fprint(
 	 print_count,
 	 12 )
 
-	result = libcstring_narrow_string_compare(
+	result = narrow_string_compare(
 	          string,
 	          "Test error.",
 	          11 );
@@ -453,7 +453,7 @@ int cerror_test_error_backtrace_fprint(
 	 print_count,
 	 28 )
 
-	result = libcstring_narrow_string_compare(
+	result = narrow_string_compare(
 	          string,
 	          "Test error 1.\nTest error 2.",
 	          27 );
@@ -535,7 +535,7 @@ int cerror_test_error_sprint(
 	 print_count,
 	 12 )
 
-	result = libcstring_narrow_string_compare(
+	result = narrow_string_compare(
 	          string,
 	          "Test error.",
 	          11 );
@@ -637,7 +637,7 @@ int cerror_test_error_backtrace_sprint(
 	 print_count,
 	 28 )
 
-	result = libcstring_narrow_string_compare(
+	result = narrow_string_compare(
 	          string,
 	          "Test error 1.\nTest error 2.",
 	          27 );
@@ -916,7 +916,7 @@ on_error:
 
 /* The main program
  */
-#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 int wmain(
      int argc CERROR_TEST_ATTRIBUTE_UNUSED,
      wchar_t * const argv[] CERROR_TEST_ATTRIBUTE_UNUSED )

@@ -1,7 +1,6 @@
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/common \
-	@LIBCSTRING_CPPFLAGS@ \
 	@LIBCERROR_DLL_IMPORT@
 
 TESTS = \
@@ -23,25 +22,21 @@ check_PROGRAMS = \
 cerror_test_error_SOURCES = \
 	cerror_test_error.c \
 	cerror_test_libcerror.h \
-	cerror_test_libcstring.h \
 	cerror_test_macros.h \
 	cerror_test_memory.c cerror_test_memory.h \
 	cerror_test_unused.h
 
 cerror_test_error_LDADD = \
-	../libcerror/libcerror.la \
-	@LIBCSTRING_LIBADD@
+	../libcerror/libcerror.la
 
 cerror_test_support_SOURCES = \
 	cerror_test_libcerror.h \
-	cerror_test_libcstring.h \
 	cerror_test_macros.h \
 	cerror_test_support.c \
 	cerror_test_unused.h
 
 cerror_test_support_LDADD = \
-	../libcerror/libcerror.la \
-	@LIBCSTRING_LIBADD@
+	../libcerror/libcerror.la
 
 MAINTAINERCLEANFILES = \
 	Makefile.in

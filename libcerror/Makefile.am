@@ -1,7 +1,6 @@
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
-	-I$(top_srcdir)/common \
-	@LIBCSTRING_CPPFLAGS@
+	-I$(top_srcdir)/common
 
 lib_LTLIBRARIES = libcerror.la
 
@@ -10,14 +9,10 @@ libcerror_la_SOURCES = \
 	libcerror_definitions.h \
 	libcerror_extern.h \
 	libcerror_error.c libcerror_error.h \
-	libcerror_libcstring.h \
 	libcerror_support.c libcerror_support.h \
 	libcerror_system.c libcerror_system.h \
 	libcerror_types.h \
 	libcerror_unused.h
-
-libcerror_la_LIBADD = \
-	@LIBCSTRING_LIBADD@
 
 libcerror_la_LDFLAGS = -no-undefined -version-info 1:0:0
 

@@ -7,6 +7,6 @@ Name: libcerror
 Description: Library to support cross-platform C error functions
 Version: @VERSION@
 Libs: -L${libdir} -lcerror
-Libs.private: @ax_libcstring_pc_libs_private@
+Libs.private: 
 Cflags: -I${includedir}
 

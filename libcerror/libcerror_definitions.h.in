@@ -37,7 +37,7 @@
 
 #define LIBCERROR_VERSION				@VERSION@
 
-/* The libcstring version string
+/* The libcerror version string
  */
 #define LIBCERROR_VERSION_STRING			"@VERSION@"
 
@@ -319,5 +319,5 @@ enum LIBCERROR_RUNTIME_ERROR
 
 #endif /* !defined( HAVE_LOCAL_LIBCERROR ) */
 
-#endif
+#endif /* !defined( LIBCERROR_INTERNAL_DEFINITIONS_H ) */
 

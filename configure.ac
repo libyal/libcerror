@@ -55,9 +55,6 @@ AX_TYPES_CHECK_LOCAL
 dnl Checks for libraries and library functions
 AX_COMMON_CHECK_LOCAL
 
-dnl Check for enabling libcstring for cross-platform C string functions
-AX_LIBCSTRING_CHECK_ENABLE
-
 dnl Check for library function support
 AX_LIBCERROR_CHECK_LOCAL
 
@@ -88,17 +85,6 @@ AS_IF(
 dnl Set additional compiler flags
 CFLAGS="$CFLAGS -Wall";
 
-dnl Check if requires and build requires should be set in spec file
-AS_IF(
- [test "x$ac_cv_libcstring" = xyes],
- [AC_SUBST(
-  [libcerror_spec_requires],
-  [Requires:])
- AC_SUBST(
-  [libcerror_spec_build_requires],
-  [BuildRequires:])
- ])
-
 dnl Set the date for the dpkg files
 AC_SUBST(
  [DPKG_DATE],
@@ -118,7 +104,6 @@ dnl Have configure make the Makefiles
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([include/Makefile])
 AC_CONFIG_FILES([common/Makefile])
-AC_CONFIG_FILES([libcstring/Makefile])
 AC_CONFIG_FILES([libcerror/Makefile])
 AC_CONFIG_FILES([po/Makefile.in])
 AC_CONFIG_FILES([po/Makevars])
@@ -145,9 +130,6 @@ AC_OUTPUT
 
 dnl Print a summary
 AC_MSG_NOTICE([
-Building:
-   libcstring support:          $ac_cv_libcstring
-
 Features:
    Wide character type support: $ac_cv_enable_wide_character_type
 ]);

@@ -28,7 +28,6 @@
 #include <stdio.h>
 
 #include "libcerror_extern.h"
-#include "libcerror_libcstring.h"
 #include "libcerror_types.h"
 
 #if defined( __cplusplus )
@@ -56,7 +55,7 @@ struct libcerror_internal_error
 
 	/* A dynamic array containing the message strings
 	 */
-	libcstring_system_character_t **messages;
+	system_character_t **messages;
 
 	/* A dynamic array containing the message string sizes
 	 * without the end-of-string character
@@ -108,5 +107,5 @@ int libcerror_error_backtrace_sprint(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBCERROR_INTERNAL_ERROR_H ) */
 

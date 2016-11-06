@@ -21,7 +21,10 @@
 
 #include <common.h>
 #include <memory.h>
+#include <narrow_string.h>
+#include <system_string.h>
 #include <types.h>
+#include <wide_string.h>
 
 #if defined( HAVE_STDARG_H ) || defined( WINAPI )
 #include <stdarg.h>
@@ -33,7 +36,6 @@
 
 #include "libcerror_definitions.h"
 #include "libcerror_error.h"
-#include "libcerror_libcstring.h"
 #include "libcerror_types.h"
 
 /* Free an error and its elements
@@ -111,16 +113,16 @@ void VARARGS(
 {
 	va_list argument_list;
 
-	libcerror_internal_error_t *internal_error          = NULL;
-	libcstring_system_character_t *system_format_string = NULL;
-	void *reallocation                                  = NULL;
-	size_t format_string_length                         = 0;
-	size_t message_size                                 = LIBCERROR_MESSAGE_INCREMENT_SIZE;
-	int message_index                                   = 0;
-	int print_count                                     = 0;
+	libcerror_internal_error_t *internal_error = NULL;
+	system_character_t *system_format_string   = NULL;
+	void *reallocation                         = NULL;
+	size_t format_string_length                = 0;
+	size_t message_size                        = LIBCERROR_MESSAGE_INCREMENT_SIZE;
+	int message_index                          = 0;
+	int print_count                            = 0;
 
 #if defined( __BORLANDC__ ) || defined( _MSC_VER )
-	size_t string_index                                 = 0;
+	size_t string_index                        = 0;
 #endif
 
 	if( error == NULL )
@@ -131,7 +133,7 @@ void VARARGS(
 	{
 		return;
 	}
-	format_string_length = libcstring_narrow_string_length(
+	format_string_length = narrow_string_length(
 	                        format_string );
 
 	if( format_string_length > message_size )
@@ -139,27 +141,27 @@ void VARARGS(
 		message_size = ( ( format_string_length / LIBCERROR_MESSAGE_INCREMENT_SIZE ) + 1 )
 		             * LIBCERROR_MESSAGE_INCREMENT_SIZE;
 	}
-#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 	do
 	{
 		reallocation = memory_reallocate(
 		                system_format_string,
-		                sizeof( libcstring_system_character_t ) * ( format_string_length + 1 ) );
+		                sizeof( system_character_t ) * ( format_string_length + 1 ) );
 
 		if( reallocation == NULL )
 		{
 			goto on_error;
 		}
-		system_format_string = (libcstring_system_character_t *) reallocation;
+		system_format_string = (system_character_t *) reallocation;
 
 #if defined( __BORLANDC__ ) || defined( _MSC_VER )
-		print_count = libcstring_wide_string_snwprintf(
+		print_count = wide_string_snwprintf(
 		               system_format_string,
 		               format_string_length + 1,
 		               L"%S",
 		               format_string );
 #else
-		print_count = libcstring_wide_string_snwprintf(
+		print_count = wide_string_snwprintf(
 		               system_format_string,
 		               format_string_length + 1,
 		               L"%s",
@@ -182,7 +184,7 @@ void VARARGS(
 	}
 	while( print_count <= -1 );
 #else
-	system_format_string = (libcstring_system_character_t *) format_string;
+	system_format_string = (system_character_t *) format_string;
 #endif
 
 #if defined( __BORLANDC__ ) || defined( _MSC_VER )
@@ -196,13 +198,13 @@ void VARARGS(
 		{
 			break;
 		}
-		else if( system_format_string[ string_index ] == (libcstring_system_character_t) '%' )
+		else if( system_format_string[ string_index ] == (system_character_t) '%' )
 		{
 			string_index++;
 
-			if( system_format_string[ string_index ] == (libcstring_system_character_t) 's' )
+			if( system_format_string[ string_index ] == (system_character_t) 's' )
 			{
-				 system_format_string[ string_index ] = (libcstring_system_character_t) 'S';
+				 system_format_string[ string_index ] = (system_character_t) 'S';
 			}
 		}
 		string_index++;
@@ -231,13 +233,13 @@ void VARARGS(
 	}
 	reallocation = memory_reallocate(
 	                internal_error->messages,
-	                sizeof( libcstring_system_character_t * ) * ( internal_error->number_of_messages + 1 ) );
+	                sizeof( system_character_t * ) * ( internal_error->number_of_messages + 1 ) );
 
 	if( reallocation == NULL )
 	{
 		goto on_error;
 	}
-	internal_error->messages = (libcstring_system_character_t **) reallocation;
+	internal_error->messages = (system_character_t **) reallocation;
 
 	reallocation = memory_reallocate(
 	                internal_error->sizes,
@@ -258,7 +260,7 @@ void VARARGS(
 	{
 		reallocation = memory_reallocate(
 		                internal_error->messages[ message_index ],
-		                sizeof( libcstring_system_character_t ) * message_size );
+		                sizeof( system_character_t ) * message_size );
 
 		if( reallocation == NULL )
 		{
@@ -269,14 +271,14 @@ void VARARGS(
 
 			break;
 		}
-		internal_error->messages[ message_index ] = (libcstring_system_character_t *) reallocation;
+		internal_error->messages[ message_index ] = (system_character_t *) reallocation;
 
 		VASTART(
 		 argument_list,
 		 const char *,
 		 format_string );
 
-		print_count = libcstring_system_string_vsprintf(
+		print_count = system_string_vsprintf(
 		               internal_error->messages[ message_index ],
 		               message_size,
 		               system_format_string,
@@ -290,7 +292,7 @@ void VARARGS(
 			message_size += LIBCERROR_MESSAGE_INCREMENT_SIZE;
 		}
 		else if( ( (size_t) print_count >= message_size )
-		      || ( ( internal_error->messages[ message_index ] )[ print_count ] != (libcstring_system_character_t) 0 ) )
+		      || ( ( internal_error->messages[ message_index ] )[ print_count ] != (system_character_t) 0 ) )
 		{
 			message_size = (size_t) ( print_count + 1 );
 			print_count  = -1;
@@ -309,7 +311,7 @@ void VARARGS(
 	}
 	while( print_count <= -1 );
 
-#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 	memory_free(
 	 system_format_string );
 
@@ -318,7 +320,7 @@ void VARARGS(
 	return;
 
 on_error:
-#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 	if( system_format_string != NULL )
 	{
 		memory_free(
@@ -389,7 +391,7 @@ int libcerror_error_fprint(
 	{
 		print_count = fprintf(
 		               stream,
-		               "%" PRIs_LIBCSTRING_SYSTEM "\n",
+		               "%" PRIs_SYSTEM "\n",
 		               internal_error->messages[ message_index ] );
 
 		if( print_count <= -1 )
@@ -439,7 +441,7 @@ int libcerror_error_sprint(
 
 	if( internal_error->messages[ message_index ] != NULL )
 	{
-#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 #if defined( _MSC_VER )
 		if( wcstombs_s(
 		     &print_count,
@@ -471,20 +473,20 @@ int libcerror_error_sprint(
 		{
 			return( -1 );
 		}
-		if( libcstring_narrow_string_copy(
+		if( narrow_string_copy(
 		     string,
 		     internal_error->messages[ message_index ],
 		     internal_error->sizes[ message_index ] ) == NULL )
 		{
-			string[ 0 ] = (libcstring_system_character_t) 0;
+			string[ 0 ] = (system_character_t) 0;
 
 			return( -1 );
 		}
 		print_count = internal_error->sizes[ message_index ];
 
-		string[ print_count ] = (libcstring_system_character_t) 0;
+		string[ print_count ] = (system_character_t) 0;
 
-#endif /* defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER ) */
+#endif /* defined( HAVE_WIDE_SYSTEM_CHARACTER ) */
 	}
 	if( print_count > (size_t) INT_MAX )
 	{
@@ -527,7 +529,7 @@ int libcerror_error_backtrace_fprint(
 		{
 			print_count = fprintf(
 			               stream,
-			               "%" PRIs_LIBCSTRING_SYSTEM "\n",
+			               "%" PRIs_SYSTEM "\n",
 			               internal_error->messages[ message_index ] );
 
 			if( print_count <= -1 )
@@ -553,7 +555,7 @@ int libcerror_error_backtrace_sprint(
 	size_t string_index                        = 0;
 	int message_index                          = 0;
 
-#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 	size_t print_count                         = 0;
 #endif
 
@@ -589,7 +591,7 @@ int libcerror_error_backtrace_sprint(
 	{
 		if( internal_error->messages[ message_index ] != NULL )
 		{
-#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 #if defined( _MSC_VER )
 			if( wcstombs_s(
 			     &print_count,
@@ -624,21 +626,21 @@ int libcerror_error_backtrace_sprint(
 			}
 			if( string_index > 0 )
 			{
-				string[ string_index++ ] = (libcstring_system_character_t) '\n';
+				string[ string_index++ ] = (system_character_t) '\n';
 			}
-			if( libcstring_narrow_string_copy(
+			if( narrow_string_copy(
 			     &( string[ string_index ] ),
 			     internal_error->messages[ message_index ],
 			     internal_error->sizes[ message_index ] ) == NULL )
 			{
-				string[ string_index ] = (libcstring_system_character_t) 0;
+				string[ string_index ] = (system_character_t) 0;
 
 				return( -1 );
 			}
 			string_index += internal_error->sizes[ message_index ] - 1;
 
-			string[ string_index ] = (libcstring_system_character_t) 0;
-#endif /* defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER ) */
+			string[ string_index ] = (system_character_t) 0;
+#endif /* defined( HAVE_WIDE_SYSTEM_CHARACTER ) */
 		}
 	}
 	string_index += 1;
