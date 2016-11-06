@@ -209,7 +209,8 @@ void VARARGS(
 		}
 		string_index++;
 	}
-#endif
+#endif /* defined( __BORLANDC__ ) || defined( _MSC_VER ) */
+
 	if( *error == NULL )
 	{
 		internal_error = memory_allocate_structure(
@@ -389,11 +390,17 @@ int libcerror_error_fprint(
 
 	if( internal_error->messages[ message_index ] != NULL )
 	{
+#if defined( WINAPI )
+		print_count = fprintf(
+		               stream,
+		               "%" PRIs_SYSTEM "\r\n",
+		               internal_error->messages[ message_index ] );
+#else
 		print_count = fprintf(
 		               stream,
 		               "%" PRIs_SYSTEM "\n",
 		               internal_error->messages[ message_index ] );
-
+#endif
 		if( print_count <= -1 )
 		{
 			return( -1 );
@@ -469,7 +476,7 @@ int libcerror_error_sprint(
 			return( -1 );
 		}
 #else
-		if( internal_error->sizes[ message_index ] > size )
+		if( ( internal_error->sizes[ message_index ] + 1 ) >= size )
 		{
 			return( -1 );
 		}
@@ -527,11 +534,17 @@ int libcerror_error_backtrace_fprint(
 	{
 		if( internal_error->messages[ message_index ] != NULL )
 		{
+#if defined( WINAPI )
+			print_count = fprintf(
+			               stream,
+			               "%" PRIs_SYSTEM "\r\n",
+			               internal_error->messages[ message_index ] );
+#else
 			print_count = fprintf(
 			               stream,
 			               "%" PRIs_SYSTEM "\n",
 			               internal_error->messages[ message_index ] );
-
+#endif
 			if( print_count <= -1 )
 			{
 				return( -1 );
@@ -591,6 +604,24 @@ int libcerror_error_backtrace_sprint(
 	{
 		if( internal_error->messages[ message_index ] != NULL )
 		{
+			if( string_index > 0 )
+			{
+#if defined( WINAPI )
+				if( ( string_index + 2 ) >= size )
+				{
+					return( -1 );
+				}
+				string[ string_index++ ] = (system_character_t) '\r';
+#else
+				if( ( string_index + 1 ) >= size )
+				{
+					return( -1 );
+				}
+#endif /* defined( WINAPI ) */
+
+				string[ string_index++ ] = (system_character_t) '\n';
+				string[ string_index ]   = (system_character_t) 0;
+			}
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 #if defined( _MSC_VER )
 			if( wcstombs_s(
@@ -612,38 +643,38 @@ int libcerror_error_backtrace_sprint(
 			{
 				return( -1 );
 			}
-#endif
+#endif /*defined( _MSC_VER ) */
+
 			string_index += print_count;
 
 			if( string_index >= size )
 			{
 				return( -1 );
 			}
+			if( string[ string_index - 1 ] == 0 )
+			{
+				string_index--;
+			}
 #else
-			if( ( string_index + internal_error->sizes[ message_index ] ) > size )
+			if( ( string_index + internal_error->sizes[ message_index ] + 1 ) >= size )
 			{
 				return( -1 );
-			}
-			if( string_index > 0 )
-			{
-				string[ string_index++ ] = (system_character_t) '\n';
 			}
 			if( narrow_string_copy(
 			     &( string[ string_index ] ),
 			     internal_error->messages[ message_index ],
 			     internal_error->sizes[ message_index ] ) == NULL )
 			{
-				string[ string_index ] = (system_character_t) 0;
-
 				return( -1 );
 			}
 			string_index += internal_error->sizes[ message_index ] - 1;
 
 			string[ string_index ] = (system_character_t) 0;
+
 #endif /* defined( HAVE_WIDE_SYSTEM_CHARACTER ) */
 		}
 	}
-	string_index += 1;
+	string_index++;
 
 	if( string_index > (size_t) INT_MAX )
 	{

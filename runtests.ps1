@@ -8,7 +8,7 @@ $ExitIgnore = 77
 
 Set-Location -Path "tests"
 
-$Result = ${ExitIgnore}
+$Result = ${ExitSuccess}
 
 $Lines = Get-Content "Makefile.am"
 $InTests = $FALSE

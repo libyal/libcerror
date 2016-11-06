@@ -448,6 +448,18 @@ int cerror_test_error_backtrace_fprint(
 	fclose(
 	 stream );
 
+#if defined( WINAPI )
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "print_count",
+	 print_count,
+	 29 )
+
+	result = narrow_string_compare(
+	          string,
+	          "Test error 1.\r\nTest error 2.",
+	          28 );
+
+#else
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
@@ -457,6 +469,7 @@ int cerror_test_error_backtrace_fprint(
 	          string,
 	          "Test error 1.\nTest error 2.",
 	          27 );
+#endif
 
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "result",
@@ -632,6 +645,18 @@ int cerror_test_error_backtrace_sprint(
 	               string,
 	               128 );
 
+#if defined( WINAPI )
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "print_count",
+	 print_count,
+	 29 )
+
+	result = narrow_string_compare(
+	          string,
+	          "Test error 1.\r\nTest error 2.",
+	          28 );
+
+#else
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
@@ -641,6 +666,7 @@ int cerror_test_error_backtrace_sprint(
 	          string,
 	          "Test error 1.\nTest error 2.",
 	          27 );
+#endif
 
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "result",

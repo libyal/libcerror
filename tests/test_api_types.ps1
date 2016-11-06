@@ -34,7 +34,7 @@ Function TestAPIType
 	{
 		Write-Host " (FAIL)"
 	}
-	else
+	Else
 	{
 		Write-Host " (PASS)"
 	}
