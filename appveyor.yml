@@ -13,12 +13,12 @@ install:
 - cmd: git clone https://github.com/libyal/libyal.git && move libyal ..\
 
 before_build:
-- ps: .\synclibs.ps1
 - cmd: xcopy /q /s C:\projects\libcerror C:\cygwin\home\appveyor\
 - cmd: xcopy /q /s C:\projects\libcerror C:\msys64\home\appveyor\
-- ps: .\autogen.ps1
 
 build_script:
+- ps: .\synclibs.ps1
+- ps: .\autogen.ps1
 - cmd: >-
     rem Prepare Visual Studio 2010 build
 
@@ -48,23 +48,23 @@ build_script:
 
     C:\cygwin\bin\bash -e -l -c "cd libcerror"
 
-    C:\cygwin\bin\bash -e -l -c "./autogen.sh"
+    C:\cygwin\bin\bash -e -l -c "./synclibs.sh && ./autogen.sh"
 
     rem Build with Cygwin
 
     C:\cygwin\bin\bash -e -l -c "./configure && make -j4"
 
-    rem Prepare minGW build
+    rem Prepare MinGW build
 
     C:\msys64\usr\bin\bash -e -l -c "cd libcerror"
 
-    C:\msys64\usr\bin\bash -e -l -c "./autogen.sh"
+    C:\msys64\usr\bin\bash -e -l -c "./synclibs.sh && ./autogen.sh"
 
-    rem Build with minGW 32-bit
+    rem Build with MinGW 32-bit
 
     C:\msys64\usr\bin\bash -e -l -c "./configure --host=i686-w64-mingw32 && make -j4"
 
-    rem Build with minGW 64-bit
+    rem Build with MinGW 64-bit
 
     C:\msys64\usr\bin\bash -e -l -c "./configure --host=x86_64-w64-mingw32 && make -j4"
 

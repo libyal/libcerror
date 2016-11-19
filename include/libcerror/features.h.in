@@ -24,10 +24,6 @@
 
 /* The libcerror type support features
  */
-#if defined( WINAPI ) || @HAVE_WIDE_CHARACTER_TYPE@
-#define LIBCERROR_HAVE_WIDE_CHARACTER_TYPE	1
-#endif
-
 #if !defined( LIBCERROR_DEPRECATED )
 #if defined( __GNUC__ ) && __GNUC__ >= 3
 #define LIBCERROR_DEPRECATED	__attribute__ ((__deprecated__))
