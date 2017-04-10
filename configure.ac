@@ -2,7 +2,7 @@ AC_PREREQ( 2.59 )
 
 AC_INIT(
  [libcerror],
- [20170329],
+ [20170410],
  [joachim.metz@gmail.com])
 
 AC_CONFIG_SRCDIR(
@@ -119,7 +119,6 @@ AC_CONFIG_FILES([libcerror/libcerror_definitions.h])
 dnl Have configure make distribution specific files
 AC_CONFIG_FILES([common/types.h])
 AC_CONFIG_FILES([dpkg/changelog])
-AC_CONFIG_FILES([dpkg/copyright])
 AC_CONFIG_FILES([libcerror/libcerror.rc])
 AC_CONFIG_FILES([libcerror.pc])
 AC_CONFIG_FILES([libcerror.spec])

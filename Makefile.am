@@ -15,10 +15,9 @@ DPKG_FILES = \
 	dpkg/compat \
 	dpkg/control \
 	dpkg/copyright \
-	dpkg/copyright.in \
 	dpkg/rules \
-	dpkg/libcerror-dev.docs \
-	dpkg/libcerror.docs \
+	dpkg/libcerror-dev.install \
+	dpkg/libcerror.install \
 	dpkg/source/format
 
 GETTEXT_FILES = \
