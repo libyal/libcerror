@@ -51,17 +51,20 @@ build_script:
     xcopy /q /s C:\projects\libcerror C:\cygwin\home\appveyor\ &&
     C:\cygwin\bin\bash -e -l -c "cd libcerror" &&
     C:\cygwin\bin\bash -e -l -c "./synclibs.sh && ./autogen.sh" &&
-    C:\cygwin\bin\bash -e -l -c "./configure && make -j4" )
+    C:\cygwin\bin\bash -e -l -c "./configure && make -j4" &&
+    C:\cygwin\bin\bash -e -l -c "make check" )
 - cmd: if [%TARGET%]==[mingw32] (
     xcopy /q /s C:\projects\libcerror C:\msys64\home\appveyor\ &&
     C:\msys64\usr\bin\bash -e -l -c "cd libcerror" &&
     C:\msys64\usr\bin\bash -e -l -c "./synclibs.sh && ./autogen.sh" &&
-    C:\msys64\usr\bin\bash -e -l -c "./configure --host=i686-w64-mingw32 && make -j4" )
+    C:\msys64\usr\bin\bash -e -l -c "./configure --host=i686-w64-mingw32 && make -j4" &&
+    C:\msys64\usr\bin\bash -e -l -c "make check" )
 - cmd: if [%TARGET%]==[mingw64] (
     xcopy /q /s C:\projects\libcerror C:\msys64\home\appveyor\ &&
     C:\msys64\usr\bin\bash -e -l -c "cd libcerror" &&
     C:\msys64\usr\bin\bash -e -l -c "./synclibs.sh && ./autogen.sh" &&
-    C:\msys64\usr\bin\bash -e -l -c "./configure --host=x86_64-w64-mingw32 && make -j4" )
+    C:\msys64\usr\bin\bash -e -l -c "./configure --host=x86_64-w64-mingw32 && make -j4" &&
+    C:\msys64\usr\bin\bash -e -l -c "make check" )
 
 test_script:
 - cmd: rem Run tests
