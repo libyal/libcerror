@@ -52,22 +52,22 @@ build_script:
     C:\cygwin\bin\bash -e -l -c "cd libcerror" &&
     C:\cygwin\bin\bash -e -l -c "./synclibs.sh && ./autogen.sh" &&
     C:\cygwin\bin\bash -e -l -c "./configure && make -j4" &&
-    C:\cygwin\bin\bash -e -l -c "make check" &&
-    C:\cygwin\bin\bash -e -l -c "if test $? -ne 0 && test -f tests/test-suite.log; then cat tests/test-suite.log; fi" )
+    C:\cygwin\bin\bash -e -l -c "make check && export RESULT=$?" ||
+    C:\cygwin\bin\bash -e -l -c "if test ${RESULT} -ne 0 && test -f tests/test-suite.log; then cat tests/test-suite.log; exit ${RESULT}; fi" )
 - cmd: if [%TARGET%]==[mingw32] (
     xcopy /q /s C:\projects\libcerror C:\msys64\home\appveyor\ &&
     C:\msys64\usr\bin\bash -e -l -c "cd libcerror" &&
     C:\msys64\usr\bin\bash -e -l -c "./synclibs.sh && ./autogen.sh" &&
     C:\msys64\usr\bin\bash -e -l -c "./configure --host=i686-w64-mingw32 CC=mingw-w64-i686-gcc && make -j4" &&
-    C:\msys64\usr\bin\bash -e -l -c "make check" &&
-    C:\msys64\usr\bin\bash -e -l -c "if test $? -ne 0 && test -f tests/test-suite.log; then cat tests/test-suite.log; fi" )
+    C:\msys64\usr\bin\bash -e -l -c "make check && export RESULT=$?" ||
+    C:\msys64\usr\bin\bash -e -l -c "if test ${RESULT} -ne 0 && test -f tests/test-suite.log; then cat tests/test-suite.log; exit ${RESULT}; fi" )
 - cmd: if [%TARGET%]==[mingw64] (
     xcopy /q /s C:\projects\libcerror C:\msys64\home\appveyor\ &&
     C:\msys64\usr\bin\bash -e -l -c "cd libcerror" &&
     C:\msys64\usr\bin\bash -e -l -c "./synclibs.sh && ./autogen.sh" &&
     C:\msys64\usr\bin\bash -e -l -c "./configure --host=x86_64-w64-mingw32 CC=mingw-w64-x86_64-gcc && make -j4" &&
-    C:\msys64\usr\bin\bash -e -l -c "make check" &&
-    C:\msys64\usr\bin\bash -e -l -c "if test $? -ne 0 && test -f tests/test-suite.log; then cat tests/test-suite.log; fi" )
+    C:\msys64\usr\bin\bash -e -l -c "make check && export RESULT=$?" ||
+    C:\msys64\usr\bin\bash -e -l -c "if test ${RESULT} -ne 0 && test -f tests/test-suite.log; then cat tests/test-suite.log; exit ${RESULT}; fi" )
 
 test_script:
 - cmd: rem Run tests
