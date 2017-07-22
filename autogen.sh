@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to generate ./configure using the autotools
 #
-# Version: 20160106
+# Version: 20170722
 
 EXIT_SUCCESS=0;
 EXIT_FAILURE=1;
@@ -21,19 +21,23 @@ then
 	# Default location of MacPorts installed binaries.
 	BINDIR="/opt/local/bin";
 fi
-if ! test -x "${BINDIR}/pkg-config";
+
+if test "${OSTYPE}" = "msys";
 then
 	# Default location of MSYS-MinGW installed binaries.
 	BINDIR="/mingw/bin";
-fi
 
-PKGCONFIG="${BINDIR}/pkg-config";
+	# On MSYS autopoint errors on AM_GNU_GETTEXT_VERSION.
+	sed '/AM_GNU_GETTEXT_VERSION/ d' -i configure.ac;
+else
+	PKGCONFIG="${BINDIR}/pkg-config";
 
-if ! test -x "${PKGCONFIG}";
-then
-	echo "Unable to find: pkg-config";
+	if ! test -x "${PKGCONFIG}";
+	then
+		echo "Unable to find: pkg-config";
 
-	exit ${EXIT_FAILURE};
+		exit ${EXIT_FAILURE};
+	fi
 fi
 
 ACLOCAL="${BINDIR}/aclocal";

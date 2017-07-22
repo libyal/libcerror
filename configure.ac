@@ -32,7 +32,7 @@ AC_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
 
 dnl Check for pkg-config
-AC_PATH_PROG(PKGCONFIG,[pkg-config],[])
+AC_PATH_PROG(PKGCONFIG,[pkg-config])
 
 dnl Support of internationalization (i18n)
 AM_GNU_GETTEXT([external])
