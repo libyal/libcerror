@@ -62,14 +62,12 @@ build_script:
     xcopy /q /s C:\projects\libcerror C:\MinGW\msys\1.0\home\appveyor\ &&
     C:\MinGW\msys\1.0\bin\bash -e -l -c "cd libcerror" &&
     C:\MinGW\msys\1.0\bin\bash -e -l -c "./synclibs.sh && ./autogen.sh" &&
-    C:\MinGW\msys\1.0\bin\bash -e -l -c "./configure && make -j4" &&
-    C:\MinGW\msys\1.0\bin\bash -e -l -c "./runtestswin.sh" )
+    C:\MinGW\msys\1.0\bin\bash -e -l -c "./runtests.sh" )
 - cmd: if [%TARGET%]==[mingw-w64] (
     xcopy /q /s C:\projects\libcerror C:\msys64\home\appveyor\ &&
     C:\msys64\usr\bin\bash -e -l -c "cd libcerror" &&
     C:\msys64\usr\bin\bash -e -l -c "./synclibs.sh && ./autogen.sh" &&
-    C:\msys64\usr\bin\bash -e -l -c "./configure && make -j4" &&
-    C:\msys64\usr\bin\bash -e -l -c "./runtestswin.sh" )
+    C:\msys64\usr\bin\bash -e -l -c "./runtests.sh" )
 
 test_script:
 - cmd: rem Run tests

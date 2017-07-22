@@ -2,7 +2,7 @@ AC_PREREQ( 2.59 )
 
 AC_INIT(
  [libcerror],
- [20170606],
+ [20170722],
  [joachim.metz@gmail.com])
 
 AC_CONFIG_SRCDIR(
@@ -32,7 +32,7 @@ AC_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
 
 dnl Check for pkg-config
-AC_PATH_PROG(PKGCONFIG,[pkg-config])
+AC_PATH_PROG(PKGCONFIG,[pkg-config],[])
 
 dnl Support of internationalization (i18n)
 AM_GNU_GETTEXT([external])
