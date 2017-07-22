@@ -54,12 +54,12 @@ build_script:
     C:\cygwin\bin\bash -e -l -c "./synclibs.sh && ./autogen.sh" &&
     C:\cygwin\bin\bash -e -l -c "./runtests.sh" )
 - cmd: if [%TARGET%]==[cygwin64] (
-    xcopy /q /s C:\projects\libcerror C:\cygwin\home\appveyor\ &&
+    xcopy /q /s C:\projects\libcerror C:\cygwin64\home\appveyor\ &&
     C:\cygwin64\bin\bash -e -l -c "cd libcerror" &&
     C:\cygwin64\bin\bash -e -l -c "./synclibs.sh && ./autogen.sh" &&
     C:\cygwin64\bin\bash -e -l -c "./runtests.sh" )
 - cmd: if [%TARGET%]==[mingw] (
-    xcopy /q /s C:\projects\libcerror C:\msys64\home\appveyor\ &&
+    xcopy /q /s C:\projects\libcerror C:\MinGW\msys\1.0\home\appveyor\ &&
     C:\MinGW\msys\1.0\bin\bash -e -l -c "cd libcerror" &&
     C:\MinGW\msys\1.0\bin\bash -e -l -c "./synclibs.sh && ./autogen.sh" &&
     C:\MinGW\msys\1.0\bin\bash -e -l -c "./configure && make -j4" &&
