@@ -8,7 +8,9 @@ EXIT_FAILURE=1;
 EXIT_IGNORE=77;
 
 TEST_PREFIX=`dirname ${PWD}`;
+echo "T: ${TEST_PREFIX}"
 TEST_PREFIX=`basename ${TEST_PREFIX} | sed 's/^lib\([^-]*\).*$/\1/'`;
+echo "T: ${TEST_PREFIX}"
 
 TEST_PROFILE="lib${TEST_PREFIX}";
 LIBRARY_TESTS="error support";
