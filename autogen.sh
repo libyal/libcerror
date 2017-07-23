@@ -65,8 +65,10 @@ then
 	# Work-around autopoint failing to detect gettext version
 	# using func_trace which is not available on MSYS by writing
 	# the gettext version to intl/VERSION.
-	mkdir intl;
-
+	if ! test -d intl;
+	then
+		mkdir intl;
+	fi
 	GETTEXT_VERSION=`gettext --version | head -n1 | sed 's/^.* //'`;
 
 	echo "gettext-${GETTEXT_VERSION}" > intl/VERSION;
