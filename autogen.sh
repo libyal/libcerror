@@ -69,7 +69,7 @@ then
 
 	GETTEXT_VERSION=`gettext --version | head -n1 | sed 's/^.* //'`;
 
-	echo 'gettext-${GETTEXT_VERSION}' > intl/VERSION;
+	echo "gettext-${GETTEXT_VERSION}" > intl/VERSION;
 fi
 
 if test -x "${AUTORECONF}";
