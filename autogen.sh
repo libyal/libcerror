@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to generate ./configure using the autotools
 #
-# Version: 20170722
+# Version: 20170723
 
 EXIT_SUCCESS=0;
 EXIT_FAILURE=1;
@@ -29,6 +29,8 @@ then
 
 	# On MSYS autopoint errors on AM_GNU_GETTEXT_VERSION.
 	sed '/AM_GNU_GETTEXT_VERSION/ d' -i configure.ac;
+
+	touch ABOUT-NLS;
 else
 	PKGCONFIG="${BINDIR}/pkg-config";
 
