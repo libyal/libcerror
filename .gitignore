@@ -119,6 +119,7 @@ stamp-h[1-9]
 /include/libcerror/types.h
 /libcerror/libcerror.rc
 /libcerror/libcerror_definitions.h
+/tests/*.exe
 /tests/cerror_test_error
 /tests/cerror_test_support
 /tests/tmp*

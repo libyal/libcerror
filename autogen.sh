@@ -8,38 +8,40 @@ EXIT_FAILURE=1;
 
 BINDIR="/usr/bin";
 
-if ! test -x "${BINDIR}/pkg-config";
+if ! test -x "${BINDIR}/aclocal";
 then
 	BINDIR="/usr/local/bin";
 fi
-if ! test -x "${BINDIR}/pkg-config";
+if ! test -x "${BINDIR}/aclocal";
 then
 	BINDIR="/usr/local/bin";
 fi
-if ! test -x "${BINDIR}/pkg-config";
+if ! test -x "${BINDIR}/aclocal";
 then
 	# Default location of MacPorts installed binaries.
 	BINDIR="/opt/local/bin";
 fi
-
-if test "${OSTYPE}" = "msys";
+if ! test -x "${BINDIR}/aclocal";
 then
 	# Default location of MSYS-MinGW installed binaries.
 	BINDIR="/mingw/bin";
+fi
+if ! test -x "${BINDIR}/aclocal";
+then
+	# Default location of 32-bit MSYS2-MinGW installed binaries.
+	BINDIR="/mingw32/bin";
+fi
+if ! test -x "${BINDIR}/aclocal";
+then
+	# Default location of 64-bit MSYS2-MinGW installed binaries.
+	BINDIR="/mingw64/bin";
+fi
 
-	# On MSYS autopoint errors on AM_GNU_GETTEXT_VERSION.
-	sed '/AM_GNU_GETTEXT_VERSION/ d' -i configure.ac;
+if ! test -x "${BINDIR}/aclocal";
+then
+	echo "Unable to find autotools";
 
-	touch ABOUT-NLS;
-else
-	PKGCONFIG="${BINDIR}/pkg-config";
-
-	if ! test -x "${PKGCONFIG}";
-	then
-		echo "Unable to find: pkg-config";
-
-		exit ${EXIT_FAILURE};
-	fi
+	exit ${EXIT_FAILURE};
 fi
 
 ACLOCAL="${BINDIR}/aclocal";
@@ -49,6 +51,26 @@ AUTOMAKE="${BINDIR}/automake";
 AUTOPOINT="${BINDIR}/autopoint";
 AUTORECONF="${BINDIR}/autoreconf";
 LIBTOOLIZE="${BINDIR}/libtoolize";
+PKGCONFIG="${BINDIR}/pkg-config";
+
+if test "${OSTYPE}" != "msys" && ! test -x "${PKGCONFIG}";
+then
+	echo "Unable to find: pkg-config";
+
+	exit ${EXIT_FAILURE};
+fi
+
+if test "${OSTYPE}" = "msys";
+then
+	# Work-around autopoint failing to detect gettext version
+	# using func_trace which is not available on MSYS by writing
+	# the gettext version to intl/VERSION.
+	mkdir intl;
+
+	GETTEXT_VERSION=`gettext --version | head -n1 | sed 's/^.* //'`;
+
+	echo 'gettext-${GETTEXT_VERSION}' > intl/VERSION;
+fi
 
 if test -x "${AUTORECONF}";
 then
