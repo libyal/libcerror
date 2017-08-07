@@ -9,7 +9,7 @@ environment:
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
     VisualStudioVersion: 10.0
     platform: Win32
-    configuration: Debug
+    configuration: VSDebug
   - TARGET: vs2012
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
     VisualStudioVersion: 11.0
