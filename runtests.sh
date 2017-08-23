@@ -1,7 +1,7 @@
 #!/bin/bash
 # Script that runs the tests
 #
-# Version: 20170823
+# Version: 20170824
 
 EXIT_SUCCESS=0;
 EXIT_FAILURE=1;
@@ -71,15 +71,15 @@ run_configure_make_check()
 
 run_configure_make_check_with_asan()
 {
-	local LDCONFIG=`which ldconfig`;
+	local LDCONFIG=`which ldconfig 2> /dev/null`;
 
-	if ! test -x ${LDCONFIG};
+	if test -z ${LDCONFIG} || test ! -x ${LDCONFIG};
 	then
 		return ${EXIT_SUCCESS};
 	fi
 	local LIBASAN=`ldconfig -p | grep libasan | sed 's/^.* => //'`;
 
-	if ! test -f ${LIBASAN};
+	if test -z ${LIBASAN} || test ! -f ${LIBASAN};
 	then
 		return ${EXIT_SUCCESS};
 	fi
