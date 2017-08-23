@@ -85,7 +85,12 @@ run_configure_make_check_with_asan()
 	fi
 	export CPPFLAGS="-DHAVE_ASAN";
 	export CFLAGS="-fno-omit-frame-pointer -fsanitize=address";
-	export LDFLAGS="-fno-omit-frame-pointer -fsanitize=address -lasan";
+	export LDFLAGS="-fno-omit-frame-pointer -fsanitize=address";
+
+	if test ${CC} != "clang";
+	then
+		LDFLAGS="${LDFLAGS} -lasan";
+	fi
 
 	run_configure_make_check $@;
 	RESULT=$?;
