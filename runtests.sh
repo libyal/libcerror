@@ -1,7 +1,7 @@
 #!/bin/bash
 # Script that runs the tests
 #
-# Version: 20170805
+# Version: 20170823
 
 EXIT_SUCCESS=0;
 EXIT_FAILURE=1;
@@ -67,6 +67,34 @@ run_configure_make_check()
 		return ${RESULT};
 	fi
 	return ${EXIT_SUCCESS};
+}
+
+run_configure_make_check_with_asan()
+{
+	local LDCONFIG=`which ldconfig`;
+
+	if ! test -x ${LDCONFIG};
+	then
+		return ${EXIT_SUCCESS};
+	fi
+	local LIBASAN=`ldconfig -p | grep libasan | sed 's/^.* => //'`;
+
+	if ! test -f ${LIBASAN};
+	then
+		return ${EXIT_SUCCESS};
+	fi
+	export CPPFLAGS="-DHAVE_ASAN";
+	export CFLAGS="-fno-omit-frame-pointer -fsanitize=address";
+	export LDFLAGS="-fno-omit-frame-pointer -fsanitize=address -lasan";
+
+	run_configure_make_check $@;
+	RESULT=$?;
+
+	export CPPFLAGS=;
+	export CFLAGS=;
+	export LDFLAGS=;
+
+	return ${RESULT};
 }
 
 run_configure_make_check_with_coverage()
@@ -264,6 +292,21 @@ then
 			exit ${EXIT_FAILURE};
 		fi
 	fi
+fi
+
+if test ${HAVE_ENABLE_PYTHON} -eq 0 && test -n "${PYTHON_CONFIG}";
+then
+	CONFIGURE_OPTIONS="--enable-python";
+else
+	CONFIGURE_OPTIONS="";
+fi
+
+run_configure_make_check_with_asan ${CONFIGURE_OPTIONS};
+RESULT=$?;
+
+if test ${RESULT} -ne ${EXIT_SUCCESS};
+then
+	exit ${EXIT_FAILURE};
 fi
 
 run_configure_make_check_with_coverage;
