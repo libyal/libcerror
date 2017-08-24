@@ -574,7 +574,7 @@ void VARARGS(
 		{
 			message_size += LIBCERROR_MESSAGE_INCREMENT_SIZE;
 		}
-		else if( ( (size_t) print_count > message_size )
+		else if( ( (size_t) print_count >= message_size )
 		      || ( ( internal_error->messages[ message_index ] )[ print_count ] != 0 ) )
 		{
 			message_size = (size_t) ( print_count + 1 );
