@@ -1,7 +1,7 @@
 #!/bin/bash
 # Script that runs the tests
 #
-# Version: 20170824
+# Version: 20170825
 
 EXIT_SUCCESS=0;
 EXIT_FAILURE=1;
@@ -52,7 +52,7 @@ run_configure_make_check()
 		return ${RESULT};
 	fi
 
-	make check;
+	make check CHECK_WITH_STDERR=1;
 	RESULT=$?;
 
 	if test ${RESULT} -ne ${EXIT_SUCCESS};
@@ -92,13 +92,32 @@ run_configure_make_check_with_asan()
 		LDFLAGS="${LDFLAGS} -lasan";
 	fi
 
-	run_configure_make_check $@;
+	run_configure_make $@;
 	RESULT=$?;
 
 	export CPPFLAGS=;
 	export CFLAGS=;
 	export LDFLAGS=;
 
+	if test ${RESULT} -ne ${EXIT_SUCCESS};
+	then
+		return ${RESULT};
+	fi
+
+	make check CHECK_WITH_ASAN=1 CHECK_WITH_STDERR=1;
+	RESULT=$?;
+
+	if test ${RESULT} -ne ${EXIT_SUCCESS};
+	then
+		echo "Running: 'make check' failed";
+
+		if test -f tests/test-suite.log;
+		then
+			cat tests/test-suite.log;
+		fi
+
+		return ${RESULT};
+	fi
 	return ${RESULT};
 }
 
@@ -130,7 +149,7 @@ run_configure_make_check_python()
 		return ${RESULT};
 	fi
 
-	make check SKIP_LIBRARY_TESTS=1 SKIP_TOOLS_TESTS=1;
+	make check CHECK_WITH_STDERR=1 SKIP_LIBRARY_TESTS=1 SKIP_TOOLS_TESTS=1;
 	RESULT=$?;
 
 	if test ${RESULT} -ne ${EXIT_SUCCESS};
