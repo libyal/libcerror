@@ -1,7 +1,7 @@
 #!/bin/bash
 # Bash functions to run an executable for testing.
 #
-# Version: 20170825
+# Version: 20170826
 #
 # When CHECK_WITH_ASAN is set to a non-empty value the test executable
 # is run with asan, otherwise it is run without.
@@ -423,16 +423,22 @@ run_test_with_arguments()
 
 	if test -n "${CHECK_WITH_ASAN}";
 	then
-		assert_availability_binary ldconfig;
+		local CC=`cat ../config.log | grep -e "^CC=" | sed "s/CC='\\(.*\\)'/\1/"`;
+		local LIBASAN="";
 
-		local LIBASAN=`ldconfig -p | grep libasan | sed 's/^.* => //'`;
-
-		if ! test -f ${LIBASAN};
+		if test -z ${CC} || test ${CC} != "clang";
 		then
-			echo "Missing library: ${BINARY}";
-			echo "";
+			assert_availability_binary ldconfig;
 
-			exit ${EXIT_FAILURE};
+			LIBASAN=`ldconfig -p | grep libasan | sed 's/^.* => //'`;
+
+			if ! test -f ${LIBASAN};
+			then
+				echo "Missing library: ${BINARY}";
+				echo "";
+
+				exit ${EXIT_FAILURE};
+			fi
 		fi
 
 		local TEST_EXECUTABLE=$( find_binary_executable ${TEST_EXECUTABLE} );
@@ -703,16 +709,22 @@ run_test_with_input_and_arguments()
 
 	if test -n "${CHECK_WITH_ASAN}";
 	then
-		assert_availability_binary ldconfig;
+		local CC=`cat ../config.log | grep -e "^CC=" | sed "s/CC='\\(.*\\)'/\1/"`;
+		local LIBASAN="";
 
-		local LIBASAN=`ldconfig -p | grep libasan | sed 's/^.* => //'`;
-
-		if ! test -f ${LIBASAN};
+		if test -z ${CC} || test ${CC} != "clang";
 		then
-			echo "Missing library: ${BINARY}";
-			echo "";
+			assert_availability_binary ldconfig;
 
-			exit ${EXIT_FAILURE};
+			LIBASAN=`ldconfig -p | grep libasan | sed 's/^.* => //'`;
+
+			if ! test -f ${LIBASAN};
+			then
+				echo "Missing library: ${BINARY}";
+				echo "";
+
+				exit ${EXIT_FAILURE};
+			fi
 		fi
 
 		local TEST_EXECUTABLE=$( find_binary_executable ${TEST_EXECUTABLE} );

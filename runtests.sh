@@ -1,7 +1,7 @@
 #!/bin/bash
 # Script that runs the tests
 #
-# Version: 20170825
+# Version: 20170826
 
 EXIT_SUCCESS=0;
 EXIT_FAILURE=1;
@@ -87,7 +87,7 @@ run_configure_make_check_with_asan()
 	export CFLAGS="-fno-omit-frame-pointer -fsanitize=address";
 	export LDFLAGS="-fno-omit-frame-pointer -fsanitize=address";
 
-	if test ${CC} != "clang";
+	if test -z ${CC} || test ${CC} != "clang";
 	then
 		LDFLAGS="${LDFLAGS} -lasan";
 	fi
