@@ -2,7 +2,7 @@ AC_PREREQ( 2.59 )
 
 AC_INIT(
  [libcerror],
- [20170828],
+ [20170903],
  [joachim.metz@gmail.com])
 
 AC_CONFIG_SRCDIR(
@@ -94,11 +94,6 @@ dnl Set the date for the spec file
 AC_SUBST(
  [SPEC_DATE],
  [`date +"%a %b %e %Y" 2> /dev/null`])
-
-dnl Set the current working directory for PackageMaker files
-AC_SUBST(
- [PWD],
- [`pwd`])
 
 dnl Have configure make the Makefiles
 AC_CONFIG_FILES([Makefile])
