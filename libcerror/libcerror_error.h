@@ -34,9 +34,6 @@
 extern "C" {
 #endif
 
-#define LIBCERROR_MESSAGE_INCREMENT_SIZE	64
-#define LIBCERROR_MESSAGE_MAXIMUM_SIZE		4096
-
 typedef struct libcerror_internal_error libcerror_internal_error_t;
 
 struct libcerror_internal_error
@@ -66,6 +63,23 @@ struct libcerror_internal_error
 LIBCERROR_EXTERN \
 void libcerror_error_free(
       libcerror_error_t **error );
+
+void libcerror_error_resize(
+      libcerror_error_t **error,
+      int error_domain,
+      int error_code );
+
+void libcerror_error_vsnprintf(
+      char **error_string,
+      size_t *error_string_size,
+      const system_character_t *format_string,
+      size_t format_string_length,
+      va_list argument_list );
+
+void libcerror_error_get_system_format_string(
+      const char *format_string,
+      size_t format_string_length,
+      system_character_t **system_format_string );
 
 LIBCERROR_EXTERN \
 void libcerror_error_set(

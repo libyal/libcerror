@@ -23,15 +23,502 @@
 #include <memory.h>
 #include <narrow_string.h>
 #include <types.h>
+#include <system_string.h>
+#include <wide_string.h>
 
 #if defined( HAVE_STDLIB_H ) || defined( WINAPI )
 #include <stdlib.h>
+#endif
+
+#if defined( HAVE_STDARG_H ) || defined( WINAPI )
+#include <stdarg.h>
+#elif defined( HAVE_VARARGS_H )
+#include <varargs.h>
+#else
+#error Missing headers stdarg.h and varargs.h
+#endif
+
+#if defined( HAVE_GNU_DL_DLSYM )
+#define __USE_GNU
+#include <dlfcn.h>
+#undef __USE_GNU
+#endif
+
+#if defined( HAVE_GNU_DL_DLSYM ) && defined( __GNUC__ ) && !defined( __clang__ ) && !defined( __CYGWIN__ )
+#define HAVE_CERROR_TEST_FUNCTION_HOOK		1
 #endif
 
 #include "cerror_test_libcerror.h"
 #include "cerror_test_macros.h"
 #include "cerror_test_memory.h"
 #include "cerror_test_unused.h"
+
+#include "../libcerror/libcerror_definitions.h"
+#include "../libcerror/libcerror_error.h"
+#include "../libcerror/libcerror_system.h"
+
+#if defined( HAVE_CERROR_TEST_FUNCTION_HOOK )
+
+static int (*cerror_test_real_vsnprintf)(char *, size_t, const char *, va_list) = NULL;
+
+int cerror_test_vsnprintf_attempts_before_fail                                  = -1;
+int cerror_test_vsnprintf_fail_return_value                                     = -1;
+
+#endif /* defined( HAVE_CERROR_TEST_FUNCTION_HOOK ) */
+
+#if defined( HAVE_CERROR_TEST_FUNCTION_HOOK )
+
+/* Custom vsnprintf for testing error cases
+ * Returns 0 if successful or an error value otherwise
+ */
+int vsnprintf(
+     char *str,
+     size_t size,
+     const char *format,
+     va_list ap )
+{
+	int result = 0;
+
+	if( cerror_test_real_vsnprintf == NULL )
+	{
+		cerror_test_real_vsnprintf = dlsym(
+		                              RTLD_NEXT,
+		                              "vsnprintf" );
+	}
+	if( cerror_test_vsnprintf_attempts_before_fail == 0 )
+	{
+		cerror_test_vsnprintf_attempts_before_fail = -1;
+
+		return( cerror_test_vsnprintf_fail_return_value );
+	}
+	else if( cerror_test_vsnprintf_attempts_before_fail > 0 )
+	{
+		cerror_test_vsnprintf_attempts_before_fail--;
+	}
+	result = cerror_test_real_vsnprintf(
+	          str,
+	          size,
+	          format,
+	          ap );
+
+	return( result );
+}
+
+#endif /* defined( HAVE_CERROR_TEST_FUNCTION_HOOK ) */
+
+#if defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT )
+
+/* Tests the libcerror_error_resize function
+ * Returns 1 if successful or 0 if not
+ */
+int cerror_test_error_resize(
+     void )
+{
+	libcerror_error_t *error = NULL;
+
+	/* Test libcerror_error_resize
+	 */
+	libcerror_error_resize(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC );
+
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	  &error );
+
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test libcerror_error_resize multiple times
+	 */
+	libcerror_error_resize(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC );
+
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_resize(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC );
+
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_resize(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC );
+
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	  &error );
+
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	libcerror_error_resize(
+	 NULL,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC );
+
+#if defined( HAVE_CERROR_TEST_MEMORY )
+
+	/* Test libcerror_error_resize with malloc failing
+	 */
+	cerror_test_malloc_attempts_before_fail = 0;
+
+	libcerror_error_resize(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC );
+
+	if( cerror_test_malloc_attempts_before_fail != -1 )
+	{
+		cerror_test_malloc_attempts_before_fail = -1;
+
+		libcerror_error_free(
+		  &error );
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+	}
+	/* Test libcerror_error_resize with realloc failing
+	 */
+	libcerror_error_resize(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC );
+
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	cerror_test_realloc_attempts_before_fail = 0;
+
+	libcerror_error_resize(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC );
+
+	if( cerror_test_realloc_attempts_before_fail != -1 )
+	{
+		cerror_test_realloc_attempts_before_fail = -1;
+
+		libcerror_error_free(
+		  &error );
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+	}
+	cerror_test_realloc_attempts_before_fail = 1;
+
+	libcerror_error_resize(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC );
+
+	if( cerror_test_realloc_attempts_before_fail != -1 )
+	{
+		cerror_test_realloc_attempts_before_fail = -1;
+
+		libcerror_error_free(
+		  &error );
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+	}
+#endif /* defined( HAVE_CERROR_TEST_MEMORY ) */
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		  &error );
+	}
+	return( 0 );
+}
+
+/* Tests the libcerror_error_vsnprintf function
+ * Returns 1 if successful or 0 if not
+ */
+int cerror_test_error_vsnprintf(
+     void )
+{
+	va_list argument_list;
+
+	system_character_t *error_string = NULL;
+	size_t error_string_size         = 0;
+
+	/* Test cerror_test_error_vsnprintf
+	 */
+	libcerror_error_vsnprintf(
+	 &error_string,
+	 &error_string_size,
+	 "Test error.",
+	 12,
+	 argument_list );
+
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error_string",
+	 error_string );
+
+	CERROR_TEST_ASSERT_EQUAL_SIZE(
+	 "error_string_size",
+	 error_string_size,
+	 (size_t) 12 );
+
+	memory_free(
+	 error_string );
+
+	error_string = NULL;
+
+	/* Test cerror_test_error_vsnprintf with format string larger than LIBCERROR_MESSAGE_INCREMENT_SIZE
+	 */
+	libcerror_error_vsnprintf(
+	 &error_string,
+	 &error_string_size,
+	 "The aim of science is not to open the door to infinite wisdom, but to set a limit to infinite error.",
+	 101,
+	 argument_list );
+
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error_string",
+	 error_string );
+
+	CERROR_TEST_ASSERT_EQUAL_SIZE(
+	 "error_string_size",
+	 error_string_size,
+	 (size_t) 101 );
+
+	memory_free(
+	 error_string );
+
+	error_string = NULL;
+
+	/* Test error cases
+	 */
+	libcerror_error_vsnprintf(
+	 NULL,
+	 &error_string_size,
+	 "Test error.",
+	 12,
+	 argument_list );
+
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error_string",
+	 error_string );
+
+	libcerror_error_vsnprintf(
+	 &error_string,
+	 NULL,
+	 "Test error.",
+	 12,
+	 argument_list );
+
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error_string",
+	 error_string );
+
+	libcerror_error_vsnprintf(
+	 &error_string,
+	 &error_string_size,
+	 NULL,
+	 12,
+	 argument_list );
+
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error_string",
+	 error_string );
+
+#if defined( HAVE_CERROR_TEST_MEMORY )
+
+	/* Test libcerror_error_vsnprintf with realloc failing
+	 */
+	cerror_test_realloc_attempts_before_fail = 0;
+
+	libcerror_error_vsnprintf(
+	 &error_string,
+	 &error_string_size,
+	 "Test error 1.",
+	 14,
+	 argument_list );
+
+	if( cerror_test_realloc_attempts_before_fail != -1 )
+	{
+		cerror_test_realloc_attempts_before_fail = -1;
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_IS_NULL(
+		 "error_string",
+		 error_string );
+	}
+#endif /* defined( HAVE_CERROR_TEST_MEMORY ) */
+
+#if defined( HAVE_CERROR_TEST_FUNCTION_HOOK )
+
+	/* Test libcerror_error_vsnprintf with vsnprintf returning -1
+	 */
+	cerror_test_vsnprintf_attempts_before_fail = 0;
+	cerror_test_vsnprintf_fail_return_value    = -1;
+
+	libcerror_error_vsnprintf(
+	 &error_string,
+	 &error_string_size,
+	 "Test error 2.",
+	 14,
+	 argument_list );
+
+	if( cerror_test_vsnprintf_attempts_before_fail != -1 )
+	{
+		cerror_test_vsnprintf_attempts_before_fail = -1;
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_IS_NOT_NULL(
+		 "error_string",
+		 error_string );
+
+		CERROR_TEST_ASSERT_EQUAL_SIZE(
+		 "error_string_size",
+		 error_string_size,
+		 (size_t) 14 );
+	}
+	memory_free(
+	 error_string );
+
+	error_string = NULL;
+
+	/* Test libcerror_error_vsnprintf with vsnprintf returning
+	 * a value larger than LIBCERROR_MESSAGE_MAXIMUM_SIZE
+	 */
+	cerror_test_vsnprintf_attempts_before_fail = 0;
+	cerror_test_vsnprintf_fail_return_value    = 2 * LIBCERROR_MESSAGE_MAXIMUM_SIZE;
+
+	libcerror_error_vsnprintf(
+	 &error_string,
+	 &error_string_size,
+	 "Test error 6.",
+	 14,
+	 argument_list );
+
+	if( cerror_test_vsnprintf_attempts_before_fail != -1 )
+	{
+		cerror_test_vsnprintf_attempts_before_fail = -1;
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_IS_NOT_NULL(
+		 "error_string",
+		 error_string );
+
+		CERROR_TEST_ASSERT_EQUAL_SIZE(
+		 "error_string_size",
+		 error_string_size,
+		 (size_t) LIBCERROR_MESSAGE_MAXIMUM_SIZE );
+	}
+	memory_free(
+	 error_string );
+
+	error_string = NULL;
+
+#endif /* defined( HAVE_CERROR_TEST_FUNCTION_HOOK ) */
+
+	return( 1 );
+
+on_error:
+	if( error_string != NULL )
+	{
+		memory_free(
+		  error_string );
+	}
+	return( 0 );
+}
+
+/* Tests the libcerror_error_get_system_format_string function
+ * Returns 1 if successful or 0 if not
+ */
+int cerror_test_error_get_system_format_string(
+     void )
+{
+	system_character_t *format_string = NULL;
+
+	/* Test cerror_test_error_get_system_format_string
+	 */
+	libcerror_error_get_system_format_string(
+	 "Test error.",
+	 12,
+	 &format_string );
+
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "format_string",
+	 format_string );
+
+	format_string = NULL;
+
+	/* Test error cases
+	 */
+	libcerror_error_get_system_format_string(
+	 NULL,
+	 12,
+	 &format_string );
+
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "format_string",
+	 format_string );
+
+	libcerror_error_get_system_format_string(
+	 "Test error.",
+	 (size_t) SSIZE_MAX + 1,
+	 &format_string );
+
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "format_string",
+	 format_string );
+
+	libcerror_error_get_system_format_string(
+	 "Test error.",
+	 12,
+	 NULL );
+
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "format_string",
+	 format_string );
+
+	return( 1 );
+
+on_error:
+	return( 0 );
+}
+
+#endif /* #if defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT ) */
 
 /* Tests the libcerror_error_set function
  * Returns 1 if successful or 0 if not
@@ -48,25 +535,6 @@ int cerror_test_error_set(
 	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error." );
-
-	CERROR_TEST_ASSERT_IS_NOT_NULL(
-	 "error",
-	 error );
-
-	libcerror_error_free(
-	  &error );
-
-	CERROR_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
-	/* Test libcerror_error_set with format string larger than LIBCERROR_MESSAGE_INCREMENT_SIZE
-	 */
-	libcerror_error_set(
-	 &error,
-	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	 LIBCERROR_RUNTIME_ERROR_GENERIC,
-	 "The aim of science is not to open the door to infinite wisdom, but to set a limit to infinite error." );
 
 	CERROR_TEST_ASSERT_IS_NOT_NULL(
 	 "error",
@@ -138,7 +606,7 @@ int cerror_test_error_set(
 
 #if defined( HAVE_CERROR_TEST_MEMORY )
 
-	/* Test libcerror_error_set with malloc failing
+	/* Test libcerror_error_set with libcerror_error_resize failing
 	 */
 	cerror_test_malloc_attempts_before_fail = 0;
 
@@ -151,6 +619,9 @@ int cerror_test_error_set(
 	if( cerror_test_malloc_attempts_before_fail != -1 )
 	{
 		cerror_test_malloc_attempts_before_fail = -1;
+
+		libcerror_error_free(
+		  &error );
 	}
 	else
 	{
@@ -158,7 +629,7 @@ int cerror_test_error_set(
 		 "error",
 		 error );
 	}
-	/* Test libcerror_error_set with realloc failing
+	/* Test libcerror_error_set with libcerror_error_vsnprintf failing
 	 */
 	libcerror_error_set(
 	 &error,
@@ -170,7 +641,7 @@ int cerror_test_error_set(
 	 "error",
 	 error );
 
-	cerror_test_realloc_attempts_before_fail = 0;
+	cerror_test_realloc_attempts_before_fail = 2;
 
 	libcerror_error_set(
 	 &error,
@@ -181,42 +652,9 @@ int cerror_test_error_set(
 	if( cerror_test_realloc_attempts_before_fail != -1 )
 	{
 		cerror_test_realloc_attempts_before_fail = -1;
-	}
-	else
-	{
-		CERROR_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
-	}
-	cerror_test_realloc_attempts_before_fail = 1;
 
-	libcerror_error_set(
-	 &error,
-	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	 LIBCERROR_RUNTIME_ERROR_GENERIC,
-	 "Test error 3." );
-
-	if( cerror_test_realloc_attempts_before_fail != -1 )
-	{
-		cerror_test_realloc_attempts_before_fail = -1;
-	}
-	else
-	{
-		CERROR_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
-	}
-	cerror_test_realloc_attempts_before_fail = 2;
-
-	libcerror_error_set(
-	 &error,
-	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	 LIBCERROR_RUNTIME_ERROR_GENERIC,
-	 "Test error 4." );
-
-	if( cerror_test_realloc_attempts_before_fail != -1 )
-	{
-		cerror_test_realloc_attempts_before_fail = -1;
+		libcerror_error_free(
+		  &error );
 	}
 	else
 	{
@@ -226,12 +664,7 @@ int cerror_test_error_set(
 	}
 #endif /* defined( HAVE_CERROR_TEST_MEMORY ) */
 
-	libcerror_error_free(
-	  &error );
-
-	CERROR_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
+	/* TODO test libcerror_error_get_system_format_string failing */
 
 	return( 1 );
 
@@ -752,26 +1185,6 @@ int cerror_test_system_set_error(
 	 "error",
 	 error );
 
-	/* Test libcerror_system_set_error with format string larger than LIBCERROR_MESSAGE_INCREMENT_SIZE
-	 */
-	libcerror_system_set_error(
-	 &error,
-	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	 LIBCERROR_RUNTIME_ERROR_GENERIC,
-	 error_code,
-	 "The aim of science is not to open the door to infinite wisdom, but to set a limit to infinite error." );
-
-	CERROR_TEST_ASSERT_IS_NOT_NULL(
-	 "error",
-	 error );
-
-	libcerror_error_free(
-	  &error );
-
-	CERROR_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
 	/* Test libcerror_system_set_error multiple times
 	 */
 	libcerror_system_set_error(
@@ -836,7 +1249,7 @@ int cerror_test_system_set_error(
 
 #if defined( HAVE_CERROR_TEST_MEMORY )
 
-	/* Test libcerror_system_set_error with malloc failing
+	/* Test libcerror_system_set_error with libcerror_error_resize failing
 	 */
 	cerror_test_malloc_attempts_before_fail = 0;
 
@@ -850,6 +1263,9 @@ int cerror_test_system_set_error(
 	if( cerror_test_malloc_attempts_before_fail != -1 )
 	{
 		cerror_test_malloc_attempts_before_fail = -1;
+
+		libcerror_error_free(
+		  &error );
 	}
 	else
 	{
@@ -857,20 +1273,9 @@ int cerror_test_system_set_error(
 		 "error",
 		 error );
 	}
-	/* Test libcerror_system_set_error with realloc failing
+	/* Test libcerror_system_set_error with libcerror_error_vsnprintf failing
 	 */
-	libcerror_system_set_error(
-	 &error,
-	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	 LIBCERROR_RUNTIME_ERROR_GENERIC,
-	 error_code,
-	 "Test error 1." );
-
-	CERROR_TEST_ASSERT_IS_NOT_NULL(
-	 "error",
-	 error );
-
-	cerror_test_realloc_attempts_before_fail = 0;
+	cerror_test_realloc_attempts_before_fail = 2;
 
 	libcerror_system_set_error(
 	 &error,
@@ -882,44 +1287,9 @@ int cerror_test_system_set_error(
 	if( cerror_test_realloc_attempts_before_fail != -1 )
 	{
 		cerror_test_realloc_attempts_before_fail = -1;
-	}
-	else
-	{
-		CERROR_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
-	}
-	cerror_test_realloc_attempts_before_fail = 1;
 
-	libcerror_system_set_error(
-	 &error,
-	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	 LIBCERROR_RUNTIME_ERROR_GENERIC,
-	 error_code,
-	 "Test error 3." );
-
-	if( cerror_test_realloc_attempts_before_fail != -1 )
-	{
-		cerror_test_realloc_attempts_before_fail = -1;
-	}
-	else
-	{
-		CERROR_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
-	}
-	cerror_test_realloc_attempts_before_fail = 2;
-
-	libcerror_system_set_error(
-	 &error,
-	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	 LIBCERROR_RUNTIME_ERROR_GENERIC,
-	 error_code,
-	 "Test error 4." );
-
-	if( cerror_test_realloc_attempts_before_fail != -1 )
-	{
-		cerror_test_realloc_attempts_before_fail = -1;
+		libcerror_error_free(
+		  &error );
 	}
 	else
 	{
@@ -928,6 +1298,8 @@ int cerror_test_system_set_error(
 		 error );
 	}
 #endif /* defined( HAVE_CERROR_TEST_MEMORY ) */
+
+	/* TODO test libcerror_error_get_system_format_string failing */
 
 	return( 1 );
 
@@ -954,6 +1326,22 @@ int main(
 {
 	CERROR_TEST_UNREFERENCED_PARAMETER( argc )
 	CERROR_TEST_UNREFERENCED_PARAMETER( argv )
+
+#if defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT )
+
+	CERROR_TEST_RUN(
+	 "libcerror_error_vsnprintf",
+	 cerror_test_error_vsnprintf );
+
+	CERROR_TEST_RUN(
+	 "libcerror_error_get_system_format_string",
+	 cerror_test_error_get_system_format_string );
+
+#endif /* #if defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT ) */
+
+	CERROR_TEST_RUN(
+	 "libcerror_error_resize",
+	 cerror_test_error_resize );
 
 	CERROR_TEST_RUN(
 	 "libcerror_error_set",
@@ -982,6 +1370,12 @@ int main(
 	CERROR_TEST_RUN(
 	 "libcerror_error_backtrace_sprint",
 	 cerror_test_error_backtrace_sprint );
+
+#if defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT )
+
+	/* TODO add tests for libcerror_system_copy_string_from_error_number */
+
+#endif /* #if defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT ) */
 
 	CERROR_TEST_RUN(
 	 "libcerror_system_set_error",

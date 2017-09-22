@@ -34,6 +34,8 @@
 #error Missing headers stdarg.h and varargs.h
 #endif
 
+#include <errno.h>
+
 #include "libcerror_definitions.h"
 #include "libcerror_error.h"
 #include "libcerror_types.h"
@@ -81,51 +83,90 @@ void libcerror_error_free(
 	}
 }
 
-#if defined( HAVE_STDARG_H ) || defined( WINAPI )
-#define VARARGS( function, error, error_domain, error_code, type, argument ) \
-        function( error, error_domain, error_code, type argument, ... )
-#define VASTART( argument_list, type, name ) \
-        va_start( argument_list, name )
-#define VAEND( argument_list ) \
-        va_end( argument_list )
-
-#elif defined( HAVE_VARARGS_H )
-#define VARARGS( function, error, error_domain, error_code, type, argument ) \
-        function( error, error_domain, error_code, va_alist ) va_dcl
-#define VASTART( argument_list, type, name ) \
-        { type name; va_start( argument_list ); name = va_arg( argument_list, type )
-#define VAEND( argument_list ) \
-        va_end( argument_list ); }
-
-#endif
-
-/* Sets an error
- * Creates the error if necessary
- * The error domain and code are set only the first time and the error message is appended for back tracing
+/* Creates and resizes an error
  */
-void VARARGS(
-      libcerror_error_set,
+void libcerror_error_resize(
       libcerror_error_t **error,
       int error_domain,
-      int error_code,
-      const char *,
-      format_string )
+      int error_code )
 {
-	va_list argument_list;
-
 	libcerror_internal_error_t *internal_error = NULL;
-	system_character_t *system_format_string   = NULL;
 	void *reallocation                         = NULL;
-	size_t format_string_length                = 0;
-	size_t message_size                        = LIBCERROR_MESSAGE_INCREMENT_SIZE;
 	int message_index                          = 0;
-	int print_count                            = 0;
-
-#if defined( __BORLANDC__ ) || defined( _MSC_VER )
-	size_t string_index                        = 0;
-#endif
 
 	if( error == NULL )
+	{
+		return;
+	}
+	if( *error == NULL )
+	{
+		internal_error = memory_allocate_structure(
+		                  libcerror_internal_error_t );
+
+		if( internal_error == NULL )
+		{
+			return;
+		}
+		internal_error->domain             = error_domain;
+		internal_error->code               = error_code;
+		internal_error->number_of_messages = 0;
+		internal_error->messages           = NULL;
+		internal_error->sizes              = NULL;
+
+		*error = (libcerror_error_t *) internal_error;
+	}
+	internal_error = (libcerror_internal_error_t *) *error;
+
+	message_index = internal_error->number_of_messages;
+
+	reallocation = memory_reallocate(
+	                internal_error->messages,
+	                sizeof( system_character_t * ) * ( internal_error->number_of_messages + 1 ) );
+
+	if( reallocation == NULL )
+	{
+		return;
+	}
+	internal_error->messages = (system_character_t **) reallocation;
+
+	internal_error->messages[ message_index ] = NULL;
+
+	reallocation = memory_reallocate(
+	                internal_error->sizes,
+	                sizeof( size_t ) * ( internal_error->number_of_messages + 1 ) );
+
+	if( reallocation == NULL )
+	{
+		return;
+	}
+	internal_error->sizes = (size_t *) reallocation;
+
+	internal_error->sizes[ message_index ] = 0;
+
+	internal_error->number_of_messages += 1;
+
+	return;
+}
+
+/* Prints a formatted error string
+ */
+void libcerror_error_vsnprintf(
+      char **error_string,
+      size_t *error_string_size,
+      const system_character_t *format_string,
+      size_t format_string_length,
+      va_list argument_list )
+{
+	void *reallocation       = NULL;
+	size_t message_size      = 0;
+	size_t next_message_size = LIBCERROR_MESSAGE_INCREMENT_SIZE;
+	int print_count          = 0;
+
+	if( error_string == NULL )
+	{
+		return;
+	}
+	if( error_string_size == NULL )
 	{
 		return;
 	}
@@ -133,58 +174,164 @@ void VARARGS(
 	{
 		return;
 	}
-	format_string_length = narrow_string_length(
-	                        format_string );
-
-	if( format_string_length > message_size )
+	if( format_string_length > next_message_size )
 	{
-		message_size = ( ( format_string_length / LIBCERROR_MESSAGE_INCREMENT_SIZE ) + 1 )
-		             * LIBCERROR_MESSAGE_INCREMENT_SIZE;
+		next_message_size = ( ( format_string_length / LIBCERROR_MESSAGE_INCREMENT_SIZE ) + 1 )
+		                  * LIBCERROR_MESSAGE_INCREMENT_SIZE;
 	}
-#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 	do
 	{
+		if( next_message_size >= LIBCERROR_MESSAGE_MAXIMUM_SIZE )
+		{
+			next_message_size = LIBCERROR_MESSAGE_MAXIMUM_SIZE;
+		}
 		reallocation = memory_reallocate(
-		                system_format_string,
-		                sizeof( system_character_t ) * ( format_string_length + 1 ) );
+		                *error_string,
+		                sizeof( system_character_t ) * next_message_size );
 
 		if( reallocation == NULL )
 		{
-			goto on_error;
+			memory_free(
+			 *error_string );
+
+			*error_string      = NULL;
+			*error_string_size = 0;
+
+			return;
 		}
-		system_format_string = (system_character_t *) reallocation;
+		*error_string = (system_character_t *) reallocation;
+
+		message_size = next_message_size;
+
+		print_count = system_string_vsnprintf(
+		               *error_string,
+		               message_size,
+		               format_string,
+		               argument_list );
+
+		if( print_count <= -1 )
+		{
+			next_message_size += LIBCERROR_MESSAGE_INCREMENT_SIZE;
+		}
+		else if( ( (size_t) print_count >= message_size )
+		      || ( ( *error_string )[ print_count ] != (system_character_t) 0 ) )
+		{
+			next_message_size = (size_t) ( print_count + 1 );
+			print_count       = -1;
+		}
+		else
+		{
+			*error_string_size = (size_t) print_count + 1;
+		}
+		if( message_size >= LIBCERROR_MESSAGE_MAXIMUM_SIZE )
+		{
+			break;
+		}
+	}
+	while( print_count <= -1 );
+
+	if( message_size >= LIBCERROR_MESSAGE_MAXIMUM_SIZE )
+	{
+		( *error_string )[ LIBCERROR_MESSAGE_MAXIMUM_SIZE - 4 ] = (system_character_t) '.';
+		( *error_string )[ LIBCERROR_MESSAGE_MAXIMUM_SIZE - 3 ] = (system_character_t) '.';
+		( *error_string )[ LIBCERROR_MESSAGE_MAXIMUM_SIZE - 2 ] = (system_character_t) '.';
+		( *error_string )[ LIBCERROR_MESSAGE_MAXIMUM_SIZE - 1 ] = 0;
+		*error_string_size                                      = (size_t) LIBCERROR_MESSAGE_MAXIMUM_SIZE;
+	}
+}
+
+/* Retrieves the format string as a system string
+ */
+void libcerror_error_get_system_format_string(
+      const char *format_string,
+      size_t format_string_length,
+      system_character_t **system_format_string )
+{
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
+	void *reallocation               = NULL;
+	size_t next_format_string_length = 0;
+	int print_count                  = 0;
+#endif
+
+#if defined( __BORLANDC__ ) || defined( _MSC_VER )
+	size_t string_index              = 0;
+#endif
+
+	if( format_string == NULL )
+	{
+		return;
+	}
+	if( format_string_length > (size_t) SSIZE_MAX )
+	{
+		return;
+	}
+	if( system_format_string == NULL )
+	{
+		return;
+	}
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
+	next_format_string_length = format_string_length;
+
+	do
+	{
+		if( next_format_string_length >= LIBCERROR_MESSAGE_MAXIMUM_SIZE )
+		{
+			next_format_string_length = LIBCERROR_MESSAGE_MAXIMUM_SIZE;
+		}
+		reallocation = memory_reallocate(
+		                *system_format_string,
+		                sizeof( system_character_t ) * ( next_format_string_length + 1 ) );
+
+		if( reallocation == NULL )
+		{
+			memory_free(
+			 *system_format_string );
+
+			*system_format_string = NULL;
+
+			return;
+		}
+		*system_format_string = (system_character_t *) reallocation;
+
+		format_string_length = next_format_string_length;
 
 #if defined( __BORLANDC__ ) || defined( _MSC_VER )
 		print_count = wide_string_snwprintf(
-		               system_format_string,
+		               *system_format_string,
 		               format_string_length + 1,
 		               L"%S",
 		               format_string );
 #else
 		print_count = wide_string_snwprintf(
-		               system_format_string,
+		               *system_format_string,
 		               format_string_length + 1,
 		               L"%s",
 		               format_string );
 #endif
 		if( print_count <= -1 )
 		{
-			format_string_length += LIBCERROR_MESSAGE_INCREMENT_SIZE;
+			next_format_string_length += LIBCERROR_MESSAGE_INCREMENT_SIZE;
 		}
 		else if( ( (size_t) print_count > format_string_length )
 		      || ( system_format_string[ print_count ] != 0 ) )
 		{
-			format_string_length = (size_t) print_count;
-			print_count  = -1;
+			next_format_string_length = (size_t) print_count;
+			print_count               = -1;
 		}
-		if( format_string_length >= LIBCERROR_MESSAGE_MAXIMUM_SIZE )
+		if( next_format_string_length >= LIBCERROR_MESSAGE_MAXIMUM_SIZE )
 		{
-			goto on_error;
+/* TODO handle similar to error string */
+			memory_free(
+			 *system_format_string );
+
+			*system_format_string = NULL;
+
+			return;
 		}
 	}
 	while( print_count <= -1 );
 #else
-	system_format_string = (system_character_t *) format_string;
+	*system_format_string = (system_character_t *) format_string;
 #endif
 
 #if defined( __BORLANDC__ ) || defined( _MSC_VER )
@@ -210,107 +357,92 @@ void VARARGS(
 		string_index++;
 	}
 #endif /* defined( __BORLANDC__ ) || defined( _MSC_VER ) */
+}
+
+#if defined( HAVE_STDARG_H ) || defined( WINAPI )
+#define VARARGS( function, error, error_domain, error_code, type, argument ) \
+        function( error, error_domain, error_code, type argument, ... )
+#define VASTART( argument_list, type, name ) \
+        va_start( argument_list, name )
+#define VAEND( argument_list ) \
+        va_end( argument_list )
+
+#elif defined( HAVE_VARARGS_H )
+#define VARARGS( function, error, error_domain, error_code, type, argument ) \
+        function( error, error_domain, error_code, va_alist ) va_dcl
+#define VASTART( argument_list, type, name ) \
+        { type name; va_start( argument_list ); name = va_arg( argument_list, type )
+#define VAEND( argument_list ) \
+        va_end( argument_list ); }
+
+#endif /* defined( HAVE_STDARG_H ) || defined( WINAPI ) */
+
+/* Sets an error
+ * Creates the error if necessary
+ * The error domain and code are set only the first time and the error message is appended for back tracing
+ */
+void VARARGS(
+      libcerror_error_set,
+      libcerror_error_t **error,
+      int error_domain,
+      int error_code,
+      const char *,
+      format_string )
+{
+	va_list argument_list;
+
+	libcerror_internal_error_t *internal_error = NULL;
+	system_character_t *system_format_string   = NULL;
+	size_t format_string_length                = 0;
+	int message_index                          = 0;
+
+	if( error == NULL )
+	{
+		return;
+	}
+	if( format_string == NULL )
+	{
+		return;
+	}
+	format_string_length = narrow_string_length(
+	                        format_string );
+
+	libcerror_error_get_system_format_string(
+	 format_string,
+	 format_string_length,
+	 &system_format_string );
+
+	if( system_format_string == NULL )
+	{
+		goto on_error;
+	}
+	libcerror_error_resize(
+	 error,
+	 error_domain,
+	 error_code );
 
 	if( *error == NULL )
 	{
-		internal_error = memory_allocate_structure(
-		                  libcerror_internal_error_t );
-
-		if( internal_error == NULL )
-		{
-			goto on_error;
-		}
-		internal_error->domain             = error_domain;
-		internal_error->code               = error_code;
-		internal_error->number_of_messages = 0;
-		internal_error->messages           = NULL;
-		internal_error->sizes              = NULL;
-
-		*error = (libcerror_error_t *) internal_error;
+		return;
 	}
-	else
-	{
-		internal_error = (libcerror_internal_error_t *) *error;
-	}
-	reallocation = memory_reallocate(
-	                internal_error->messages,
-	                sizeof( system_character_t * ) * ( internal_error->number_of_messages + 1 ) );
+	internal_error = (libcerror_internal_error_t *) *error;
 
-	if( reallocation == NULL )
-	{
-		goto on_error;
-	}
-	internal_error->messages = (system_character_t **) reallocation;
+	message_index = internal_error->number_of_messages - 1;
 
-	reallocation = memory_reallocate(
-	                internal_error->sizes,
-	                sizeof( size_t ) * ( internal_error->number_of_messages + 1 ) );
+	VASTART(
+	 argument_list,
+	 const char *,
+	 format_string );
 
-	if( reallocation == NULL )
-	{
-		goto on_error;
-	}
-	internal_error->sizes = (size_t *) reallocation;
+	libcerror_error_vsnprintf(
+	 &( internal_error->messages[ message_index ] ),
+	 &( internal_error->sizes[ message_index ] ),
+	 system_format_string,
+	 format_string_length,
+	 argument_list );
 
-	message_index                             = internal_error->number_of_messages;
-	internal_error->messages[ message_index ] = NULL;
-	internal_error->sizes[ message_index ]    = 0;
-	internal_error->number_of_messages       += 1;
-
-	do
-	{
-		reallocation = memory_reallocate(
-		                internal_error->messages[ message_index ],
-		                sizeof( system_character_t ) * message_size );
-
-		if( reallocation == NULL )
-		{
-			memory_free(
-			 internal_error->messages[ message_index ] );
-
-			internal_error->messages[ message_index ] = NULL;
-
-			break;
-		}
-		internal_error->messages[ message_index ] = (system_character_t *) reallocation;
-
-		VASTART(
-		 argument_list,
-		 const char *,
-		 format_string );
-
-		print_count = system_string_vsprintf(
-		               internal_error->messages[ message_index ],
-		               message_size,
-		               system_format_string,
-		               argument_list );
-
-		VAEND(
-		 argument_list );
-
-		if( print_count <= -1 )
-		{
-			message_size += LIBCERROR_MESSAGE_INCREMENT_SIZE;
-		}
-		else if( ( (size_t) print_count >= message_size )
-		      || ( ( internal_error->messages[ message_index ] )[ print_count ] != (system_character_t) 0 ) )
-		{
-			message_size = (size_t) ( print_count + 1 );
-			print_count  = -1;
-		}
-		if( message_size >= LIBCERROR_MESSAGE_MAXIMUM_SIZE )
-		{
-			memory_free(
-			 internal_error->messages[ message_index ] );
-
-			internal_error->messages[ message_index ] = NULL;
-			internal_error->sizes[ message_index ]    = 0;
-
-			break;
-		}
-		internal_error->sizes[ message_index ] = (size_t) print_count + 1;
-	}
-	while( print_count <= -1 );
+	VAEND(
+	 argument_list );
 
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 	memory_free(
