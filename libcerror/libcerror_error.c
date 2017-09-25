@@ -148,98 +148,6 @@ void libcerror_error_resize(
 	return;
 }
 
-/* Prints a formatted error string
- */
-void libcerror_error_vsnprintf(
-      char **error_string,
-      size_t *error_string_size,
-      const system_character_t *format_string,
-      size_t format_string_length,
-      va_list argument_list )
-{
-	void *reallocation       = NULL;
-	size_t message_size      = 0;
-	size_t next_message_size = LIBCERROR_MESSAGE_INCREMENT_SIZE;
-	int print_count          = 0;
-
-	if( error_string == NULL )
-	{
-		return;
-	}
-	if( error_string_size == NULL )
-	{
-		return;
-	}
-	if( format_string == NULL )
-	{
-		return;
-	}
-	if( format_string_length > next_message_size )
-	{
-		next_message_size = ( ( format_string_length / LIBCERROR_MESSAGE_INCREMENT_SIZE ) + 1 )
-		                  * LIBCERROR_MESSAGE_INCREMENT_SIZE;
-	}
-	do
-	{
-		if( next_message_size >= LIBCERROR_MESSAGE_MAXIMUM_SIZE )
-		{
-			next_message_size = LIBCERROR_MESSAGE_MAXIMUM_SIZE;
-		}
-		reallocation = memory_reallocate(
-		                *error_string,
-		                sizeof( system_character_t ) * next_message_size );
-
-		if( reallocation == NULL )
-		{
-			memory_free(
-			 *error_string );
-
-			*error_string      = NULL;
-			*error_string_size = 0;
-
-			return;
-		}
-		*error_string = (system_character_t *) reallocation;
-
-		message_size = next_message_size;
-
-		print_count = system_string_vsnprintf(
-		               *error_string,
-		               message_size,
-		               format_string,
-		               argument_list );
-
-		if( print_count <= -1 )
-		{
-			next_message_size += LIBCERROR_MESSAGE_INCREMENT_SIZE;
-		}
-		else if( ( (size_t) print_count >= message_size )
-		      || ( ( *error_string )[ print_count ] != (system_character_t) 0 ) )
-		{
-			next_message_size = (size_t) ( print_count + 1 );
-			print_count       = -1;
-		}
-		else
-		{
-			*error_string_size = (size_t) print_count + 1;
-		}
-		if( message_size >= LIBCERROR_MESSAGE_MAXIMUM_SIZE )
-		{
-			break;
-		}
-	}
-	while( print_count <= -1 );
-
-	if( message_size >= LIBCERROR_MESSAGE_MAXIMUM_SIZE )
-	{
-		( *error_string )[ LIBCERROR_MESSAGE_MAXIMUM_SIZE - 4 ] = (system_character_t) '.';
-		( *error_string )[ LIBCERROR_MESSAGE_MAXIMUM_SIZE - 3 ] = (system_character_t) '.';
-		( *error_string )[ LIBCERROR_MESSAGE_MAXIMUM_SIZE - 2 ] = (system_character_t) '.';
-		( *error_string )[ LIBCERROR_MESSAGE_MAXIMUM_SIZE - 1 ] = 0;
-		*error_string_size                                      = (size_t) LIBCERROR_MESSAGE_MAXIMUM_SIZE;
-	}
-}
-
 /* Retrieves the format string as a system string
  */
 void libcerror_error_get_system_format_string(
@@ -270,7 +178,7 @@ void libcerror_error_get_system_format_string(
 		return;
 	}
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-	next_format_string_length = format_string_length;
+	next_format_string_length = format_string_length + 1;
 
 	do
 	{
@@ -280,7 +188,7 @@ void libcerror_error_get_system_format_string(
 		}
 		reallocation = memory_reallocate(
 		                *system_format_string,
-		                sizeof( system_character_t ) * ( next_format_string_length + 1 ) );
+		                sizeof( system_character_t ) * next_format_string_length );
 
 		if( reallocation == NULL )
 		{
@@ -298,13 +206,13 @@ void libcerror_error_get_system_format_string(
 #if defined( __BORLANDC__ ) || defined( _MSC_VER )
 		print_count = wide_string_snwprintf(
 		               *system_format_string,
-		               format_string_length + 1,
+		               format_string_length,
 		               L"%S",
 		               format_string );
 #else
 		print_count = wide_string_snwprintf(
 		               *system_format_string,
-		               format_string_length + 1,
+		               format_string_length,
 		               L"%s",
 		               format_string );
 #endif
@@ -313,7 +221,7 @@ void libcerror_error_get_system_format_string(
 			next_format_string_length += LIBCERROR_MESSAGE_INCREMENT_SIZE;
 		}
 		else if( ( (size_t) print_count > format_string_length )
-		      || ( system_format_string[ print_count ] != 0 ) )
+		      || ( ( *system_format_string )[ print_count ] != 0 ) )
 		{
 			next_format_string_length = (size_t) print_count;
 			print_count               = -1;
@@ -341,17 +249,17 @@ void libcerror_error_get_system_format_string(
 
 	while( string_index < format_string_length )
 	{
-		if( system_format_string[ string_index ] == 0 )
+		if( ( *system_format_string )[ string_index ] == 0 )
 		{
 			break;
 		}
-		else if( system_format_string[ string_index ] == (system_character_t) '%' )
+		else if( ( *system_format_string )[ string_index ] == (system_character_t) '%' )
 		{
 			string_index++;
 
-			if( system_format_string[ string_index ] == (system_character_t) 's' )
+			if( ( *system_format_string )[ string_index ] == (system_character_t) 's' )
 			{
-				 system_format_string[ string_index ] = (system_character_t) 'S';
+				 ( *system_format_string )[ string_index ] = (system_character_t) 'S';
 			}
 		}
 		string_index++;
@@ -392,9 +300,15 @@ void VARARGS(
 	va_list argument_list;
 
 	libcerror_internal_error_t *internal_error = NULL;
+	system_character_t *error_string           = NULL;
 	system_character_t *system_format_string   = NULL;
+	void *reallocation                         = NULL;
+	size_t error_string_size                   = 0;
 	size_t format_string_length                = 0;
+	size_t message_size                        = 0;
+	size_t next_message_size                   = LIBCERROR_MESSAGE_INCREMENT_SIZE;
 	int message_index                          = 0;
+	int print_count                            = 0;
 
 	if( error == NULL )
 	{
@@ -423,26 +337,86 @@ void VARARGS(
 
 	if( *error == NULL )
 	{
-		return;
+		goto on_error;
 	}
 	internal_error = (libcerror_internal_error_t *) *error;
 
+	if( format_string_length > next_message_size )
+	{
+		next_message_size = ( ( format_string_length / LIBCERROR_MESSAGE_INCREMENT_SIZE ) + 1 )
+		                  * LIBCERROR_MESSAGE_INCREMENT_SIZE;
+	}
 	message_index = internal_error->number_of_messages - 1;
+	error_string  = internal_error->messages[ message_index ];
 
-	VASTART(
-	 argument_list,
-	 const char *,
-	 format_string );
+	do
+	{
+		if( next_message_size >= LIBCERROR_MESSAGE_MAXIMUM_SIZE )
+		{
+			next_message_size = LIBCERROR_MESSAGE_MAXIMUM_SIZE;
+		}
+		reallocation = memory_reallocate(
+		                error_string,
+		                sizeof( system_character_t ) * next_message_size );
 
-	libcerror_error_vsnprintf(
-	 &( internal_error->messages[ message_index ] ),
-	 &( internal_error->sizes[ message_index ] ),
-	 system_format_string,
-	 format_string_length,
-	 argument_list );
+		if( reallocation == NULL )
+		{
+			memory_free(
+			 error_string );
 
-	VAEND(
-	 argument_list );
+			goto on_error;
+		}
+		error_string = (system_character_t *) reallocation;
+
+		message_size = next_message_size;
+
+		/* argument_list cannot be reused in successive calls to vsnprintf
+		 */
+		VASTART(
+		 argument_list,
+		 const char *,
+		 format_string );
+
+		print_count = system_string_vsnprintf(
+		               error_string,
+		               message_size,
+		               system_format_string,
+		               argument_list );
+
+		VAEND(
+		 argument_list );
+
+		if( print_count <= -1 )
+		{
+			next_message_size += LIBCERROR_MESSAGE_INCREMENT_SIZE;
+		}
+		else if( ( (size_t) print_count >= message_size )
+		      || ( error_string[ print_count ] != (system_character_t) 0 ) )
+		{
+			next_message_size = (size_t) ( print_count + 1 );
+			print_count       = -1;
+		}
+		else
+		{
+			error_string_size = (size_t) print_count + 1;
+		}
+		if( message_size >= LIBCERROR_MESSAGE_MAXIMUM_SIZE )
+		{
+			break;
+		}
+	}
+	while( print_count <= -1 );
+
+	if( message_size >= LIBCERROR_MESSAGE_MAXIMUM_SIZE )
+	{
+		error_string[ LIBCERROR_MESSAGE_MAXIMUM_SIZE - 4 ] = (system_character_t) '.';
+		error_string[ LIBCERROR_MESSAGE_MAXIMUM_SIZE - 3 ] = (system_character_t) '.';
+		error_string[ LIBCERROR_MESSAGE_MAXIMUM_SIZE - 2 ] = (system_character_t) '.';
+		error_string[ LIBCERROR_MESSAGE_MAXIMUM_SIZE - 1 ] = 0;
+		error_string_size                                  = (size_t) LIBCERROR_MESSAGE_MAXIMUM_SIZE;
+	}
+	internal_error->messages[ message_index ] = error_string;
+	internal_error->sizes[ message_index ]    = error_string_size;
 
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 	memory_free(
@@ -460,12 +434,6 @@ on_error:
 		 system_format_string );
 	}
 #endif
-	if( ( *error == NULL )
-	 && ( internal_error != NULL ) )
-	{
-		memory_free(
-		 internal_error );
-	}
 	return;
 }
 

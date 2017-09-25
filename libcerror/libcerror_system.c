@@ -400,10 +400,13 @@ void VARARGS(
 	va_list argument_list;
 
 	libcerror_internal_error_t *internal_error = NULL;
+	system_character_t *error_string           = NULL;
 	system_character_t *system_format_string   = NULL;
 	void *reallocation                         = NULL;
+	size_t error_string_size                   = 0;
 	size_t format_string_length                = 0;
 	size_t message_size                        = 0;
+	size_t next_message_size                   = LIBCERROR_MESSAGE_INCREMENT_SIZE;
 	size_t string_index                        = 0;
 	int message_index                          = 0;
 	int print_count                            = 0;
@@ -435,24 +438,86 @@ void VARARGS(
 
 	if( *error == NULL )
 	{
-		return;
+		goto on_error;
 	}
 	internal_error = (libcerror_internal_error_t *) *error;
 
-	VASTART(
-	 argument_list,
-	 const char *,
-	 format_string );
+	if( format_string_length > next_message_size )
+	{
+		next_message_size = ( ( format_string_length / LIBCERROR_MESSAGE_INCREMENT_SIZE ) + 1 )
+		                  * LIBCERROR_MESSAGE_INCREMENT_SIZE;
+	}
+	message_index = internal_error->number_of_messages - 1;
+	error_string  = internal_error->messages[ message_index ];
 
-	libcerror_error_vsnprintf(
-	 &( internal_error->messages[ message_index ] ),
-	 &( internal_error->sizes[ message_index ] ),
-	 system_format_string,
-	 format_string_length,
-	 argument_list );
+	do
+	{
+		if( next_message_size >= LIBCERROR_MESSAGE_MAXIMUM_SIZE )
+		{
+			next_message_size = LIBCERROR_MESSAGE_MAXIMUM_SIZE;
+		}
+		reallocation = memory_reallocate(
+		                error_string,
+		                sizeof( system_character_t ) * next_message_size );
 
-	VAEND(
-	 argument_list );
+		if( reallocation == NULL )
+		{
+			memory_free(
+			 error_string );
+
+			goto on_error;
+		}
+		error_string = (system_character_t *) reallocation;
+
+		message_size = next_message_size;
+
+		/* argument_list cannot be reused in successive calls to vsnprintf
+		 */
+		VASTART(
+		 argument_list,
+		 const char *,
+		 format_string );
+
+		print_count = system_string_vsnprintf(
+		               error_string,
+		               message_size,
+		               system_format_string,
+		               argument_list );
+
+		VAEND(
+		 argument_list );
+
+		if( print_count <= -1 )
+		{
+			next_message_size += LIBCERROR_MESSAGE_INCREMENT_SIZE;
+		}
+		else if( ( (size_t) print_count >= message_size )
+		      || ( error_string[ print_count ] != (system_character_t) 0 ) )
+		{
+			next_message_size = (size_t) ( print_count + 1 );
+			print_count       = -1;
+		}
+		else
+		{
+			error_string_size = (size_t) print_count + 1;
+		}
+		if( message_size >= LIBCERROR_MESSAGE_MAXIMUM_SIZE )
+		{
+			break;
+		}
+	}
+	while( print_count <= -1 );
+
+	if( message_size >= LIBCERROR_MESSAGE_MAXIMUM_SIZE )
+	{
+		error_string[ LIBCERROR_MESSAGE_MAXIMUM_SIZE - 4 ] = (system_character_t) '.';
+		error_string[ LIBCERROR_MESSAGE_MAXIMUM_SIZE - 3 ] = (system_character_t) '.';
+		error_string[ LIBCERROR_MESSAGE_MAXIMUM_SIZE - 2 ] = (system_character_t) '.';
+		error_string[ LIBCERROR_MESSAGE_MAXIMUM_SIZE - 1 ] = 0;
+		error_string_size                                  = (size_t) LIBCERROR_MESSAGE_MAXIMUM_SIZE;
+	}
+	internal_error->messages[ message_index ] = error_string;
+	internal_error->sizes[ message_index ]    = error_string_size;
 
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 	memory_free(
@@ -534,12 +599,6 @@ on_error:
 		 system_format_string );
 	}
 #endif
-	if( ( *error == NULL )
-	 && ( internal_error != NULL ) )
-	{
-		memory_free(
-		 internal_error );
-	}
 	return;
 }
 

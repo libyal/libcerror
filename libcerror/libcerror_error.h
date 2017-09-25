@@ -69,13 +69,6 @@ void libcerror_error_resize(
       int error_domain,
       int error_code );
 
-void libcerror_error_vsnprintf(
-      char **error_string,
-      size_t *error_string_size,
-      const system_character_t *format_string,
-      size_t format_string_length,
-      va_list argument_list );
-
 void libcerror_error_get_system_format_string(
       const char *format_string,
       size_t format_string_length,
