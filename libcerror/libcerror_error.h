@@ -60,14 +60,19 @@ struct libcerror_internal_error
 	size_t *sizes;
 };
 
+int libcerror_error_initialize(
+     libcerror_error_t **error,
+     int error_domain,
+     int error_code );
+
 LIBCERROR_EXTERN \
 void libcerror_error_free(
       libcerror_error_t **error );
 
-void libcerror_error_resize(
-      libcerror_error_t **error,
-      int error_domain,
-      int error_code );
+int libcerror_error_resize(
+     libcerror_error_t **error,
+     int error_domain,
+     int error_code );
 
 void libcerror_error_get_system_format_string(
       const char *format_string,

@@ -431,12 +431,10 @@ void VARARGS(
 	{
 		goto on_error;
 	}
-	libcerror_error_resize(
-	 error,
-	 error_domain,
-	 error_code );
-
-	if( *error == NULL )
+	if( libcerror_error_resize(
+	     error,
+	     error_domain,
+	     error_code ) != 1 )
 	{
 		goto on_error;
 	}

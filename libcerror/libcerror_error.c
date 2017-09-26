@@ -40,6 +40,42 @@
 #include "libcerror_error.h"
 #include "libcerror_types.h"
 
+/* Creates an error
+ * Returns 1 if successful or -1 on error
+ */
+int libcerror_error_initialize(
+     libcerror_error_t **error,
+     int error_domain,
+     int error_code )
+{
+	libcerror_internal_error_t *internal_error = NULL;
+
+	if( error == NULL )
+	{
+		return( -1 );
+	}
+	if( *error != NULL )
+	{
+		return( -1 );
+	}
+	internal_error = memory_allocate_structure(
+	                  libcerror_internal_error_t );
+
+	if( internal_error == NULL )
+	{
+		return( -1 );
+	}
+	internal_error->domain             = error_domain;
+	internal_error->code               = error_code;
+	internal_error->number_of_messages = 0;
+	internal_error->messages           = NULL;
+	internal_error->sizes              = NULL;
+
+	*error = (libcerror_error_t *) internal_error;
+
+	return( 1 );
+}
+
 /* Free an error and its elements
  */
 void libcerror_error_free(
@@ -83,49 +119,45 @@ void libcerror_error_free(
 	}
 }
 
-/* Creates and resizes an error
+/* Resizes an error
+ * Returns 1 if successful or -1 on error
  */
-void libcerror_error_resize(
-      libcerror_error_t **error,
-      int error_domain,
-      int error_code )
+int libcerror_error_resize(
+     libcerror_error_t **error,
+     int error_domain,
+     int error_code )
 {
 	libcerror_internal_error_t *internal_error = NULL;
 	void *reallocation                         = NULL;
 	int message_index                          = 0;
+	int number_of_messages                     = 0;
 
 	if( error == NULL )
 	{
-		return;
+		return( -1 );
 	}
 	if( *error == NULL )
 	{
-		internal_error = memory_allocate_structure(
-		                  libcerror_internal_error_t );
-
-		if( internal_error == NULL )
+		if( libcerror_error_initialize(
+		     error,
+		     error_domain,
+		     error_code ) != 1 )
 		{
-			return;
+			return( -1 );
 		}
-		internal_error->domain             = error_domain;
-		internal_error->code               = error_code;
-		internal_error->number_of_messages = 0;
-		internal_error->messages           = NULL;
-		internal_error->sizes              = NULL;
-
-		*error = (libcerror_error_t *) internal_error;
 	}
 	internal_error = (libcerror_internal_error_t *) *error;
 
-	message_index = internal_error->number_of_messages;
+	message_index      = internal_error->number_of_messages;
+	number_of_messages = internal_error->number_of_messages + 1;
 
 	reallocation = memory_reallocate(
 	                internal_error->messages,
-	                sizeof( system_character_t * ) * ( internal_error->number_of_messages + 1 ) );
+	                sizeof( system_character_t * ) * number_of_messages );
 
 	if( reallocation == NULL )
 	{
-		return;
+		return( -1 );
 	}
 	internal_error->messages = (system_character_t **) reallocation;
 
@@ -133,11 +165,11 @@ void libcerror_error_resize(
 
 	reallocation = memory_reallocate(
 	                internal_error->sizes,
-	                sizeof( size_t ) * ( internal_error->number_of_messages + 1 ) );
+	                sizeof( size_t ) * number_of_messages );
 
 	if( reallocation == NULL )
 	{
-		return;
+		return( -1 );
 	}
 	internal_error->sizes = (size_t *) reallocation;
 
@@ -145,7 +177,7 @@ void libcerror_error_resize(
 
 	internal_error->number_of_messages += 1;
 
-	return;
+	return( 1 );
 }
 
 /* Retrieves the format string as a system string
@@ -330,12 +362,10 @@ void VARARGS(
 	{
 		goto on_error;
 	}
-	libcerror_error_resize(
-	 error,
-	 error_domain,
-	 error_code );
-
-	if( *error == NULL )
+	if( libcerror_error_resize(
+	     error,
+	     error_domain,
+	     error_code ) != 1 )
 	{
 		goto on_error;
 	}
