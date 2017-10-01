@@ -183,7 +183,7 @@ int cerror_test_error_initialize(
 	error = (libcerror_error_t *) 0x12345678;
 
 	result = libcerror_error_initialize(
-	          NULL,
+	          &error,
 	          LIBCERROR_ERROR_DOMAIN_RUNTIME,
 	          LIBCERROR_RUNTIME_ERROR_GENERIC );
 
@@ -236,7 +236,7 @@ on_error:
 	return( 0 );
 }
 
-#endif /* #if defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT ) */
+#endif /* defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT ) */
 
 /* Tests the libcerror_error_free function
  * Returns 1 if successful or 0 if not
@@ -263,12 +263,22 @@ int cerror_test_error_resize(
 	libcerror_error_t *error = NULL;
 	int result               = 0;
 
+	/* Initialize test
+	 */
+	libcerror_error_set(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 "Test error." );
+
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
 	/* Test libcerror_error_resize
 	 */
 	result = libcerror_error_resize(
-	          &error,
-	          LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	          LIBCERROR_RUNTIME_ERROR_GENERIC );
+	          (libcerror_internal_error_t *) error );
 
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "result",
@@ -276,73 +286,13 @@ int cerror_test_error_resize(
 	 1 );
 
 	CERROR_TEST_ASSERT_IS_NOT_NULL(
-	 "error",
-	 error );
-
-	libcerror_error_free(
-	  &error );
-
-	CERROR_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
-	/* Test libcerror_error_resize multiple times
-	 */
-	result = libcerror_error_resize(
-	          &error,
-	          LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	          LIBCERROR_RUNTIME_ERROR_GENERIC );
-
-	CERROR_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
-
-	CERROR_TEST_ASSERT_IS_NOT_NULL(
-	 "error",
-	 error );
-
-	result = libcerror_error_resize(
-	          &error,
-	          LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	          LIBCERROR_RUNTIME_ERROR_GENERIC );
-
-	CERROR_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
-
-	CERROR_TEST_ASSERT_IS_NOT_NULL(
-	 "error",
-	 error );
-
-	result = libcerror_error_resize(
-	          &error,
-	          LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	          LIBCERROR_RUNTIME_ERROR_GENERIC );
-
-	CERROR_TEST_ASSERT_EQUAL_INT(
-	 "result",
-	 result,
-	 1 );
-
-	CERROR_TEST_ASSERT_IS_NOT_NULL(
-	 "error",
-	 error );
-
-	libcerror_error_free(
-	  &error );
-
-	CERROR_TEST_ASSERT_IS_NULL(
 	 "error",
 	 error );
 
 	/* Test error cases
 	 */
 	result = libcerror_error_resize(
-	          NULL,
-	          LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	          LIBCERROR_RUNTIME_ERROR_GENERIC );
+	          NULL );
 
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "result",
@@ -356,16 +306,11 @@ int cerror_test_error_resize(
 	cerror_test_malloc_attempts_before_fail = 0;
 
 	result = libcerror_error_resize(
-	          &error,
-	          LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	          LIBCERROR_RUNTIME_ERROR_GENERIC );
+	          (libcerror_internal_error_t *) error );
 
 	if( cerror_test_malloc_attempts_before_fail != -1 )
 	{
 		cerror_test_malloc_attempts_before_fail = -1;
-
-		libcerror_error_free(
-		  &error );
 	}
 	else
 	{
@@ -381,9 +326,7 @@ int cerror_test_error_resize(
 	/* Test libcerror_error_resize with realloc failing
 	 */
 	result = libcerror_error_resize(
-	          &error,
-	          LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	          LIBCERROR_RUNTIME_ERROR_GENERIC );
+	          (libcerror_internal_error_t *) error );
 
 	CERROR_TEST_ASSERT_IS_NOT_NULL(
 	 "error",
@@ -392,16 +335,11 @@ int cerror_test_error_resize(
 	cerror_test_realloc_attempts_before_fail = 0;
 
 	result = libcerror_error_resize(
-	          &error,
-	          LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	          LIBCERROR_RUNTIME_ERROR_GENERIC );
+	          (libcerror_internal_error_t *) error );
 
 	if( cerror_test_realloc_attempts_before_fail != -1 )
 	{
 		cerror_test_realloc_attempts_before_fail = -1;
-
-		libcerror_error_free(
-		  &error );
 	}
 	else
 	{
@@ -417,16 +355,11 @@ int cerror_test_error_resize(
 	cerror_test_realloc_attempts_before_fail = 1;
 
 	result = libcerror_error_resize(
-	          &error,
-	          LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	          LIBCERROR_RUNTIME_ERROR_GENERIC );
+	          (libcerror_internal_error_t *) error );
 
 	if( cerror_test_realloc_attempts_before_fail != -1 )
 	{
 		cerror_test_realloc_attempts_before_fail = -1;
-
-		libcerror_error_free(
-		  &error );
 	}
 	else
 	{
@@ -441,6 +374,15 @@ int cerror_test_error_resize(
 	}
 #endif /* defined( HAVE_CERROR_TEST_MEMORY ) */
 
+	/* Clean up
+	 */
+	libcerror_error_free(
+	  &error );
+
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	return( 1 );
 
 on_error:
@@ -451,6 +393,8 @@ on_error:
 	}
 	return( 0 );
 }
+
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 
 /* Tests the libcerror_error_get_system_format_string function
  * Returns 1 if successful or 0 if not
@@ -508,7 +452,9 @@ on_error:
 	return( 0 );
 }
 
-#endif /* #if defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT ) */
+#endif /* defined( HAVE_WIDE_SYSTEM_CHARACTER ) */
+
+#endif /* defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT ) */
 
 /* Tests the libcerror_error_set function
  * Returns 1 if successful or 0 if not
@@ -951,7 +897,7 @@ int cerror_test_error_fprint(
 
 	error = NULL;
 
-#endif /* #if defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT ) */
+#endif /* defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT ) */
 
 	return( 1 );
 
@@ -1602,7 +1548,7 @@ int main(
 	 "libcerror_error_initialize",
 	 cerror_test_error_initialize );
 
-#endif /* #if defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT ) */
+#endif /* defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT ) */
 
 	CERROR_TEST_RUN(
 	 "libcerror_error_free",
@@ -1614,11 +1560,15 @@ int main(
 	 "libcerror_error_resize",
 	 cerror_test_error_resize );
 
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
+
 	CERROR_TEST_RUN(
 	 "libcerror_error_get_system_format_string",
 	 cerror_test_error_get_system_format_string );
 
-#endif /* #if defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT ) */
+#endif /* defined( HAVE_WIDE_SYSTEM_CHARACTER ) */
+
+#endif /* defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT ) */
 
 	CERROR_TEST_RUN(
 	 "libcerror_error_set",
@@ -1652,7 +1602,7 @@ int main(
 
 	/* TODO add tests for libcerror_system_copy_string_from_error_number */
 
-#endif /* #if defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT ) */
+#endif /* defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT ) */
 
 	CERROR_TEST_RUN(
 	 "libcerror_system_set_error",

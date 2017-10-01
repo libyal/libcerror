@@ -422,6 +422,7 @@ void VARARGS(
 	format_string_length = narrow_string_length(
 	                        format_string );
 
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 	libcerror_error_get_system_format_string(
 	 format_string,
 	 format_string_length,
@@ -429,17 +430,28 @@ void VARARGS(
 
 	if( system_format_string == NULL )
 	{
-		goto on_error;
+		return;
 	}
-	if( libcerror_error_resize(
-	     error,
-	     error_domain,
-	     error_code ) != 1 )
+#else
+	system_format_string = (system_character_t *) format_string;
+#endif
+	if( *error == NULL )
 	{
-		goto on_error;
+		if( libcerror_error_initialize(
+		     error,
+		     error_domain,
+		     error_code ) != 1 )
+		{
+			goto on_error;
+		}
 	}
 	internal_error = (libcerror_internal_error_t *) *error;
 
+	if( libcerror_error_resize(
+	     internal_error ) != 1 )
+	{
+		goto on_error;
+	}
 	if( format_string_length > next_message_size )
 	{
 		next_message_size = ( ( format_string_length / LIBCERROR_MESSAGE_INCREMENT_SIZE ) + 1 )

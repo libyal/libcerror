@@ -123,31 +123,16 @@ void libcerror_error_free(
  * Returns 1 if successful or -1 on error
  */
 int libcerror_error_resize(
-     libcerror_error_t **error,
-     int error_domain,
-     int error_code )
+     libcerror_internal_error_t *internal_error )
 {
-	libcerror_internal_error_t *internal_error = NULL;
-	void *reallocation                         = NULL;
-	int message_index                          = 0;
-	int number_of_messages                     = 0;
+	void *reallocation     = NULL;
+	int message_index      = 0;
+	int number_of_messages = 0;
 
-	if( error == NULL )
+	if( internal_error == NULL )
 	{
 		return( -1 );
 	}
-	if( *error == NULL )
-	{
-		if( libcerror_error_initialize(
-		     error,
-		     error_domain,
-		     error_code ) != 1 )
-		{
-			return( -1 );
-		}
-	}
-	internal_error = (libcerror_internal_error_t *) *error;
-
 	message_index      = internal_error->number_of_messages;
 	number_of_messages = internal_error->number_of_messages + 1;
 
@@ -180,6 +165,8 @@ int libcerror_error_resize(
 	return( 1 );
 }
 
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
+
 /* Retrieves the format string as a system string
  */
 void libcerror_error_get_system_format_string(
@@ -187,11 +174,9 @@ void libcerror_error_get_system_format_string(
       size_t format_string_length,
       system_character_t **system_format_string )
 {
-#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 	void *reallocation               = NULL;
 	size_t next_format_string_length = 0;
 	int print_count                  = 0;
-#endif
 
 #if defined( __BORLANDC__ ) || defined( _MSC_VER )
 	size_t string_index              = 0;
@@ -209,7 +194,6 @@ void libcerror_error_get_system_format_string(
 	{
 		return;
 	}
-#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 	next_format_string_length = format_string_length + 1;
 
 	do
@@ -270,9 +254,6 @@ void libcerror_error_get_system_format_string(
 		}
 	}
 	while( print_count <= -1 );
-#else
-	*system_format_string = (system_character_t *) format_string;
-#endif
 
 #if defined( __BORLANDC__ ) || defined( _MSC_VER )
 	/* Rewrite %s to %S
@@ -298,6 +279,8 @@ void libcerror_error_get_system_format_string(
 	}
 #endif /* defined( __BORLANDC__ ) || defined( _MSC_VER ) */
 }
+
+#endif /* defined( HAVE_WIDE_SYSTEM_CHARACTER ) */
 
 #if defined( HAVE_STDARG_H ) || defined( WINAPI )
 #define VARARGS( function, error, error_domain, error_code, type, argument ) \
@@ -353,6 +336,7 @@ void VARARGS(
 	format_string_length = narrow_string_length(
 	                        format_string );
 
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 	libcerror_error_get_system_format_string(
 	 format_string,
 	 format_string_length,
@@ -360,17 +344,28 @@ void VARARGS(
 
 	if( system_format_string == NULL )
 	{
-		goto on_error;
+		return;
 	}
-	if( libcerror_error_resize(
-	     error,
-	     error_domain,
-	     error_code ) != 1 )
+#else
+	system_format_string = (system_character_t *) format_string;
+#endif
+	if( *error == NULL )
 	{
-		goto on_error;
+		if( libcerror_error_initialize(
+		     error,
+		     error_domain,
+		     error_code ) != 1 )
+		{
+			goto on_error;
+		}
 	}
 	internal_error = (libcerror_internal_error_t *) *error;
 
+	if( libcerror_error_resize(
+	     internal_error ) != 1 )
+	{
+		goto on_error;
+	}
 	if( format_string_length > next_message_size )
 	{
 		next_message_size = ( ( format_string_length / LIBCERROR_MESSAGE_INCREMENT_SIZE ) + 1 )
