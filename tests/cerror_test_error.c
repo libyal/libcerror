@@ -51,50 +51,14 @@
 
 #if defined( HAVE_CERROR_TEST_FUNCTION_HOOK )
 
-static char *(*cerror_test_real_strncpy)(char *, const char *, size_t)          = NULL;
 static int (*cerror_test_real_vsnprintf)(char *, size_t, const char *, va_list) = NULL;
 
-int cerror_test_strncpy_attempts_before_fail                                    = -1;
 int cerror_test_vsnprintf_attempts_before_fail                                  = -1;
 int cerror_test_vsnprintf_fail_return_value                                     = -1;
 
 #endif /* defined( HAVE_CERROR_TEST_FUNCTION_HOOK ) */
 
 #if defined( HAVE_CERROR_TEST_FUNCTION_HOOK )
-
-/* Custom strncpy for testing error cases
- * Returns a pointer to dest if successful or an error value otherwise
- */
-char *strncpy(
-     char *dest,
-     const char *src,
-     size_t n )
-{
-	char *result = NULL;
-
-	if( cerror_test_real_strncpy == NULL )
-	{
-		cerror_test_real_strncpy = dlsym(
-		                            RTLD_NEXT,
-		                            "strncpy" );
-	}
-	if( cerror_test_strncpy_attempts_before_fail == 0 )
-	{
-		cerror_test_strncpy_attempts_before_fail = -1;
-
-		return( NULL );
-	}
-	else if( cerror_test_strncpy_attempts_before_fail > 0 )
-	{
-		cerror_test_strncpy_attempts_before_fail--;
-	}
-	result = cerror_test_real_strncpy(
-	          dest,
-	          src,
-	          n );
-
-	return( result );
-}
 
 /* Custom vsnprintf for testing error cases
  * Returns the number of characters printed if successful or an error value otherwise
@@ -1103,20 +1067,20 @@ int cerror_test_error_sprint(
 	 print_count,
 	 -1 )
 
-#if defined( HAVE_CERROR_TEST_FUNCTION_HOOK )
+#if defined( HAVE_CERROR_TEST_MEMORY ) && defined( OPTIMIZATION_DISABLED )
 
-	/* Test libcerror_error_sprint with strncpy returning NULL
+	/* Test libcerror_error_sprint with memcpy returning NULL
 	 */
-	cerror_test_strncpy_attempts_before_fail = 0;
+	cerror_test_memcpy_attempts_before_fail = 0;
 
 	print_count = libcerror_error_sprint(
 	               error,
 	               string,
 	               128 );
 
-	if( cerror_test_strncpy_attempts_before_fail != -1 )
+	if( cerror_test_memcpy_attempts_before_fail != -1 )
 	{
-		cerror_test_strncpy_attempts_before_fail = -1;
+		cerror_test_memcpy_attempts_before_fail = -1;
 	}
 	else
 	{
@@ -1128,7 +1092,7 @@ int cerror_test_error_sprint(
 	libcerror_error_free(
 	  &error );
 
-#endif /* defined( HAVE_CERROR_TEST_FUNCTION_HOOK ) */
+#endif /* defined( HAVE_CERROR_TEST_MEMORY ) && defined( OPTIMIZATION_DISABLED ) */
 
 	/* Clean up
 	 */
@@ -1249,20 +1213,20 @@ int cerror_test_error_backtrace_sprint(
 	 print_count,
 	 -1 )
 
-#if defined( HAVE_CERROR_TEST_FUNCTION_HOOK )
+#if defined( HAVE_CERROR_TEST_MEMORY ) && defined( OPTIMIZATION_DISABLED )
 
-	/* Test libcerror_error_backtrace_sprint with strncpy returning NULL
+	/* Test libcerror_error_backtrace_sprint with memcpy returning NULL
 	 */
-	cerror_test_strncpy_attempts_before_fail = 0;
+	cerror_test_memcpy_attempts_before_fail = 0;
 
 	print_count = libcerror_error_backtrace_sprint(
 	               error,
 	               string,
 	               128 );
 
-	if( cerror_test_strncpy_attempts_before_fail != -1 )
+	if( cerror_test_memcpy_attempts_before_fail != -1 )
 	{
-		cerror_test_strncpy_attempts_before_fail = -1;
+		cerror_test_memcpy_attempts_before_fail = -1;
 	}
 	else
 	{
@@ -1274,7 +1238,7 @@ int cerror_test_error_backtrace_sprint(
 	libcerror_error_free(
 	  &error );
 
-#endif /* defined( HAVE_CERROR_TEST_FUNCTION_HOOK ) */
+#endif /* defined( HAVE_CERROR_TEST_MEMORY ) && defined( OPTIMIZATION_DISABLED ) */
 
 	/* Clean up
 	 */

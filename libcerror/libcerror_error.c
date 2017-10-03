@@ -494,6 +494,7 @@ int libcerror_error_fprint(
      FILE *stream )
 {
 	libcerror_internal_error_t *internal_error = NULL;
+	system_character_t *error_string           = NULL;
 	int message_index                          = 0;
 	int print_count                            = 0;
 
@@ -512,19 +513,20 @@ int libcerror_error_fprint(
 		return( -1 );
 	}
 	message_index = internal_error->number_of_messages - 1;
+	error_string  = internal_error->messages[ message_index ];
 
-	if( internal_error->messages[ message_index ] != NULL )
+	if( error_string != NULL )
 	{
 #if defined( WINAPI )
 		print_count = fprintf(
 		               stream,
 		               "%" PRIs_SYSTEM "\r\n",
-		               internal_error->messages[ message_index ] );
+		               error_string );
 #else
 		print_count = fprintf(
 		               stream,
 		               "%" PRIs_SYSTEM "\n",
-		               internal_error->messages[ message_index ] );
+		               error_string );
 #endif
 		if( print_count <= -1 )
 		{
@@ -544,8 +546,13 @@ int libcerror_error_sprint(
      size_t size )
 {
 	libcerror_internal_error_t *internal_error = NULL;
+	system_character_t *error_string           = NULL;
 	size_t print_count                         = 0;
-	int message_index                          = 0;
+	size_t message_index                       = 0;
+
+#if !defined( HAVE_WIDE_SYSTEM_CHARACTER )
+	size_t error_string_size                   = 0;
+#endif
 
 	if( error == NULL )
 	{
@@ -570,8 +577,9 @@ int libcerror_error_sprint(
 		return( -1 );
 	}
 	message_index = internal_error->number_of_messages - 1;
+	error_string  = internal_error->messages[ message_index ];
 
-	if( internal_error->messages[ message_index ] != NULL )
+	if( error_string != NULL )
 	{
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 #if defined( _MSC_VER )
@@ -579,7 +587,7 @@ int libcerror_error_sprint(
 		     &print_count,
 		     string,
 		     size,
-		     internal_error->messages[ message_index ],
+		     error_string,
 		     _TRUNCATE ) != 0 )
 		{
 			return( -1 );
@@ -587,7 +595,7 @@ int libcerror_error_sprint(
 #else
 		print_count = wcstombs(
 			       string,
-			       internal_error->messages[ message_index ],
+			       error_string,
 			       size );
 
 		if( print_count == (size_t) -1 )
@@ -601,22 +609,20 @@ int libcerror_error_sprint(
 			return( -1 );
 		}
 #else
-		if( ( internal_error->sizes[ message_index ] + 1 ) >= size )
+		error_string_size = internal_error->sizes[ message_index ];
+
+		if( size < ( error_string_size + 1 ) )
 		{
 			return( -1 );
 		}
 		if( narrow_string_copy(
 		     string,
-		     internal_error->messages[ message_index ],
-		     internal_error->sizes[ message_index ] ) == NULL )
+		     error_string,
+		     error_string_size ) == NULL )
 		{
-			string[ 0 ] = (system_character_t) 0;
-
 			return( -1 );
 		}
-		print_count = internal_error->sizes[ message_index ];
-
-		string[ print_count ] = (system_character_t) 0;
+		print_count = error_string_size;
 
 #endif /* defined( HAVE_WIDE_SYSTEM_CHARACTER ) */
 	}
@@ -635,6 +641,7 @@ int libcerror_error_backtrace_fprint(
      FILE *stream )
 {
 	libcerror_internal_error_t *internal_error = NULL;
+	system_character_t *error_string           = NULL;
 	int message_index                          = 0;
 	int print_count                            = 0;
 	int total_print_count                      = 0;
@@ -657,18 +664,20 @@ int libcerror_error_backtrace_fprint(
 	     message_index < internal_error->number_of_messages;
 	     message_index++ )
 	{
-		if( internal_error->messages[ message_index ] != NULL )
+		error_string = internal_error->messages[ message_index ];
+
+		if( error_string != NULL )
 		{
 #if defined( WINAPI )
 			print_count = fprintf(
 			               stream,
 			               "%" PRIs_SYSTEM "\r\n",
-			               internal_error->messages[ message_index ] );
+			               error_string );
 #else
 			print_count = fprintf(
 			               stream,
 			               "%" PRIs_SYSTEM "\n",
-			               internal_error->messages[ message_index ] );
+			               error_string );
 #endif
 			if( print_count <= -1 )
 			{
@@ -690,11 +699,14 @@ int libcerror_error_backtrace_sprint(
      size_t size )
 {
 	libcerror_internal_error_t *internal_error = NULL;
+	system_character_t *error_string           = NULL;
 	size_t string_index                        = 0;
 	int message_index                          = 0;
 
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 	size_t print_count                         = 0;
+#else
+	size_t error_string_size                   = 0;
 #endif
 
 	if( error == NULL )
@@ -727,7 +739,9 @@ int libcerror_error_backtrace_sprint(
 	     message_index < internal_error->number_of_messages;
 	     message_index++ )
 	{
-		if( internal_error->messages[ message_index ] != NULL )
+		error_string = internal_error->messages[ message_index ];
+
+		if( error_string != NULL )
 		{
 			if( string_index > 0 )
 			{
@@ -753,7 +767,7 @@ int libcerror_error_backtrace_sprint(
 			     &print_count,
 			     &( string[ string_index ] ),
 			     size - string_index,
-			     internal_error->messages[ message_index ],
+			     error_string,
 			     _TRUNCATE ) != 0 )
 			{
 				return( -1 );
@@ -761,7 +775,7 @@ int libcerror_error_backtrace_sprint(
 #else
 			print_count = wcstombs(
 			               &( string[ string_index ] ),
-			               internal_error->messages[ message_index ],
+			               error_string,
 			               size - string_index );
 
 			if( print_count == (size_t) -1 )
@@ -781,20 +795,20 @@ int libcerror_error_backtrace_sprint(
 				string_index--;
 			}
 #else
-			if( ( string_index + internal_error->sizes[ message_index ] + 1 ) >= size )
+			error_string_size = internal_error->sizes[ message_index ];
+
+			if( size < ( string_index + error_string_size + 1 ) )
 			{
 				return( -1 );
 			}
 			if( narrow_string_copy(
 			     &( string[ string_index ] ),
-			     internal_error->messages[ message_index ],
-			     internal_error->sizes[ message_index ] ) == NULL )
+			     error_string,
+			     error_string_size ) == NULL )
 			{
 				return( -1 );
 			}
-			string_index += internal_error->sizes[ message_index ] - 1;
-
-			string[ string_index ] = (system_character_t) 0;
+			string_index += error_string_size - 1;
 
 #endif /* defined( HAVE_WIDE_SYSTEM_CHARACTER ) */
 		}
