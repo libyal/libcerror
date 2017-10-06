@@ -105,3 +105,4 @@ after_test:
     (new-object net.webclient).DownloadFile('https://codecov.io/bash', 'C:\MinGW\msys\1.0\home\appveyor\libcerror\codecov.sh') }
 - cmd: if [%TARGET%]==[mingw] (
     C:\MinGW\msys\1.0\bin\bash -e -l -c "cd libcerror && ./codecov.sh" )
+
