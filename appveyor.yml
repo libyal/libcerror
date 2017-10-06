@@ -99,3 +99,9 @@ test_script:
 - cmd: if [%TARGET%]==[mingw-w64] (
     C:\msys64\usr\bin\bash -e -l -c "cd libcerror && ./runtests.sh" )
 
+after_test:
+- ps: "[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12"
+- ps: if ($env:TARGET -eq "mingw") {
+    (new-object net.webclient).DownloadFile('https://codecov.io/bash', 'C:\MinGW\msys\1.0\home\appveyor\libcerror\codecov.sh') }
+- cmd: if [%TARGET%]==[mingw] (
+    C:\MinGW\msys\1.0\bin\bash -e -l -c "cd libcerror && ./codecov.sh" )
