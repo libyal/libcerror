@@ -6,7 +6,7 @@ $ExitSuccess = 0
 $ExitFailure = 1
 $ExitIgnore = 77
 
-$LibraryTests = "error support"
+$LibraryTests = "error support system"
 $LibraryTestsWithInput = ""
 
 Function GetTestToolDirectory

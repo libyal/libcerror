@@ -122,4 +122,5 @@ stamp-h[1-9]
 /tests/*.exe
 /tests/cerror_test_error
 /tests/cerror_test_support
+/tests/cerror_test_system
 /tests/tmp*

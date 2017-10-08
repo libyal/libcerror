@@ -47,7 +47,6 @@
 
 #include "../libcerror/libcerror_definitions.h"
 #include "../libcerror/libcerror_error.h"
-#include "../libcerror/libcerror_system.h"
 
 #if defined( HAVE_CERROR_TEST_FUNCTION_HOOK )
 
@@ -548,7 +547,7 @@ int cerror_test_error_set(
 
 	/* Test libcerror_error_set with libcerror_error_resize failing
 	 */
-	cerror_test_malloc_attempts_before_fail = 0;
+	cerror_test_realloc_attempts_before_fail = 0;
 
 	libcerror_error_set(
 	 &error,
@@ -556,19 +555,19 @@ int cerror_test_error_set(
 	 LIBCERROR_RUNTIME_ERROR_GENERIC,
 	 "Test error." );
 
-	if( cerror_test_malloc_attempts_before_fail != -1 )
+	if( cerror_test_realloc_attempts_before_fail != -1 )
 	{
-		cerror_test_malloc_attempts_before_fail = -1;
-
-		libcerror_error_free(
-		  &error );
+		cerror_test_realloc_attempts_before_fail = -1;
 	}
 	else
 	{
-		CERROR_TEST_ASSERT_IS_NULL(
+		CERROR_TEST_ASSERT_IS_NOT_NULL(
 		 "error",
 		 error );
 	}
+	libcerror_error_free(
+	  &error );
+
 	/* Test libcerror_error_set with memory_reallocate before system_string_vsnprintf failing
 	 */
 	libcerror_error_set(
@@ -1260,237 +1259,6 @@ on_error:
 	return( 0 );
 }
 
-/* Tests the libcerror_system_set_error function
- * Returns 1 if successful or 0 if not
- */
-int cerror_test_system_set_error(
-     void )
-{
-	libcerror_error_t *error = NULL;
-	uint32_t error_code      = 0;
-
-	/* Test libcerror_system_set_error
-	 */
-	libcerror_system_set_error(
-	 &error,
-	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	 LIBCERROR_RUNTIME_ERROR_GENERIC,
-	 error_code,
-	 "Test system error." );
-
-	CERROR_TEST_ASSERT_IS_NOT_NULL(
-	 "error",
-	 error );
-
-	libcerror_error_free(
-	  &error );
-
-	CERROR_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
-	/* Test libcerror_system_set_error with format string larger than LIBCERROR_MESSAGE_INCREMENT_SIZE
-	 */
-	libcerror_system_set_error(
-	 &error,
-	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	 LIBCERROR_RUNTIME_ERROR_GENERIC,
-	 error_code,
-	 "The aim of science is not to open the door to infinite wisdom, but to set a limit to infinite error." );
-
-	CERROR_TEST_ASSERT_IS_NOT_NULL(
-	 "error",
-	 error );
-
-	libcerror_error_free(
-	  &error );
-
-	CERROR_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
-	/* Test libcerror_system_set_error multiple times
-	 */
-	libcerror_system_set_error(
-	 &error,
-	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	 LIBCERROR_RUNTIME_ERROR_GENERIC,
-	 error_code,
-	 "Test error 1." );
-
-	CERROR_TEST_ASSERT_IS_NOT_NULL(
-	 "error",
-	 error );
-
-	libcerror_system_set_error(
-	 &error,
-	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	 LIBCERROR_RUNTIME_ERROR_GENERIC,
-	 error_code,
-	 "Test error 2." );
-
-	CERROR_TEST_ASSERT_IS_NOT_NULL(
-	 "error",
-	 error );
-
-	libcerror_system_set_error(
-	 &error,
-	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	 LIBCERROR_RUNTIME_ERROR_GENERIC,
-	 error_code,
-	 "Test error 3." );
-
-	CERROR_TEST_ASSERT_IS_NOT_NULL(
-	 "error",
-	 error );
-
-	libcerror_error_free(
-	  &error );
-
-	CERROR_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
-	/* Test error cases
-	 */
-	libcerror_system_set_error(
-	 NULL,
-	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	 LIBCERROR_RUNTIME_ERROR_GENERIC,
-	 error_code,
-	 "Test error." );
-
-	libcerror_system_set_error(
-	 &error,
-	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	 LIBCERROR_RUNTIME_ERROR_GENERIC,
-	 error_code,
-	 NULL );
-
-	CERROR_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
-#if defined( HAVE_CERROR_TEST_MEMORY )
-
-	/* Test libcerror_system_set_error with libcerror_error_resize failing
-	 */
-	cerror_test_malloc_attempts_before_fail = 0;
-
-	libcerror_system_set_error(
-	 &error,
-	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	 LIBCERROR_RUNTIME_ERROR_GENERIC,
-	 error_code,
-	 "Test error." );
-
-	if( cerror_test_malloc_attempts_before_fail != -1 )
-	{
-		cerror_test_malloc_attempts_before_fail = -1;
-
-		libcerror_error_free(
-		  &error );
-	}
-	else
-	{
-		CERROR_TEST_ASSERT_IS_NULL(
-		 "error",
-		 error );
-	}
-	/* Test libcerror_system_set_error with memory_reallocate before system_string_vsnprintf failing
-	 */
-	cerror_test_realloc_attempts_before_fail = 2;
-
-	libcerror_system_set_error(
-	 &error,
-	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	 LIBCERROR_RUNTIME_ERROR_GENERIC,
-	 error_code,
-	 "Test error 2." );
-
-	if( cerror_test_realloc_attempts_before_fail != -1 )
-	{
-		cerror_test_realloc_attempts_before_fail = -1;
-	}
-	else
-	{
-		CERROR_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
-	}
-	libcerror_error_free(
-	  &error );
-
-#endif /* defined( HAVE_CERROR_TEST_MEMORY ) */
-
-	/* TODO test libcerror_error_get_system_format_string failing */
-
-#if defined( HAVE_CERROR_TEST_FUNCTION_HOOK )
-
-	/* Test libcerror_error_set with vsnprintf returning -1
-	 */
-	cerror_test_vsnprintf_attempts_before_fail = 0;
-	cerror_test_vsnprintf_fail_return_value    = -1;
-
-	libcerror_system_set_error(
-	 &error,
-	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	 LIBCERROR_RUNTIME_ERROR_GENERIC,
-	 error_code,
-	 "Test error 2." );
-
-	if( cerror_test_vsnprintf_attempts_before_fail != -1 )
-	{
-		cerror_test_vsnprintf_attempts_before_fail = -1;
-	}
-	else
-	{
-		CERROR_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
-	}
-	libcerror_error_free(
-	  &error );
-
-	/* Test libcerror_error_set with vsnprintf returning
-	 * a value larger than LIBCERROR_MESSAGE_MAXIMUM_SIZE
-	 */
-	cerror_test_vsnprintf_attempts_before_fail = 0;
-	cerror_test_vsnprintf_fail_return_value    = 2 * LIBCERROR_MESSAGE_MAXIMUM_SIZE;
-
-	libcerror_system_set_error(
-	 &error,
-	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-	 LIBCERROR_RUNTIME_ERROR_GENERIC,
-	 error_code,
-	 "Test error 6." );
-
-	if( cerror_test_vsnprintf_attempts_before_fail != -1 )
-	{
-		cerror_test_vsnprintf_attempts_before_fail = -1;
-	}
-	else
-	{
-		CERROR_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
-	}
-	libcerror_error_free(
-	  &error );
-
-#endif /* defined( HAVE_CERROR_TEST_FUNCTION_HOOK ) */
-
-	return( 1 );
-
-on_error:
-	if( error != NULL )
-	{
-		libcerror_error_free(
-		  &error );
-	}
-	return( 0 );
-}
-
 /* The main program
  */
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
@@ -1561,16 +1329,6 @@ int main(
 	CERROR_TEST_RUN(
 	 "libcerror_error_backtrace_sprint",
 	 cerror_test_error_backtrace_sprint );
-
-#if defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT )
-
-	/* TODO add tests for libcerror_system_copy_string_from_error_number */
-
-#endif /* defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT ) */
-
-	CERROR_TEST_RUN(
-	 "libcerror_system_set_error",
-	 cerror_test_system_set_error );
 
 	return( EXIT_SUCCESS );
 

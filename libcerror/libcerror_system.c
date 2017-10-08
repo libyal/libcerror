@@ -47,6 +47,8 @@
 #include "libcerror_system.h"
 #include "libcerror_types.h"
 
+#if defined( WINAPI )
+
 /* The make language identifier macro for the WINAPI FormatMessage function
  */
 #if !defined( MAKELANGID )
@@ -61,6 +63,8 @@
 #if !defined( SUBLANG_DEFAULT )
 #define SUBLANG_DEFAULT		1
 #endif
+
+#endif /* defined( WINAPI ) */
 
 #if defined( WINAPI ) && ( WINVER <= 0x0500 )
 
@@ -170,9 +174,24 @@ DWORD libcerror_FormatMessageW(
 	return( result );
 }
 
+#endif /* defined( WINAPI ) && ( WINVER <= 0x0500 ) */
+
+#if defined( WINAPI )
+
+#if ( WINVER <= 0x0500 )
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
+#define libcerror_system_FormatMessage libcerror_FormatMessageW
+#else
+#define libcerror_system_FormatMessage libcerror_FormatMessageA
 #endif
 
-#if defined( WINAPI ) && ( WINVER >= 0x0501 )
+#else
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
+#define libcerror_system_FormatMessage FormatMessageW
+#else
+#define libcerror_system_FormatMessage FormatMessageA
+#endif
+#endif /* ( WINVER <= 0x0500 ) */
 
 /* Retrieves a descriptive string of the error number
  * This function uses the WINAPI functions for Windows XP or later
@@ -196,9 +215,7 @@ int libcerror_system_copy_string_from_error_number(
 	{
 		return( -1 );
 	}
-#if ( WINVER <= 0x0500 )
-#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-	print_count = libcerror_FormatMessageW(
+	print_count = libcerror_system_FormatMessage(
 	               flags,
 	               NULL,
 	               (DWORD) error_number,
@@ -208,44 +225,6 @@ int libcerror_system_copy_string_from_error_number(
 	               string,
 	               (DWORD) string_size,
 	               NULL );
-#else
-	print_count = libcerror_FormatMessageA(
-	               flags,
-	               NULL,
-	               (DWORD) error_number,
-	               MAKELANGID(
-	                LANG_NEUTRAL,
-	                SUBLANG_DEFAULT ),
-	               string,
-	               (DWORD) string_size,
-	               NULL );
-#endif
-#else
-#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-	print_count = FormatMessageW(
-	               flags,
-	               NULL,
-	               (DWORD) error_number,
-	               MAKELANGID(
-	                LANG_NEUTRAL,
-	                SUBLANG_DEFAULT ),
-	               string,
-	               (DWORD) string_size,
-	               NULL );
-#else
-	print_count = FormatMessageA(
-	               flags,
-	               NULL,
-	               (DWORD) error_number,
-	               MAKELANGID(
-	                LANG_NEUTRAL,
-	                SUBLANG_DEFAULT ),
-	               string,
-	               (DWORD) string_size,
-	               NULL );
-#endif
-#endif /* ( WINVER <= 0x0500 ) */
-
 
 	if( print_count == 0 )
 	{
@@ -255,6 +234,10 @@ int libcerror_system_copy_string_from_error_number(
 }
 
 #elif defined( HAVE_STRERROR_R )
+
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
+#error Missing wide character strerror_r function
+#endif
 
 /* Retrieves a descriptive string of the error number
  * This function uses the POSIX strerror_r function or equivalent
@@ -275,12 +258,6 @@ int libcerror_system_copy_string_from_error_number(
 	{
 		return( -1 );
 	}
-/* Sanity check
- */
-#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-#error Missing wide character strerror_r function
-#endif
-
 #if defined( STRERROR_R_CHAR_P )
 	if( strerror_r(
 	     (int) error_number,
@@ -303,7 +280,11 @@ int libcerror_system_copy_string_from_error_number(
 	return( (int) string_length );
 }
 
-#elif defined( HAVE_STRERROR ) || defined( WINAPI )
+#elif defined( HAVE_STRERROR )
+
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
+#error Missing wide character strerror function
+#endif
 
 /* Retrieves a descriptive string of the error number
  * This function uses the POSIX strerror function or equivalent
@@ -329,12 +310,6 @@ int libcerror_system_copy_string_from_error_number(
 	{
 		return( -1 );
 	}
-/* Sanity check
- */
-#if defined( HAVE_WIDE_SYSTEM_CHARACTER ) && !defined( WINAPI )
-#error Missing wide character strerror function
-#endif
-
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 	static_error_string = _wcserror(
 	                       (int) error_number );
