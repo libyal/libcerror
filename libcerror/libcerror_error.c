@@ -498,6 +498,12 @@ int libcerror_error_fprint(
 	int message_index                          = 0;
 	int print_count                            = 0;
 
+#if defined( WINAPI )
+	const char *format_string                  = "%" PRIs_SYSTEM "\r\n";
+#else
+	const char *format_string                  = "%" PRIs_SYSTEM "\n";
+#endif
+
 	if( error == NULL )
 	{
 		return( -1 );
@@ -517,17 +523,11 @@ int libcerror_error_fprint(
 
 	if( error_string != NULL )
 	{
-#if defined( WINAPI )
 		print_count = fprintf(
 		               stream,
-		               "%" PRIs_SYSTEM "\r\n",
+		               format_string,
 		               error_string );
-#else
-		print_count = fprintf(
-		               stream,
-		               "%" PRIs_SYSTEM "\n",
-		               error_string );
-#endif
+
 		if( print_count <= -1 )
 		{
 			return( -1 );
@@ -561,6 +561,10 @@ int libcerror_error_sprint(
 	internal_error = (libcerror_internal_error_t *) error;
 
 	if( internal_error->messages == NULL )
+	{
+		return( -1 );
+	}
+	if( internal_error->sizes == NULL )
 	{
 		return( -1 );
 	}
@@ -646,6 +650,12 @@ int libcerror_error_backtrace_fprint(
 	int print_count                            = 0;
 	int total_print_count                      = 0;
 
+#if defined( WINAPI )
+	const char *format_string                  = "%" PRIs_SYSTEM "\r\n";
+#else
+	const char *format_string                  = "%" PRIs_SYSTEM "\n";
+#endif
+
 	if( error == NULL )
 	{
 		return( -1 );
@@ -668,17 +678,11 @@ int libcerror_error_backtrace_fprint(
 
 		if( error_string != NULL )
 		{
-#if defined( WINAPI )
 			print_count = fprintf(
 			               stream,
-			               "%" PRIs_SYSTEM "\r\n",
+			               format_string,
 			               error_string );
-#else
-			print_count = fprintf(
-			               stream,
-			               "%" PRIs_SYSTEM "\n",
-			               error_string );
-#endif
+
 			if( print_count <= -1 )
 			{
 				return( -1 );

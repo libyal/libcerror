@@ -545,6 +545,29 @@ int cerror_test_error_set(
 
 #if defined( HAVE_CERROR_TEST_MEMORY )
 
+	/* Test libcerror_error_set with libcerror_error_initialize failing
+	 */
+	cerror_test_malloc_attempts_before_fail = 0;
+
+	libcerror_error_set(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 "Test error." );
+
+	if( cerror_test_malloc_attempts_before_fail != -1 )
+	{
+		cerror_test_malloc_attempts_before_fail = -1;
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+	}
+	libcerror_error_free(
+	  &error );
+
 	/* Test libcerror_error_set with libcerror_error_resize failing
 	 */
 	cerror_test_realloc_attempts_before_fail = 0;
@@ -736,7 +759,7 @@ on_error:
 	return( 0 );
 }
 
-#if defined( HAVE_FMEMOPEN ) && ! defined( WINAPI )
+#if defined( HAVE_FMEMOPEN ) && !defined( WINAPI )
 
 /* Tests the libcerror_error_fprint function
  * Returns 1 if successful or 0 if not
@@ -746,10 +769,11 @@ int cerror_test_error_fprint(
 {
 	char string[ 128 ];
 
-	libcerror_error_t *error = NULL;
-	FILE *stream             = NULL;
-	int print_count          = 0;
-	int result               = 0;
+	libcerror_error_t *error      = NULL;
+	system_character_t **messages = NULL;
+	FILE *stream                  = NULL;
+	int print_count               = 0;
+	int result                    = 0;
 
 	/* Initialize test
 	 */
@@ -811,6 +835,21 @@ int cerror_test_error_fprint(
 	 "print_count",
 	 print_count,
 	 -1 )
+
+	messages = ( (libcerror_internal_error_t *) error )->messages;
+
+	( (libcerror_internal_error_t *) error )->messages = NULL;
+
+	print_count = libcerror_error_fprint(
+	               error,
+	               stream );
+
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "print_count",
+	 print_count,
+	 -1 )
+
+	( (libcerror_internal_error_t *) error )->messages = messages;
 
 	/* Clean up
 	 */
@@ -881,10 +920,13 @@ int cerror_test_error_backtrace_fprint(
 {
 	char string[ 128 ];
 
-	libcerror_error_t *error = NULL;
-	FILE *stream             = NULL;
-	int print_count          = 0;
-	int result               = 0;
+	libcerror_error_t *error      = NULL;
+	system_character_t **messages = NULL;
+	FILE *stream                  = NULL;
+	const char *expected_string   = NULL;
+	int expected_print_count      = 0;
+	int print_count               = 0;
+	int result                    = 0;
 
 	/* Initialize test
 	 */
@@ -921,27 +963,22 @@ int cerror_test_error_backtrace_fprint(
 	 stream );
 
 #if defined( WINAPI )
-	CERROR_TEST_ASSERT_EQUAL_INT(
-	 "print_count",
-	 print_count,
-	 29 )
-
-	result = narrow_string_compare(
-	          string,
-	          "Test error 1.\r\nTest error 2.",
-	          28 );
-
+	expected_string      = "Test error 1.\r\nTest error 2.";
+	expected_print_count = 29;
 #else
+	expected_string      = "Test error 1.\nTest error 2.";
+	expected_print_count = 28;
+#endif
+
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
-	 28 )
+	 expected_print_count )
 
 	result = narrow_string_compare(
 	          string,
-	          "Test error 1.\nTest error 2.",
-	          27 );
-#endif
+	          expected_string,
+	          expected_print_count - 1 );
 
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "result",
@@ -968,6 +1005,21 @@ int cerror_test_error_backtrace_fprint(
 	 print_count,
 	 -1 )
 
+	messages = ( (libcerror_internal_error_t *) error )->messages;
+
+	( (libcerror_internal_error_t *) error )->messages = NULL;
+
+	print_count = libcerror_error_backtrace_fprint(
+	               error,
+	               stream );
+
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "print_count",
+	 print_count,
+	 -1 )
+
+	( (libcerror_internal_error_t *) error )->messages = messages;
+
 	/* Clean up
 	 */
 	libcerror_error_free(
@@ -988,7 +1040,7 @@ on_error:
 	return( 0 );
 }
 
-#endif /* defined( HAVE_FMEMOPEN ) && ! defined( WINAPI ) */
+#endif /* defined( HAVE_FMEMOPEN ) && !defined( WINAPI ) */
 
 /* Tests the libcerror_error_sprint function
  * Returns 1 if successful or 0 if not
@@ -998,9 +1050,11 @@ int cerror_test_error_sprint(
 {
 	char string[ 128 ];
 
-	libcerror_error_t *error = NULL;
-	int print_count          = 0;
-	int result               = 1;
+	libcerror_error_t *error      = NULL;
+	system_character_t **messages = NULL;
+	size_t *sizes                 = NULL;
+	int print_count               = 0;
+	int result                    = 1;
 
 	/* Initialize test
 	 */
@@ -1066,6 +1120,38 @@ int cerror_test_error_sprint(
 	 print_count,
 	 -1 )
 
+	messages = ( (libcerror_internal_error_t *) error )->messages;
+
+	( (libcerror_internal_error_t *) error )->messages = NULL;
+
+	print_count = libcerror_error_sprint(
+	               error,
+	               string,
+	               128 );
+
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "print_count",
+	 print_count,
+	 -1 )
+
+	( (libcerror_internal_error_t *) error )->messages = messages;
+
+	sizes = ( (libcerror_internal_error_t *) error )->sizes;
+
+	( (libcerror_internal_error_t *) error )->sizes = NULL;
+
+	print_count = libcerror_error_sprint(
+	               error,
+	               string,
+	               128 );
+
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "print_count",
+	 print_count,
+	 -1 )
+
+	( (libcerror_internal_error_t *) error )->sizes = sizes;
+
 #if defined( HAVE_CERROR_TEST_MEMORY ) && defined( OPTIMIZATION_DISABLED )
 
 	/* Test libcerror_error_sprint with memcpy returning NULL
@@ -1121,9 +1207,13 @@ int cerror_test_error_backtrace_sprint(
 {
 	char string[ 128 ];
 
-	libcerror_error_t *error = NULL;
-	int print_count          = 0;
-	int result               = 1;
+	libcerror_error_t *error      = NULL;
+	system_character_t **messages = NULL;
+	size_t *sizes                 = NULL;
+	const char *expected_string   = NULL;
+	int expected_print_count      = 0;
+	int print_count               = 0;
+	int result                    = 1;
 
 	/* Initialize test
 	 */
@@ -1153,27 +1243,22 @@ int cerror_test_error_backtrace_sprint(
 	               128 );
 
 #if defined( WINAPI )
-	CERROR_TEST_ASSERT_EQUAL_INT(
-	 "print_count",
-	 print_count,
-	 29 )
-
-	result = narrow_string_compare(
-	          string,
-	          "Test error 1.\r\nTest error 2.",
-	          28 );
-
+	expected_string      = "Test error 1.\r\nTest error 2.";
+	expected_print_count = 29;
 #else
+	expected_string      = "Test error 1.\nTest error 2.";
+	expected_print_count = 28;
+#endif
+
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
-	 28 )
+	 expected_print_count )
 
 	result = narrow_string_compare(
 	          string,
-	          "Test error 1.\nTest error 2.",
-	          27 );
-#endif
+	          expected_string,
+	          expected_print_count - 1 );
 
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "result",
@@ -1211,6 +1296,38 @@ int cerror_test_error_backtrace_sprint(
 	 "print_count",
 	 print_count,
 	 -1 )
+
+	messages = ( (libcerror_internal_error_t *) error )->messages;
+
+	( (libcerror_internal_error_t *) error )->messages = NULL;
+
+	print_count = libcerror_error_backtrace_sprint(
+	               error,
+	               string,
+	               128 );
+
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "print_count",
+	 print_count,
+	 -1 )
+
+	( (libcerror_internal_error_t *) error )->messages = messages;
+
+	sizes = ( (libcerror_internal_error_t *) error )->sizes;
+
+	( (libcerror_internal_error_t *) error )->sizes = NULL;
+
+	print_count = libcerror_error_backtrace_sprint(
+	               error,
+	               string,
+	               128 );
+
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "print_count",
+	 print_count,
+	 -1 )
+
+	( (libcerror_internal_error_t *) error )->sizes = sizes;
 
 #if defined( HAVE_CERROR_TEST_MEMORY ) && defined( OPTIMIZATION_DISABLED )
 
