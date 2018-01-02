@@ -844,12 +844,12 @@ int cerror_test_error_fprint(
 	               error,
 	               stream );
 
+	( (libcerror_internal_error_t *) error )->messages = messages;
+
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
 	 -1 )
-
-	( (libcerror_internal_error_t *) error )->messages = messages;
 
 	/* Clean up
 	 */
@@ -1013,12 +1013,12 @@ int cerror_test_error_backtrace_fprint(
 	               error,
 	               stream );
 
+	( (libcerror_internal_error_t *) error )->messages = messages;
+
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
 	 -1 )
-
-	( (libcerror_internal_error_t *) error )->messages = messages;
 
 	/* Clean up
 	 */
@@ -1129,12 +1129,12 @@ int cerror_test_error_sprint(
 	               string,
 	               128 );
 
+	( (libcerror_internal_error_t *) error )->messages = messages;
+
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
 	 -1 )
-
-	( (libcerror_internal_error_t *) error )->messages = messages;
 
 	sizes = ( (libcerror_internal_error_t *) error )->sizes;
 
@@ -1145,12 +1145,12 @@ int cerror_test_error_sprint(
 	               string,
 	               128 );
 
+	( (libcerror_internal_error_t *) error )->sizes = sizes;
+
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
 	 -1 )
-
-	( (libcerror_internal_error_t *) error )->sizes = sizes;
 
 #if defined( HAVE_CERROR_TEST_MEMORY ) && defined( OPTIMIZATION_DISABLED )
 
@@ -1306,12 +1306,12 @@ int cerror_test_error_backtrace_sprint(
 	               string,
 	               128 );
 
+	( (libcerror_internal_error_t *) error )->messages = messages;
+
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
 	 -1 )
-
-	( (libcerror_internal_error_t *) error )->messages = messages;
 
 	sizes = ( (libcerror_internal_error_t *) error )->sizes;
 
@@ -1322,12 +1322,12 @@ int cerror_test_error_backtrace_sprint(
 	               string,
 	               128 );
 
+	( (libcerror_internal_error_t *) error )->sizes = sizes;
+
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
 	 -1 )
-
-	( (libcerror_internal_error_t *) error )->sizes = sizes;
 
 #if defined( HAVE_CERROR_TEST_MEMORY ) && defined( OPTIMIZATION_DISABLED )
 
