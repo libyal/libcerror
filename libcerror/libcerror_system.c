@@ -69,7 +69,7 @@
 #if defined( WINAPI ) && ( WINVER <= 0x0500 )
 
 /* Cross Windows safe version of FormatMessageA
- * Returns TRUE if successful or FALSE on error
+ * Returns the number of printed characters without the end-of-string character or 0 on error
  */
 DWORD libcerror_FormatMessageA(
        DWORD flags,
@@ -82,18 +82,18 @@ DWORD libcerror_FormatMessageA(
 {
 	FARPROC function       = NULL;
 	HMODULE library_handle = NULL;
-	DWORD result           = 0;
+	DWORD print_count      = 0;
 
 	if( string == NULL )
 	{
-		return( FALSE );
+		return( 0 );
 	}
 	library_handle = LoadLibrary(
 	                  _SYSTEM_STRING( "kernel32.dll" ) );
 
 	if( library_handle == NULL )
 	{
-		return( FALSE );
+		return( 0 );
 	}
 	function = GetProcAddress(
 		    library_handle,
@@ -101,14 +101,14 @@ DWORD libcerror_FormatMessageA(
 
 	if( function != NULL )
 	{
-		result = function(
-			  flags,
-			  source,
-			  message_identifier,
-			  language_identifier,
-			  string,
-			  string_size,
-			  argument_list );
+		print_count = function(
+		               flags,
+		               source,
+		               message_identifier,
+		               language_identifier,
+		               string,
+		               string_size,
+		               argument_list );
 	}
 	/* This call should be after using the function
 	 * in most cases kernel32.dll will still be available after free
@@ -116,13 +116,13 @@ DWORD libcerror_FormatMessageA(
 	if( FreeLibrary(
 	     library_handle ) != TRUE )
 	{
-		result = FALSE;
+		print_count = 0;
 	}
-	return( result );
+	return( print_count );
 }
 
 /* Cross Windows safe version of FormatMessageW
- * Returns TRUE if successful or FALSE on error
+ * Returns the number of printed characters without the end-of-string character or 0 on error
  */
 DWORD libcerror_FormatMessageW(
        DWORD flags,
@@ -135,33 +135,33 @@ DWORD libcerror_FormatMessageW(
 {
 	FARPROC function       = NULL;
 	HMODULE library_handle = NULL;
-	DWORD result           = 0;
+	DWORD print_count      = 0;
 
 	if( string == NULL )
 	{
-		return( FALSE );
+		return( 0 );
 	}
 	library_handle = LoadLibrary(
 	                  _SYSTEM_STRING( "kernel32.dll" ) );
 
 	if( library_handle == NULL )
 	{
-		return( FALSE );
+		return( 0 );
 	}
 	function = GetProcAddress(
 		    library_handle,
-		    (LPCSTR) "FormatMessageA" );
+		    (LPCSTR) "FormatMessageW" );
 
 	if( function != NULL )
 	{
-		result = function(
-			  flags,
-			  source,
-			  message_identifier,
-			  language_identifier,
-			  string,
-			  string_size,
-			  argument_list );
+		print_count = function(
+		               flags,
+		               source,
+		               message_identifier,
+		               language_identifier,
+		               string,
+		               string_size,
+		               argument_list );
 	}
 	/* This call should be after using the function
 	 * in most cases kernel32.dll will still be available after free
@@ -169,9 +169,9 @@ DWORD libcerror_FormatMessageW(
 	if( FreeLibrary(
 	     library_handle ) != TRUE )
 	{
-		result = FALSE;
+		print_count = 0;
 	}
-	return( result );
+	return( print_count );
 }
 
 #endif /* defined( WINAPI ) && ( WINVER <= 0x0500 ) */
@@ -202,21 +202,18 @@ int libcerror_system_copy_string_from_error_number(
      size_t string_size,
      uint32_t error_number )
 {
-	DWORD flags       = 0;
 	DWORD print_count = 0;
 
 	if( string == NULL )
 	{
 		return( -1 );
 	}
-	flags = FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS;
-
 	if( string_size > (size_t) INT_MAX )
 	{
 		return( -1 );
 	}
 	print_count = libcerror_system_FormatMessage(
-	               flags,
+	               FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
 	               NULL,
 	               (DWORD) error_number,
 	               MAKELANGID(

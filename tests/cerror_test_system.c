@@ -56,6 +56,26 @@ static int (*cerror_test_real_vsnprintf)(char *, size_t, const char *, va_list) 
 int cerror_test_vsnprintf_attempts_before_fail                                  = -1;
 int cerror_test_vsnprintf_fail_return_value                                     = -1;
 
+#if !defined( WINAPI )
+#if defined( HAVE_STRERROR_R )
+
+#if defined( STRERROR_R_CHAR_P )
+static char *(*cerror_test_real_strerror_r)(int, char *, size_t)                = NULL;
+#else
+static int (*cerror_test_real_strerror_r)(int, char *, size_t)                  = NULL;
+#endif
+
+int cerror_test_strerror_r_attempts_before_fail                                 = -1;
+
+#elif defined( HAVE_STRERROR )
+
+static char *(*cerror_test_real_strerror)(int)                                  = NULL;
+
+int cerror_test_strerror_attempts_before_fail                                   = -1;
+
+#endif
+#endif /* !defined( WINAPI ) */
+
 #endif /* defined( HAVE_CERROR_TEST_FUNCTION_HOOK ) */
 
 #if defined( HAVE_CERROR_TEST_FUNCTION_HOOK )
@@ -96,7 +116,205 @@ int vsnprintf(
 	return( result );
 }
 
+#if !defined( WINAPI )
+#if defined( HAVE_STRERROR_R )
+
+#if defined( STRERROR_R_CHAR_P )
+/* Custom strerror_r for testing error cases
+ * Returns a pointer to the error string if successfull or NULL on error
+ */
+char *strerror_r(
+       int errnum,
+       char *buf,
+       size_t buflen )
+#else
+/* Custom strerror_r for testing error cases
+ * Returns 0 if successfull, or -1 or a positive integer on error
+ */
+int strerror_r(
+     int errnum,
+     char *buf,
+     size_t buflen )
+#endif
+{
+#if defined( STRERROR_R_CHAR_P )
+	char *result = NULL;
+#else
+	int result   = 0;
+#endif
+
+	if( cerror_test_real_strerror_r == NULL )
+	{
+		cerror_test_real_strerror_r = dlsym(
+		                               RTLD_NEXT,
+		                               "strerror_r" );
+	}
+	if( cerror_test_strerror_r_attempts_before_fail == 0 )
+	{
+		cerror_test_strerror_r_attempts_before_fail = -1;
+
+#if defined( STRERROR_R_CHAR_P )
+		return( NULL );
+#else
+		return( -1 );
+#endif
+	}
+	else if( cerror_test_strerror_r_attempts_before_fail > 0 )
+	{
+		cerror_test_strerror_r_attempts_before_fail--;
+	}
+	result = cerror_test_real_strerror_r(
+	          errnum,
+	          buf,
+	          buflen );
+
+	return( result );
+}
+
+#elif defined( HAVE_STRERROR )
+
+/* Custom strerror for testing error cases
+ * Returns a pointer to the error string if successfull or NULL on error
+ */
+char *strerror(
+       int errnum )
+{
+	char *result = NULL;
+
+	if( cerror_test_real_strerror == NULL )
+	{
+		cerror_test_real_strerror = dlsym(
+		                             RTLD_NEXT,
+		                             "strerror" );
+	}
+	if( cerror_test_strerror_attempts_before_fail == 0 )
+	{
+		cerror_test_strerrorttempts_before_fail = -1;
+
+		return( NULL );
+	}
+	else if( cerror_test_strerror_attempts_before_fail > 0 )
+	{
+		cerror_test_strerror_attempts_before_fail--;
+	}
+	result = cerror_test_real_strerror(
+	          errnum );
+
+	return( result );
+}
+
+#endif /* defined( HAVE_STRERROR_R ) */
+#endif /* !defined( WINAPI ) */
+
 #endif /* defined( HAVE_CERROR_TEST_FUNCTION_HOOK ) */
+
+#if defined( WINAPI ) && ( WINVER <= 0x0500 ) && !defined( LIBCERROR_DLL_IMPORT )
+
+/* Tests the libcerror_FormatMessageA function
+ * Returns 1 if successful or 0 if not
+ */
+int cerror_test_FormatMessageA(
+     void )
+{
+	char string[ 128 ];
+
+	DWORD print_count = 0;
+
+	/* Test regular cases
+	 */
+	print_count = libcerror_FormatMessageA(
+	               FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+	               NULL,
+	               0,
+	               MAKELANGID(
+	                LANG_NEUTRAL,
+	                SUBLANG_DEFAULT ),
+	               string,
+	               128,
+	               NULL );
+
+	CERROR_TEST_ASSERT_NOT_EQUAL_INT(
+	 "print_count",
+	 (int) print_count,
+	 (int) 0 );
+
+	/* Test error cases
+	 */
+	print_count = libcerror_FormatMessageA(
+	               FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+	               NULL,
+	               0,
+	               MAKELANGID(
+	                LANG_NEUTRAL,
+	                SUBLANG_DEFAULT ),
+	               NULL,
+	               128,
+	               NULL );
+
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "print_count",
+	 (int) print_count,
+	 (int) 0 );
+
+	return( 1 );
+
+on_error:
+	return( 0 );
+}
+
+/* Tests the libcerror_FormatMessageW function
+ * Returns 1 if successful or 0 if not
+ */
+int cerror_test_FormatMessageW(
+     void )
+{
+	wchar_t string[ 128 ];
+
+	DWORD print_count = 0;
+
+	/* Test regular cases
+	 */
+	print_count = libcerror_FormatMessageW(
+	               FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+	               NULL,
+	               0,
+	               MAKELANGID(
+	                LANG_NEUTRAL,
+	                SUBLANG_DEFAULT ),
+	               string,
+	               128,
+	               NULL );
+
+	CERROR_TEST_ASSERT_NOT_EQUAL_INT(
+	 "print_count",
+	 (int) print_count,
+	 (int) 0 );
+
+	/* Test error cases
+	 */
+	print_count = libcerror_FormatMessageW(
+	               FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+	               NULL,
+	               0,
+	               MAKELANGID(
+	                LANG_NEUTRAL,
+	                SUBLANG_DEFAULT ),
+	               NULL,
+	               128,
+	               NULL );
+
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "print_count",
+	 (int) print_count,
+	 (int) 0 );
+
+	return( 1 );
+
+on_error:
+	return( 0 );
+}
+
+#endif /* defined( WINAPI ) && ( WINVER <= 0x0500 ) && !defined( LIBCERROR_DLL_IMPORT ) */
 
 #if defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT )
 
@@ -108,23 +326,94 @@ int cerror_test_system_copy_string_from_error_number(
 {
 	system_character_t string[ 128 ];
 
+	int result = 0;
+
 	/* Test error cases
 	 */
-	libcerror_system_copy_string_from_error_number(
-	 NULL,
-	 128,
-	 0 );
+	result = libcerror_system_copy_string_from_error_number(
+	          NULL,
+	          128,
+	          0 );
 
-	libcerror_system_copy_string_from_error_number(
-	 string,
-	 (size_t) INT_MAX + 1,
-	 0 );
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	result = libcerror_system_copy_string_from_error_number(
+	          string,
+	          (size_t) INT_MAX + 1,
+	          0 );
+
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+#if defined( WINAPI )
 
 /* TODO test FormatMessage failing */
-/* TODO test strerror_r failing */
-/* TODO test strerror failing */
+
+#elif defined( HAVE_STRERROR_R )
+
+#if defined( HAVE_CERROR_TEST_FUNCTION_HOOK )
+
+	/* Test libcerror_system_copy_string_from_error_number with strerror_r failing
+	 */
+	cerror_test_strerror_r_attempts_before_fail = 0;
+
+	result = libcerror_system_copy_string_from_error_number(
+	          string,
+	          128,
+	          0 );
+
+	if( cerror_test_strerror_r_attempts_before_fail != -1 )
+	{
+		cerror_test_strerror_r_attempts_before_fail = -1;
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+	}
+
+#endif /* defined( HAVE_CERROR_TEST_FUNCTION_HOOK ) */
+
+#elif defined( HAVE_STRERROR )
+
+#if defined( HAVE_CERROR_TEST_FUNCTION_HOOK )
+
+	/* Test libcerror_system_copy_string_from_error_number with strerror failing
+	 */
+	cerror_test_strerror_attempts_before_fail = 0;
+
+	result = libcerror_system_copy_string_from_error_number(
+	          string,
+	          128,
+	          0 );
+
+	if( cerror_test_strerror_attempts_before_fail != -1 )
+	{
+		cerror_test_strerror_attempts_before_fail = -1;
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+	}
+
+#endif /* defined( HAVE_CERROR_TEST_FUNCTION_HOOK ) */
+
+#endif /* defined( WINAPI ) */
 
 	return( 1 );
+
+on_error:
+	return( 0 );
 }
 
 #endif /* defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT ) */
@@ -240,6 +529,14 @@ int cerror_test_system_set_error(
 	 "error",
 	 error );
 
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
+
+	/* TODO test libcerror_error_get_system_format_string failing */
+
+#endif /* defined( HAVE_WIDE_SYSTEM_CHARACTER ) */
+
+	/* TODO test libcerror_error_get_system_format_string with libcerror_error_initialize failing */
+
 #if defined( HAVE_CERROR_TEST_MEMORY )
 
 	/* Test libcerror_system_set_error with libcerror_error_resize failing
@@ -316,8 +613,6 @@ int cerror_test_system_set_error(
 
 #endif /* defined( HAVE_CERROR_TEST_MEMORY ) */
 
-	/* TODO test libcerror_error_get_system_format_string failing */
-
 #if defined( HAVE_CERROR_TEST_FUNCTION_HOOK )
 
 	/* Test libcerror_error_set with vsnprintf returning -1
@@ -375,6 +670,72 @@ int cerror_test_system_set_error(
 
 #endif /* defined( HAVE_CERROR_TEST_FUNCTION_HOOK ) */
 
+#if defined( WINAPI )
+
+	/* TODO test libcerror_error_set with FormatMessage failing in libcerror_system_copy_string_from_error_number */
+
+#elif defined( HAVE_STRERROR_R )
+
+#if defined( HAVE_CERROR_TEST_FUNCTION_HOOK )
+
+	/* Test libcerror_error_set with strerror_r failing in libcerror_system_copy_string_from_error_number
+	 */
+	cerror_test_strerror_r_attempts_before_fail = 0;
+
+	libcerror_system_set_error(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 error_code,
+	 "Test error 7." );
+
+	if( cerror_test_strerror_r_attempts_before_fail != -1 )
+	{
+		cerror_test_strerror_r_attempts_before_fail = -1;
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+	}
+	libcerror_error_free(
+	  &error );
+
+#endif /* defined( HAVE_CERROR_TEST_FUNCTION_HOOK ) */
+
+#elif defined( HAVE_STRERROR )
+
+#if defined( HAVE_CERROR_TEST_FUNCTION_HOOK )
+
+	/* Test libcerror_error_set with strerror failing in libcerror_system_copy_string_from_error_number
+	 */
+	cerror_test_strerror_attempts_before_fail = 0;
+
+	libcerror_system_set_error(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 error_code,
+	 "Test error 7." );
+
+	if( cerror_test_strerror_attempts_before_fail != -1 )
+	{
+		cerror_test_strerror_attempts_before_fail = -1;
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+	}
+	libcerror_error_free(
+	  &error );
+
+#endif /* defined( HAVE_CERROR_TEST_FUNCTION_HOOK ) */
+
+#endif /* defined( WINAPI ) */
+
 	return( 1 );
 
 on_error:
@@ -400,6 +761,18 @@ int main(
 {
 	CERROR_TEST_UNREFERENCED_PARAMETER( argc )
 	CERROR_TEST_UNREFERENCED_PARAMETER( argv )
+
+#if defined( WINAPI ) && ( WINVER <= 0x0500 ) && !defined( LIBCERROR_DLL_IMPORT )
+
+	CERROR_TEST_RUN(
+	 "libcerror_FormatMessageA",
+	 cerror_test_FormatMessageA );
+
+	CERROR_TEST_RUN(
+	 "libcerror_FormatMessageW",
+	 cerror_test_FormatMessageW );
+
+#endif /* defined( WINAPI ) && ( WINVER <= 0x0500 ) && !defined( LIBCERROR_DLL_IMPORT ) */
 
 #if defined( __GNUC__ ) && !defined( LIBCERROR_DLL_IMPORT )
 
