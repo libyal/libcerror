@@ -1324,6 +1324,16 @@ int cerror_test_error_sprint(
 	 print_count,
 	 -1 )
 
+	print_count = libcerror_error_sprint(
+	               error,
+	               string,
+	               10 );
+
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "print_count",
+	 print_count,
+	 -1 )
+
 #if defined( HAVE_CERROR_TEST_MEMORY ) && defined( OPTIMIZATION_DISABLED )
 
 	/* Test libcerror_error_sprint with memcpy returning NULL
@@ -1495,6 +1505,26 @@ int cerror_test_error_backtrace_sprint(
 	               128 );
 
 	( (libcerror_internal_error_t *) error )->sizes = sizes;
+
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "print_count",
+	 print_count,
+	 -1 )
+
+	print_count = libcerror_error_backtrace_sprint(
+	               error,
+	               string,
+	               10 );
+
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "print_count",
+	 print_count,
+	 -1 )
+
+	print_count = libcerror_error_backtrace_sprint(
+	               error,
+	               string,
+	               14 );
 
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
