@@ -20,6 +20,7 @@
  */
 
 #include <common.h>
+#include <file_stream.h>
 #include <memory.h>
 #include <narrow_string.h>
 #include <types.h>
@@ -28,6 +29,14 @@
 
 #if defined( HAVE_STDLIB_H ) || defined( WINAPI )
 #include <stdlib.h>
+#endif
+
+#if defined( HAVE_STDARG_H ) || defined( WINAPI )
+#include <stdarg.h>
+#elif defined( HAVE_VARARGS_H )
+#include <varargs.h>
+#else
+#error Missing headers stdarg.h and varargs.h
 #endif
 
 #if defined( HAVE_GNU_DL_DLSYM )
@@ -50,6 +59,12 @@
 
 #if defined( HAVE_CERROR_TEST_FUNCTION_HOOK )
 
+#if defined( OPTIMIZATION_DISABLED )
+static int (*cerror_test_real_fprintf)(FILE *, const char *, ...)               = NULL;
+
+int cerror_test_fprintf_attempts_before_fail                                    = -1;
+#endif
+
 static int (*cerror_test_real_vsnprintf)(char *, size_t, const char *, va_list) = NULL;
 
 int cerror_test_vsnprintf_attempts_before_fail                                  = -1;
@@ -58,6 +73,53 @@ int cerror_test_vsnprintf_fail_return_value                                     
 #endif /* defined( HAVE_CERROR_TEST_FUNCTION_HOOK ) */
 
 #if defined( HAVE_CERROR_TEST_FUNCTION_HOOK )
+
+#if defined( OPTIMIZATION_DISABLED )
+
+/* Custom fprintf for testing error cases
+ * Returns the number of characters printed if successful or an error value otherwise
+ */
+int fprintf(
+     FILE *stream,
+     const char *format,
+     ... )
+{
+	va_list arguments;
+
+	int result = 0;
+
+	if( cerror_test_real_fprintf == NULL )
+	{
+		cerror_test_real_fprintf = dlsym(
+		                            RTLD_NEXT,
+		                            "fprintf" );
+	}
+	if( cerror_test_fprintf_attempts_before_fail == 0 )
+	{
+		cerror_test_fprintf_attempts_before_fail = -1;
+
+		return( -1 );
+	}
+	else if( cerror_test_fprintf_attempts_before_fail > 0 )
+	{
+		cerror_test_fprintf_attempts_before_fail--;
+	}
+	va_start(
+	 arguments,
+	 format );
+
+	result = vfprintf(
+	          stream,
+	          format,
+	          arguments );
+
+	va_end(
+	 arguments );
+
+	return( result );
+}
+
+#endif /* defined( OPTIMIZATION_DISABLED ) */
 
 /* Custom vsnprintf for testing error cases
  * Returns the number of characters printed if successful or an error value otherwise
@@ -770,6 +832,7 @@ int cerror_test_error_fprint(
 	char string[ 128 ];
 
 	libcerror_error_t *error      = NULL;
+	system_character_t *message   = NULL;
 	system_character_t **messages = NULL;
 	FILE *stream                  = NULL;
 	int print_count               = 0;
@@ -816,6 +879,29 @@ int cerror_test_error_fprint(
 	 result,
 	 0 );
 
+	message = ( (libcerror_internal_error_t *) error )->messages[ 0 ];
+
+	( (libcerror_internal_error_t *) error )->messages[ 0 ] = NULL;
+
+	stream = fmemopen(
+	          string,
+	          128,
+	          "w+");
+
+	print_count = libcerror_error_fprint(
+	               error,
+	               stream );
+
+	fclose(
+	 stream );
+
+	( (libcerror_internal_error_t *) error )->messages[ 0 ] = message;
+
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "print_count",
+	 print_count,
+	 0 )
+
 	/* Test error cases
 	 */
 	print_count = libcerror_error_fprint(
@@ -850,6 +936,37 @@ int cerror_test_error_fprint(
 	 "print_count",
 	 print_count,
 	 -1 )
+
+#if defined( HAVE_CERROR_TEST_FUNCTION_HOOK ) && defined( OPTIMIZATION_DISABLED )
+
+	/* Test libcerror_error_fprint with fprintf returning -1
+	 */
+	cerror_test_fprintf_attempts_before_fail = 0;
+
+	stream = fmemopen(
+	          string,
+	          128,
+	          "w+");
+
+	print_count = libcerror_error_fprint(
+	               error,
+	               stream );
+
+	fclose(
+	 stream );
+
+	if( cerror_test_fprintf_attempts_before_fail != -1 )
+	{
+		cerror_test_fprintf_attempts_before_fail = -1;
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_EQUAL_INT(
+		 "print_count",
+		 print_count,
+		 -1 )
+	}
+#endif /* defined( HAVE_CERROR_TEST_FUNCTION_HOOK ) && defined( OPTIMIZATION_DISABLED ) */
 
 	/* Clean up
 	 */
@@ -921,6 +1038,7 @@ int cerror_test_error_backtrace_fprint(
 	char string[ 128 ];
 
 	libcerror_error_t *error      = NULL;
+	system_character_t *message   = NULL;
 	system_character_t **messages = NULL;
 	FILE *stream                  = NULL;
 	const char *expected_string   = NULL;
@@ -985,6 +1103,29 @@ int cerror_test_error_backtrace_fprint(
 	 result,
 	 0 );
 
+	message = ( (libcerror_internal_error_t *) error )->messages[ 0 ];
+
+	( (libcerror_internal_error_t *) error )->messages[ 0 ] = NULL;
+
+	stream = fmemopen(
+	          string,
+	          128,
+	          "w+");
+
+	print_count = libcerror_error_backtrace_fprint(
+	               error,
+	               stream );
+
+	fclose(
+	 stream );
+
+	( (libcerror_internal_error_t *) error )->messages[ 0 ] = message;
+
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "print_count",
+	 print_count,
+	 14 )
+
 	/* Test error cases
 	 */
 	print_count = libcerror_error_backtrace_fprint(
@@ -1019,6 +1160,37 @@ int cerror_test_error_backtrace_fprint(
 	 "print_count",
 	 print_count,
 	 -1 )
+
+#if defined( HAVE_CERROR_TEST_FUNCTION_HOOK ) && defined( OPTIMIZATION_DISABLED )
+
+	/* Test libcerror_error_backtrace_fprint with fprintf returning -1
+	 */
+	cerror_test_fprintf_attempts_before_fail = 0;
+
+	stream = fmemopen(
+	          string,
+	          128,
+	          "w+");
+
+	print_count = libcerror_error_backtrace_fprint(
+	               error,
+	               stream );
+
+	fclose(
+	 stream );
+
+	if( cerror_test_fprintf_attempts_before_fail != -1 )
+	{
+		cerror_test_fprintf_attempts_before_fail = -1;
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_EQUAL_INT(
+		 "print_count",
+		 print_count,
+		 -1 )
+	}
+#endif /* defined( HAVE_CERROR_TEST_FUNCTION_HOOK ) && defined( OPTIMIZATION_DISABLED ) */
 
 	/* Clean up
 	 */
