@@ -37,8 +37,11 @@
 
 #include <libcerror/extern.h>
 
+#define LIBCERROR_EXTERN_VARIABLE	LIBCERROR_EXTERN
+
 #else
-#define LIBCERROR_EXTERN	/* extern */
+#define LIBCERROR_EXTERN		/* extern */
+#define LIBCERROR_EXTERN_VARIABLE	extern
 
 #endif /* !defined( HAVE_LOCAL_LIBCERROR ) */
 
