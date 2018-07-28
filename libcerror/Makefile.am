@@ -1,6 +1,7 @@
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
-	-I$(top_srcdir)/common
+	-I$(top_srcdir)/common \
+	@LIBCERROR_DLL_EXPORT@
 
 lib_LTLIBRARIES = libcerror.la
 

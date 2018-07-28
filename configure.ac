@@ -2,7 +2,7 @@ AC_PREREQ( 2.59 )
 
 AC_INIT(
  [libcerror],
- [20180727],
+ [20180728],
  [joachim.metz@gmail.com])
 
 AC_CONFIG_SRCDIR(
@@ -71,7 +71,10 @@ AS_IF(
    [HAVE_DLLMAIN],
    [1])
 
-  dnl Used in tests
+  AC_SUBST(
+   [LIBCERROR_DLL_EXPORT],
+   ["-DLIBCERROR_DLL_EXPORT"])
+
   AC_SUBST(
    [LIBCERROR_DLL_IMPORT],
    ["-DLIBCERROR_DLL_IMPORT"])
