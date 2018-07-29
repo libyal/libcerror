@@ -2,7 +2,7 @@ AC_PREREQ( 2.59 )
 
 AC_INIT(
  [libcerror],
- [20180728],
+ [20180729],
  [joachim.metz@gmail.com])
 
 AC_CONFIG_SRCDIR(
@@ -62,7 +62,7 @@ AS_IF(
  [test "x$enable_shared" = xyes],
  [AS_CASE(
   [$host],
-  [*cygwin* | *mingw*],
+  [*cygwin* | *mingw* | *msys*],
   [AC_DEFINE(
    [HAVE_DLLMAIN],
    [1],
