@@ -24,13 +24,6 @@
 
 #include <common.h>
 
-/* If Cygwin libtool DLL support is enabled and do not want to create static
- * executables set LIBCERROR_DLL_IMPORT before including libcerror.h
- */
-#if defined( _WIN32 ) && defined( DLL_EXPORT ) && !defined( HAVE_STATIC_EXECUTABLES )
-#define LIBCERROR_DLL_IMPORT
-#endif
-
 #include <libcerror.h>
 
 #endif /* !defined( _CERROR_TEST_LIBCERROR_H ) */
