@@ -9,15 +9,15 @@ URL: https://github.com/libyal/libcerror
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gcc
 
-%description
+%description -n libcerror
 Library to support cross-platform C error functions
 
-%package devel
+%package -n libcerror-devel
 Summary: Header files and libraries for developing applications for libcerror
 Group: Development/Libraries
 Requires: libcerror = %{version}-%{release}
 
-%description devel
+%description -n libcerror-devel
 Header files and libraries for developing applications for libcerror.
 
 %prep
@@ -38,13 +38,13 @@ rm -rf %{buildroot}
 
 %postun -p /sbin/ldconfig
 
-%files
+%files -n libcerror
 %defattr(644,root,root,755)
 %license COPYING
 %doc AUTHORS README
 %attr(755,root,root) %{_libdir}/*.so.*
 
-%files devel
+%files -n libcerror-devel
 %defattr(644,root,root,755)
 %license COPYING
 %doc AUTHORS README ChangeLog
