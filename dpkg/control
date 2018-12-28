@@ -9,6 +9,8 @@ Homepage: https://github.com/libyal/libcerror
 Package: libcerror
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Conflicts: libcerror1
+Replaces: libcerror1
 Suggests: libcerror-dbg
 Description: Library to support cross-platform C error functions
  libcerror is a library to support cross-platform C error functions.
