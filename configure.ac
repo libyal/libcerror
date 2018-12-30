@@ -2,7 +2,7 @@ AC_PREREQ( 2.59 )
 
 AC_INIT(
  [libcerror],
- [20181228],
+ [20181230],
  [joachim.metz@gmail.com])
 
 AC_CONFIG_SRCDIR(
@@ -123,9 +123,4 @@ dnl Generate a source configuration file
 AC_CONFIG_HEADERS([common/config.h])
 
 AC_OUTPUT
-
-dnl Print a summary
-AC_MSG_NOTICE([
-
-]);
 
