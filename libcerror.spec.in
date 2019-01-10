@@ -12,6 +12,14 @@ BuildRequires: gcc
 %description -n libcerror
 Library to support cross-platform C error functions
 
+%package -n libcerror-static
+Summary: Library to support cross-platform C error functions
+Group: Development/Libraries
+Requires: libcerror = %{version}-%{release}
+
+%description -n libcerror-static
+Static library version of libcerror.
+
 %package -n libcerror-devel
 Summary: Header files and libraries for developing applications for libcerror
 Group: Development/Libraries
@@ -44,11 +52,16 @@ rm -rf %{buildroot}
 %doc AUTHORS README
 %attr(755,root,root) %{_libdir}/*.so.*
 
+%files -n libcerror-static
+%defattr(644,root,root,755)
+%license COPYING
+%doc AUTHORS README
+%attr(755,root,root) %{_libdir}/*.a
+
 %files -n libcerror-devel
 %defattr(644,root,root,755)
 %license COPYING
 %doc AUTHORS README
-%{_libdir}/*.a
 %{_libdir}/*.la
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/libcerror.pc
