@@ -1,11 +1,9 @@
-.Dd January  1, 2017
+.Dd February 23, 2019
 .Dt libcerror 3
 .Os libcerror
 .Sh NAME
 .Nm libcerror.h
 .Nd Library to support cross-platform C error functions
-.Sh LIBRARY
-.Lb libcerror
 .Sh SYNOPSIS
 .In libcerror.h
 .Pp
@@ -17,21 +15,21 @@ Error functions
 .Ft void
 .Fn libcerror_error_free "libcerror_error_t **error"
 .Ft void
-.Fn libcerror_error_set "libcerror_error_t **error, int error_domain, int error_code, const char *format_string, ..."
+.Fn libcerror_error_set "libcerror_error_t **error" "int error_domain" "int error_code" "const char *format_string" "..."
 .Ft int
-.Fn libcerror_error_matches "libcerror_error_t *error, int error_domain, int error_code"
+.Fn libcerror_error_matches "libcerror_error_t *error" "int error_domain" "int error_code"
 .Ft int
-.Fn libcerror_error_fprint "libcerror_error_t *error, FILE *stream"
+.Fn libcerror_error_fprint "libcerror_error_t *error" "FILE *stream"
 .Ft int
-.Fn libcerror_error_sprint "libcerror_error_t *error, char *string, size_t size"
+.Fn libcerror_error_sprint "libcerror_error_t *error" "char *string" "size_t size"
 .Ft int
-.Fn libcerror_error_backtrace_fprint "libcerror_error_t *error, FILE *stream"
+.Fn libcerror_error_backtrace_fprint "libcerror_error_t *error" "FILE *stream"
 .Ft int
-.Fn libcerror_error_backtrace_sprint "libcerror_error_t *error, char *string, size_t size"
+.Fn libcerror_error_backtrace_sprint "libcerror_error_t *error" "char *string" "size_t size"
 .Pp
 System error functions
 .Ft void
-.Fn libcerror_system_set_error "libcerror_error_t **error, int error_domain, int error_code, uint32_t system_error_code, const char *format_string, ..."
+.Fn libcerror_system_set_error "libcerror_error_t **error" "int error_domain" "int error_code" "uint32_t system_error_code" "const char *format_string" "..."
 .Sh DESCRIPTION
 The
 .Fn libcerror_get_version
@@ -49,7 +47,7 @@ Please report bugs of any kind on the project issue tracker: https://github.com/
 These man pages are generated from "libcerror.h".
 .Sh COPYRIGHT
 Copyright (C) 2008-2019, Joachim Metz <joachim.metz@gmail.com>.
-
+.sp
 This is free software; see the source for copying conditions.
 There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 .Sh SEE ALSO
