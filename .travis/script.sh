@@ -25,7 +25,7 @@ then
 
 		make install DESTDIR=${PWD}/osx-pkg;
 		mkdir -p ${PWD}/osx-pkg/usr/share/doc/libcerror;
-		cp AUTHORS COPYING NEWS README ${PWD}/osx-pkg/usr/share/doc/libcerror;
+		cp AUTHORS COPYING COPYING.LESSER NEWS README ${PWD}/osx-pkg/usr/share/doc/libcerror;
 
 		pkgbuild --root osx-pkg --identifier com.github.libyal.libcerror --version ${VERSION} --ownership recommended ../libcerror-${VERSION}.pkg;
 	fi
