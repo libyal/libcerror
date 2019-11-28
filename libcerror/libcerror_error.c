@@ -547,8 +547,8 @@ int libcerror_error_sprint(
 {
 	libcerror_internal_error_t *internal_error = NULL;
 	system_character_t *error_string           = NULL;
-	size_t print_count                         = 0;
 	size_t message_index                       = 0;
+	size_t print_count                         = 0;
 
 #if !defined( HAVE_WIDE_SYSTEM_CHARACTER )
 	size_t error_string_size                   = 0;
@@ -598,9 +598,9 @@ int libcerror_error_sprint(
 		}
 #else
 		print_count = wcstombs(
-			       string,
-			       error_string,
-			       size );
+		               string,
+		               error_string,
+		               size );
 
 		if( print_count == (size_t) -1 )
 		{

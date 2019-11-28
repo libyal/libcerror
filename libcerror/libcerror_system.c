@@ -96,8 +96,8 @@ DWORD libcerror_FormatMessageA(
 		return( 0 );
 	}
 	function = GetProcAddress(
-		    library_handle,
-		    (LPCSTR) "FormatMessageA" );
+	            library_handle,
+	            (LPCSTR) "FormatMessageA" );
 
 	if( function != NULL )
 	{
@@ -149,8 +149,8 @@ DWORD libcerror_FormatMessageW(
 		return( 0 );
 	}
 	function = GetProcAddress(
-		    library_handle,
-		    (LPCSTR) "FormatMessageW" );
+	            library_handle,
+	            (LPCSTR) "FormatMessageW" );
 
 	if( function != NULL )
 	{
@@ -521,8 +521,8 @@ void VARARGS(
 			string_index -= 1;
 		}
 		reallocation = memory_reallocate(
-				internal_error->messages[ message_index ],
-				sizeof( system_character_t ) * ( message_size + 13 + 512 ) );
+		                internal_error->messages[ message_index ],
+		                sizeof( system_character_t ) * ( message_size + 13 + 512 ) );
 
 		if( reallocation == NULL )
 		{
