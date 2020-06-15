@@ -371,9 +371,6 @@ void VARARGS(
 		next_message_size = ( ( format_string_length / LIBCERROR_MESSAGE_INCREMENT_SIZE ) + 1 )
 		                  * LIBCERROR_MESSAGE_INCREMENT_SIZE;
 	}
-	message_index = internal_error->number_of_messages - 1;
-	error_string  = internal_error->messages[ message_index ];
-
 	do
 	{
 		if( next_message_size >= LIBCERROR_MESSAGE_MAXIMUM_SIZE )
@@ -440,6 +437,8 @@ void VARARGS(
 		error_string[ LIBCERROR_MESSAGE_MAXIMUM_SIZE - 1 ] = 0;
 		error_string_size                                  = (size_t) LIBCERROR_MESSAGE_MAXIMUM_SIZE;
 	}
+	message_index = internal_error->number_of_messages - 1;
+
 	internal_error->messages[ message_index ] = error_string;
 	internal_error->sizes[ message_index ]    = error_string_size;
 
