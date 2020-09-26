@@ -2,7 +2,7 @@ AC_PREREQ( 2.59 )
 
 AC_INIT(
  [libcerror],
- [20200712],
+ [20200926],
  [joachim.metz@gmail.com])
 
 AC_CONFIG_SRCDIR(
@@ -56,6 +56,8 @@ AX_COMMON_CHECK_LOCAL
 
 dnl Check if libcerror required headers and functions are available
 AX_LIBCERROR_CHECK_LOCAL
+
+dnl Check if DLL support is needed
 AX_LIBCERROR_CHECK_DLL_SUPPORT
 
 dnl Check if tests required headers and functions are available
