@@ -48,4 +48,4 @@ before_install:
 install:
 - if test ${TARGET} != "coverity" && test -x "synctestdata.sh"; then ./synctestdata.sh; fi
 script:
-- if test ${TARGET} != "coverity"; then export PATH=$(echo $PATH | tr ":" "\n" | sed '/\/opt\/python/d' | tr "\n" ":" | sed "s/::/:/g"); tests/build.sh ${CONFIGURE_OPTIONS}; fi
+- if test ${TARGET} != "coverity"; then export PATH=$(echo $PATH | tr ":" "\n" | sed '/\/opt\/python/d' | tr "\n" ":" | sed "s/::/:/g"); tests/build.sh ${CONFIGURE_OPTIONS} && tests/runtests.sh; fi
