@@ -1,5 +1,5 @@
 # Test build of library to determine code coverage on Ubuntu
-name: test_build_ubuntu
+name: test_build_coverage_ubuntu
 on:
   push:
     branches: [master]
@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        architecture: ['x86', 'x64']
+        architecture: ['x64']
         compiler: [gcc]
     steps:
     - uses: actions/checkout@v2
@@ -40,4 +40,4 @@ jobs:
     - name: Upload coverage data
       run: |
         curl -o codecov.sh -s https://codecov.io/bash
-        ./codecov.sh -n linux-gcc-no-optimization -X gcov;
+        /bin/bash ./codecov.sh -n linux-gcc-no-optimization -X gcov;
