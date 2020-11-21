@@ -19,19 +19,14 @@ jobs:
     - name: Download test data
       run: |
         if test -x "synctestdata.sh"; then ./synctestdata.sh; fi
-    - name: Prepare build
-      run: |
-        ./synclibs.sh --use-head
-        ./autogen.sh
     - name: Prepare shared libraries
       run: |
-        .github/syncsharedlibs.sh --use-head
+        tests/syncsharedlibs.sh --use-head
     - name: Build
       env:
         CC: ${{ matrix.compiler }}
       run: |
-        ./configure
-        make > /dev/null
+        tests/build.sh
     - name: Run tests
       run: |
-        .github/runtests.sh
+        tests/runtests.sh
