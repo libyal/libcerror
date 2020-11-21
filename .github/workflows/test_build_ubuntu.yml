@@ -32,7 +32,5 @@ jobs:
         ./configure
         make > /dev/null
     - name: Run tests
-      env:
-        CC: ${{ matrix.compiler }}
       run: |
         .github/runtests.sh

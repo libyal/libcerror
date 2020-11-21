@@ -1,4 +1,4 @@
-# Test build of library on Ubuntu with libyal dependencies as shared libraries
+# Test build of library with libyal dependencies as shared libraries on Ubuntu
 name: test_build_ubuntu_shared
 on:
   push:
@@ -33,7 +33,5 @@ jobs:
         ./configure
         make > /dev/null
     - name: Run tests
-      env:
-        CC: ${{ matrix.compiler }}
       run: |
         .github/runtests.sh
