@@ -43,10 +43,17 @@ environment:
   - TARGET: macos-x64-clang
     BUILD_ENVIRONMENT: xcode
     APPVEYOR_BUILD_WORKER_IMAGE: macos
+    HOMEBREW_NO_INSTALL_CLEANUP: 1
     CONFIGURE_OPTIONS: ""
   - TARGET: macos-x64-gcc
     BUILD_ENVIRONMENT: xcode
     APPVEYOR_BUILD_WORKER_IMAGE: macos
+    HOMEBREW_NO_INSTALL_CLEANUP: 1
+    CONFIGURE_OPTIONS: ""
+  - TARGET: macos-pkgbuild
+    BUILD_ENVIRONMENT: xcode
+    APPVEYOR_BUILD_WORKER_IMAGE: macos
+    HOMEBREW_NO_INSTALL_CLEANUP: 1
     CONFIGURE_OPTIONS: ""
   - TARGET: cygwin-gcc
     BUILD_ENVIRONMENT: cygwin
@@ -90,7 +97,7 @@ install:
 - cmd: if [%BUILD_ENVIRONMENT%]==[msbuild] (
     git clone https://github.com/libyal/vstools.git ..\vstools )
 - sh: if test ${BUILD_ENVIRONMENT} = "xcode"; then brew update; fi
-- sh: if test ${BUILD_ENVIRONMENT} = "xcode"; then brew install gnu-sed || true; fi
+- sh: if test ${BUILD_ENVIRONMENT} = "xcode"; then brew install gettext gnu-sed || true; fi
 
 build_script:
 - ps: If ($env:BUILD_ENVIRONMENT -eq "msbuild" -or ($env:BUILD_ENVIRONMENT -eq "python" -and $isWindows)) {
@@ -111,7 +118,7 @@ build_script:
     .\build.ps1 -VisualStudioVersion 2017 -Platform x64 -VSToolsOptions "--extend-with-x64 --no-python-dll --with-dokany" }
 - ps: If ($env:TARGET -eq "vs2019") {
     .\build.ps1 -VisualStudioVersion 2019 -VSToolsOptions "--extend-with-x64 --no-python-dll --with-dokany" }
-- sh: if test ${BUILD_ENVIRONMENT} = "xcode"; then tests/build.sh ${CONFIGURE_OPTIONS}; fi
+- sh: if test ${BUILD_ENVIRONMENT} = "xcode"; then export PATH="/usr/local/opt/gettext/bin:$PATH"; export SED="/usr/local/bin/gsed"; tests/build.sh ${CONFIGURE_OPTIONS}; fi
 - cmd: if [%BUILD_ENVIRONMENT%]==[cygwin] (
     xcopy /i /q /s C:\projects\libcerror C:\cygwin\home\appveyor\libcerror &&
     C:\cygwin\bin\bash -e -l -c "cd libcerror && tests/build.sh ${CONFIGURE_OPTIONS}" )
@@ -129,7 +136,8 @@ test_script:
 - cmd: rem Run tests
 - ps: If ($env:BUILD_ENVIRONMENT -eq "msbuild") {
     .\runtests.ps1 }
-- sh: if test ${BUILD_ENVIRONMENT} = "xcode"; then tests/runtests.sh; fi
+- sh: if test ${BUILD_ENVIRONMENT} = "xcode" && test ${TARGET} != "macos-pkgbuild"; then tests/runtests.sh; fi
+- sh: if ${TARGET} = "macos-pkgbuild"; then tests/pkgbuild.sh; fi
 - cmd: if [%BUILD_ENVIRONMENT%]==[cygwin] (
     C:\cygwin\bin\bash -l -c "cd libcerror && tests/runtests.sh" )
 - cmd: if [%BUILD_ENVIRONMENT%]==[cygwin64] (

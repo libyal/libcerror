@@ -42,16 +42,10 @@ jobs:
     arch: s390x
     compiler: gcc
     group: edge
-  - name: "Mac OS 10.14 with gcc and pkgbuild"
-    env:
-    - CONFIGURE_OPTIONS="--disable-dependency-tracking --prefix=/usr/local"
-    - TARGET="macos-gcc-pkgbuild"
-    compiler: gcc
-    os: osx
-    osx_image: xcode11
 before_install:
-- .travis/before_install.sh
+- if test ${TARGET} != "coverity"; then .travis/before_install.sh; fi
+- if test ${TARGET} = "coverity"; then echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-; fi
 install:
-- .travis/install.sh
+- f test ${TARGET} != "coverity" && test -x "synctestdata.sh"; then ./synctestdata.sh; fi
 script:
-- .travis/script.sh
+- if test ${TARGET} != "coverity"; then export PATH=$(echo $PATH | tr ":" "\n" | sed '/\/opt\/python/d' | tr "\n" ":" | sed "s/::/:/g"); tests/build.sh ${CONFIGURE_OPTIONS}; fi
