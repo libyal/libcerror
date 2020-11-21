@@ -24,22 +24,6 @@ jobs:
         build_command_prepend: "./synclibs.sh && ./autogen.sh && ./configure"
         build_command: "make -j4"
         branch_pattern: master
-  - name: "Linux with clang"
-    env:
-    - CONFIGURE_OPTIONS=""
-    - CFLAGS="--coverage"
-    - LDFLAGS="--coverage"
-    - TARGET="linux-clang"
-    compiler: clang
-    group: edge
-  - name: "Linux with gcc"
-    env:
-    - CONFIGURE_OPTIONS=""
-    - CFLAGS="--coverage"
-    - LDFLAGS="--coverage"
-    - TARGET="linux-gcc"
-    compiler: gcc
-    group: edge
   - name: "Linux with gcc on ppc64le"
     env:
     - CONFIGURE_OPTIONS=""
