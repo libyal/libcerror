@@ -137,7 +137,7 @@ test_script:
 - ps: If ($env:BUILD_ENVIRONMENT -eq "msbuild") {
     .\runtests.ps1 }
 - sh: if test ${BUILD_ENVIRONMENT} = "xcode" && test ${TARGET} != "macos-pkgbuild"; then tests/runtests.sh; fi
-- sh: if ${TARGET} = "macos-pkgbuild"; then tests/pkgbuild.sh; fi
+- sh: if test ${TARGET} = "macos-pkgbuild"; then tests/pkgbuild.sh; fi
 - cmd: if [%BUILD_ENVIRONMENT%]==[cygwin] (
     C:\cygwin\bin\bash -l -c "cd libcerror && tests/runtests.sh" )
 - cmd: if [%BUILD_ENVIRONMENT%]==[cygwin64] (
