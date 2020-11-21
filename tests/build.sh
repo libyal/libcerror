@@ -7,6 +7,6 @@ set -e
 
 ./synclibs.sh --use-head
 ./autogen.sh
-./configure $*
+./configure "$@"
 make > /dev/null
 
