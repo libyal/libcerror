@@ -558,8 +558,6 @@ void VARARGS(
 		{
 			goto on_error;
 		}
-		message_size += (size_t) print_count;
-
 		internal_error->sizes[ message_index ] += print_count;
 	}
 	if( internal_error->sizes[ message_index ] >= LIBCERROR_MESSAGE_MAXIMUM_SIZE )
