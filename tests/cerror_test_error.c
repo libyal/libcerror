@@ -864,6 +864,8 @@ int cerror_test_error_fprint(
 	fclose(
 	 stream );
 
+	stream = NULL;
+
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
@@ -895,6 +897,8 @@ int cerror_test_error_fprint(
 	fclose(
 	 stream );
 
+	stream = NULL;
+
 	( (libcerror_internal_error_t *) error )->messages[ 0 ] = message;
 
 	CERROR_TEST_ASSERT_EQUAL_INT(
@@ -904,9 +908,19 @@ int cerror_test_error_fprint(
 
 	/* Test error cases
 	 */
+	stream = fmemopen(
+	          string,
+	          128,
+	          "w+");
+
 	print_count = libcerror_error_fprint(
 	               NULL,
 	               stream );
+
+	fclose(
+	 stream );
+
+	stream = NULL;
 
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
@@ -926,9 +940,19 @@ int cerror_test_error_fprint(
 
 	( (libcerror_internal_error_t *) error )->messages = NULL;
 
+	stream = fmemopen(
+	          string,
+	          128,
+	          "w+");
+
 	print_count = libcerror_error_fprint(
 	               error,
 	               stream );
+
+	fclose(
+	 stream );
+
+	stream = NULL;
 
 	( (libcerror_internal_error_t *) error )->messages = messages;
 
@@ -954,6 +978,8 @@ int cerror_test_error_fprint(
 
 	fclose(
 	 stream );
+
+	stream = NULL;
 
 	if( cerror_test_fprintf_attempts_before_fail != -1 )
 	{
@@ -1005,6 +1031,8 @@ int cerror_test_error_fprint(
 
 	fclose(
 	 stream );
+
+	stream = NULL;
 
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
@@ -1080,6 +1108,8 @@ int cerror_test_error_backtrace_fprint(
 	fclose(
 	 stream );
 
+	stream = NULL;
+
 #if defined( WINAPI )
 	expected_string      = "Test error 1.\r\nTest error 2.";
 	expected_print_count = 29;
@@ -1119,6 +1149,8 @@ int cerror_test_error_backtrace_fprint(
 	fclose(
 	 stream );
 
+	stream = NULL;
+
 	( (libcerror_internal_error_t *) error )->messages[ 0 ] = message;
 
 	CERROR_TEST_ASSERT_EQUAL_INT(
@@ -1128,9 +1160,19 @@ int cerror_test_error_backtrace_fprint(
 
 	/* Test error cases
 	 */
+	stream = fmemopen(
+	          string,
+	          128,
+	          "w+");
+
 	print_count = libcerror_error_backtrace_fprint(
 	               NULL,
 	               stream );
+
+	fclose(
+	 stream );
+
+	stream = NULL;
 
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
@@ -1150,9 +1192,19 @@ int cerror_test_error_backtrace_fprint(
 
 	( (libcerror_internal_error_t *) error )->messages = NULL;
 
+	stream = fmemopen(
+	          string,
+	          128,
+	          "w+");
+
 	print_count = libcerror_error_backtrace_fprint(
 	               error,
 	               stream );
+
+	fclose(
+	 stream );
+
+	stream = NULL;
 
 	( (libcerror_internal_error_t *) error )->messages = messages;
 
@@ -1178,6 +1230,8 @@ int cerror_test_error_backtrace_fprint(
 
 	fclose(
 	 stream );
+
+	stream = NULL;
 
 	if( cerror_test_fprintf_attempts_before_fail != -1 )
 	{
