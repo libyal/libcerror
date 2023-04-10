@@ -40,6 +40,11 @@ environment:
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
     VisualStudioVersion: 16.0
     configuration: Release
+  - TARGET: vs2022
+    BUILD_ENVIRONMENT: msbuild
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+    VisualStudioVersion: 17.0
+    configuration: Release
   - TARGET: macos-x64-clang
     BUILD_ENVIRONMENT: xcode
     APPVEYOR_BUILD_WORKER_IMAGE: macos-monterey
@@ -111,6 +116,8 @@ build_script:
     .\build.ps1 -VisualStudioVersion 2017 -Platform x64 -VSToolsOptions "--extend-with-x64 --no-python-dll --with-dokany" }
 - ps: If ($env:TARGET -eq "vs2019") {
     .\build.ps1 -VisualStudioVersion 2019 -VSToolsOptions "--extend-with-x64 --no-python-dll --with-dokany" }
+- ps: If ($env:TARGET -eq "vs2022") {
+    .\build.ps1 -VisualStudioVersion 2022 -VSToolsOptions "--extend-with-x64 --no-python-dll --with-dokany" }
 - sh: if test ${BUILD_ENVIRONMENT} = "xcode"; then export PATH="/usr/local/opt/gettext/bin:$PATH"; export SED="/usr/local/bin/gsed"; tests/build.sh ${CONFIGURE_OPTIONS}; fi
 - cmd: if [%BUILD_ENVIRONMENT%]==[cygwin64] (
     xcopy /i /q /s C:\projects\libcerror C:\cygwin64\home\appveyor\libcerror &&
