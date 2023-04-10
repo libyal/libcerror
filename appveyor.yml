@@ -11,12 +11,12 @@ environment:
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
     VisualStudioVersion: 10.0
     platform: Win32
-    configuration: VSDebug
+    configuration: Release
   - TARGET: vs2012
     BUILD_ENVIRONMENT: msbuild
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
     VisualStudioVersion: 11.0
-    platform: x64
+    platform: Win32
     configuration: Release
   - TARGET: vs2013
     BUILD_ENVIRONMENT: msbuild
@@ -34,16 +34,31 @@ environment:
     BUILD_ENVIRONMENT: msbuild
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     VisualStudioVersion: 15.0
+    platform: Win32
     configuration: Release
   - TARGET: vs2019
     BUILD_ENVIRONMENT: msbuild
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
     VisualStudioVersion: 16.0
+    platform: Win32
     configuration: Release
   - TARGET: vs2022
     BUILD_ENVIRONMENT: msbuild
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
     VisualStudioVersion: 17.0
+    platform: Win32
+    configuration: Release
+  - TARGET: vs2022-vsdebug
+    BUILD_ENVIRONMENT: msbuild
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+    VisualStudioVersion: 17.0
+    platform: Win32
+    configuration: VSDebug
+  - TARGET: vs2022-x64
+    BUILD_ENVIRONMENT: msbuild
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+    VisualStudioVersion: 17.0
+    platform: x64
     configuration: Release
   - TARGET: macos-x64-clang
     BUILD_ENVIRONMENT: xcode
@@ -102,22 +117,11 @@ build_script:
     .\synclibs.ps1;
     .\autogen.ps1 }
 - ps: If ($env:TARGET -eq "vs2008") {
-    .\build.ps1 -VisualStudioVersion 2008 -VSToolsOptions "" }
-- ps: If ($env:TARGET -eq "vs2010") {
-    .\build.ps1 -VisualStudioVersion 2010 -VSToolsOptions "--no-python-dll" }
-- ps: If ($env:TARGET -eq "vs2012") {
-    .\build.ps1 -VisualStudioVersion 2012 -VSToolsOptions "--extend-with-x64 --python-path C:\\Python27-x64" }
-- ps: If ($env:TARGET -eq "vs2013") {
-    .\build.ps1 -VisualStudioVersion 2013 -VSToolsOptions "" }
-- ps: If ($env:TARGET -eq "vs2015") {
-    .\build.ps1 -VisualStudioVersion 2015 -VSToolsOptions "" }
-- ps: If ($env:TARGET -eq "vs2017") {
-    .\build.ps1 -VisualStudioVersion 2017 -Platform Win32 -VSToolsOptions "--extend-with-x64 --no-python-dll --with-dokany";
-    .\build.ps1 -VisualStudioVersion 2017 -Platform x64 -VSToolsOptions "--extend-with-x64 --no-python-dll --with-dokany" }
-- ps: If ($env:TARGET -eq "vs2019") {
-    .\build.ps1 -VisualStudioVersion 2019 -VSToolsOptions "--extend-with-x64 --no-python-dll --with-dokany" }
-- ps: If ($env:TARGET -eq "vs2022") {
-    .\build.ps1 -VisualStudioVersion 2022 -VSToolsOptions "--extend-with-x64 --no-python-dll --with-dokany" }
+    .\build.ps1 -VisualStudioVersion 2008 -VSToolsOptions "--no-python-dll" }
+- ps: If ( ( "vs2010", "vs2012", "vs2013", "vs2015" ).Contains( $env:TARGET ) ) {
+    .\build.ps1 -VisualStudioVersion $env:TARGET.Substring(2, 4) -Configuration $env:CONFIGURATION -Platform $env:PLATFORM -VSToolsOptions "--extend-with-x64 --no-python-dll" }
+- ps: If ( ( "vs2017", "vs2019", "vs2022", "vs2022-vsdebug", "vs2022-x64" ).Contains( $env:TARGET ) ) {
+    .\build.ps1 -VisualStudioVersion $env:TARGET.Substring(2, 4) -Configuration $env:CONFIGURATION -Platform $env:PLATFORM -VSToolsOptions "--extend-with-x64 --no-python-dll --with-dokany" }
 - sh: if test ${BUILD_ENVIRONMENT} = "xcode"; then export PATH="/usr/local/opt/gettext/bin:$PATH"; export SED="/usr/local/bin/gsed"; tests/build.sh ${CONFIGURE_OPTIONS}; fi
 - cmd: if [%BUILD_ENVIRONMENT%]==[cygwin64] (
     xcopy /i /q /s C:\projects\libcerror C:\cygwin64\home\appveyor\libcerror &&
