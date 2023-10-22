@@ -17,9 +17,9 @@ MAINTAINERCLEANFILES = \
 	Makefile.in
 
 distclean: clean
-	/bin/rm -f libcerror.h
-	/bin/rm -f libcerror/definitions.h
-	/bin/rm -f libcerror/features.h
-	/bin/rm -f libcerror/types.h
-	/bin/rm -f Makefile
+	-rm -f libcerror.h
+	-rm -f libcerror/definitions.h
+	-rm -f libcerror/features.h
+	-rm -f libcerror/types.h
+	-rm -f Makefile
 
