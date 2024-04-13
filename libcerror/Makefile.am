@@ -1,6 +1,6 @@
 AM_CPPFLAGS = \
-	-I$(top_srcdir)/include \
-	-I$(top_srcdir)/common \
+	-I../include -I$(top_srcdir)/include \
+	-I../common -I$(top_srcdir)/common \
 	@LIBCERROR_DLL_EXPORT@
 
 lib_LTLIBRARIES = libcerror.la
@@ -22,13 +22,11 @@ EXTRA_DIST = \
 	libcerror.rc \
 	libcerror.rc.in
 
-MAINTAINERCLEANFILES = \
+DISTCLEANFILES = \
+	libcerror_definitions.h \
+	libcerror.rc \
+	Makefile \
 	Makefile.in
-
-distclean: clean
-	-rm -f libcerror_definitions.h
-	-rm -f libcerror.rc
-	-rm -f Makefile
 
 sources-local: $(BUILT_SOURCES)
 

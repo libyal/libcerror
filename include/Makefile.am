@@ -13,13 +13,11 @@ EXTRA_DIST = \
 	libcerror/features.h.in \
 	libcerror/types.h.in
 
-MAINTAINERCLEANFILES = \
+DISTCLEANFILES = \
+	libcerror.h \
+	libcerror/definitions.h \
+	libcerror/features.h \
+	libcerror/types.h \
+	Makefile \
 	Makefile.in
-
-distclean: clean
-	-rm -f libcerror.h
-	-rm -f libcerror/definitions.h
-	-rm -f libcerror/features.h
-	-rm -f libcerror/types.h
-	-rm -f Makefile
 
