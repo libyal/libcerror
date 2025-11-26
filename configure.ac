@@ -1,12 +1,12 @@
 AC_PREREQ([2.71])
 
 AC_INIT(
- [libcerror],
- [20240609],
- [joachim.metz@gmail.com])
+  [libcerror],
+  [20251126],
+  [joachim.metz@gmail.com])
 
 AC_CONFIG_SRCDIR(
- [include/libcerror.h.in])
+  [include/libcerror.h.in])
 
 AM_INIT_AUTOMAKE([gnu 1.6 tar-ustar])
 AM_EXTRA_RECURSIVE_TARGETS([sources splint])
@@ -68,13 +68,13 @@ CFLAGS="$CFLAGS -Wall";
 
 dnl Set the date for the dpkg files
 AC_SUBST(
- [DPKG_DATE],
- [`date -R 2> /dev/null`])
+  [DPKG_DATE],
+  [`date -R 2> /dev/null`])
 
 dnl Set the date for the spec file
 AC_SUBST(
- [SPEC_DATE],
- [`date +"%a %b %e %Y" 2> /dev/null`])
+  [SPEC_DATE],
+  [`date +"%a %b %e %Y" 2> /dev/null`])
 
 dnl Generate Makefiles
 AC_CONFIG_FILES([Makefile])
