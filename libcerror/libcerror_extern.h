@@ -30,12 +30,6 @@
 
 #include <libcerror/extern.h>
 
-#if defined( __CYGWIN__ ) || defined( __MINGW32__ )
-#define LIBCERROR_EXTERN_VARIABLE	extern
-#else
-#define LIBCERROR_EXTERN_VARIABLE	LIBCERROR_EXTERN
-#endif
-
 #else
 #define LIBCERROR_EXTERN		/* extern */
 #define LIBCERROR_EXTERN_VARIABLE	extern

@@ -56,30 +56,6 @@ static int (*cerror_test_real_vsnprintf)(char *, size_t, const char *, va_list) 
 int cerror_test_vsnprintf_attempts_before_fail                                  = -1;
 int cerror_test_vsnprintf_fail_return_value                                     = -1;
 
-#if !defined( WINAPI )
-#if defined( HAVE_STRERROR_R )
-
-#if defined( STRERROR_R_CHAR_P )
-static char *(*cerror_test_real_strerror_r)(int, char *, size_t)                = NULL;
-#else
-static int (*cerror_test_real_strerror_r)(int, char *, size_t)                  = NULL;
-#endif
-
-int cerror_test_strerror_r_attempts_before_fail                                 = -1;
-
-#elif defined( HAVE_STRERROR )
-
-static char *(*cerror_test_real_strerror)(int)                                  = NULL;
-
-int cerror_test_strerror_attempts_before_fail                                   = -1;
-
-#endif
-#endif /* !defined( WINAPI ) */
-
-#endif /* defined( HAVE_CERROR_TEST_FUNCTION_HOOK ) */
-
-#if defined( HAVE_CERROR_TEST_FUNCTION_HOOK )
-
 /* Custom vsnprintf for testing error cases
  * Returns the number of characters printed if successful or an error value otherwise
  */
@@ -96,6 +72,11 @@ int vsnprintf(
 		cerror_test_real_vsnprintf = dlsym(
 		                              RTLD_NEXT,
 		                              "vsnprintf" );
+
+		if( cerror_test_real_vsnprintf == NULL )
+		{
+			return( -1 );
+		}
 	}
 	if( cerror_test_vsnprintf_attempts_before_fail == 0 )
 	{
@@ -120,44 +101,52 @@ int vsnprintf(
 #if defined( HAVE_STRERROR_R )
 
 #if defined( STRERROR_R_CHAR_P )
-/* Custom strerror_r for testing error cases
+static char *(*cerror_test_real_strerror_r)(int, char *, size_t) = NULL;
+#else
+static int (*cerror_test_real_strerror_r)(int, char *, size_t)   = NULL;
+#endif
+
+int cerror_test_strerror_r_attempts_before_fail                  = -1;
+
+#elif defined( HAVE_STRERROR )
+
+static char *(*cerror_test_real_strerror)(int)                   = NULL;
+
+int cerror_test_strerror_attempts_before_fail                    = -1;
+
+#endif
+#endif /* !defined( WINAPI ) */
+
+#if !defined( WINAPI )
+#if defined( HAVE_STRERROR_R )
+
+#if defined( STRERROR_R_CHAR_P )
+/* Custom strerror_r (GNU implementation) for testing error cases
  * Returns a pointer to the error string if successfull or NULL on error
  */
 char *strerror_r(
        int errnum,
        char *buf,
        size_t buflen )
-#else
-/* Custom strerror_r for testing error cases
- * Returns 0 if successfull, or -1 or a positive integer on error
- */
-int strerror_r(
-     int errnum,
-     char *buf,
-     size_t buflen )
-#endif
 {
-#if defined( STRERROR_R_CHAR_P )
 	char *result = NULL;
-#else
-	int result   = 0;
-#endif
 
 	if( cerror_test_real_strerror_r == NULL )
 	{
 		cerror_test_real_strerror_r = dlsym(
 		                               RTLD_NEXT,
 		                               "strerror_r" );
+
+		if( cerror_test_real_strerror_r == NULL )
+		{
+			return( NULL );
+		}
 	}
 	if( cerror_test_strerror_r_attempts_before_fail == 0 )
 	{
 		cerror_test_strerror_r_attempts_before_fail = -1;
 
-#if defined( STRERROR_R_CHAR_P )
 		return( NULL );
-#else
-		return( -1 );
-#endif
 	}
 	else if( cerror_test_strerror_r_attempts_before_fail > 0 )
 	{
@@ -170,6 +159,48 @@ int strerror_r(
 
 	return( result );
 }
+#else
+/* Custom strerror_r (XSI implementation) for testing error cases
+ * Returns 0 if successfull, or -1 or a positive integer on error
+ */
+int strerror_r(
+     int errnum,
+     char *buf,
+     size_t buflen )
+{
+	int result = 0;
+
+	if( cerror_test_real_strerror_r == NULL )
+	{
+		/* Use __xpg_strerror_r to present dlsym hooking strerror_r (GNU implementation)
+		 */
+		cerror_test_real_strerror_r = dlsym(
+		                               RTLD_NEXT,
+		                               "__xpg_strerror_r" );
+
+		if( cerror_test_real_strerror_r == NULL )
+		{
+			return( -1 );
+		}
+	}
+	if( cerror_test_strerror_r_attempts_before_fail == 0 )
+	{
+		cerror_test_strerror_r_attempts_before_fail = -1;
+
+		return( -1 );
+	}
+	else if( cerror_test_strerror_r_attempts_before_fail > 0 )
+	{
+		cerror_test_strerror_r_attempts_before_fail--;
+	}
+	result = cerror_test_real_strerror_r(
+	          errnum,
+	          buf,
+	          buflen );
+
+	return( result );
+}
+#endif /* defined( STRERROR_R_CHAR_P ) */
 
 #elif defined( HAVE_STRERROR )
 
@@ -186,6 +217,11 @@ char *strerror(
 		cerror_test_real_strerror = dlsym(
 		                             RTLD_NEXT,
 		                             "strerror" );
+
+		if( cerror_test_real_strerror == NULL )
+		{
+			return( NULL );
+		}
 	}
 	if( cerror_test_strerror_attempts_before_fail == 0 )
 	{
@@ -328,12 +364,24 @@ int cerror_test_system_copy_string_from_error_number(
 
 	int result = 0;
 
+	/* Test regular cases
+	 */
+	result = libcerror_system_copy_string_from_error_number(
+	          string,
+	          128,
+	          22 );
+
+	CERROR_TEST_ASSERT_NOT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
 	/* Test error cases
 	 */
 	result = libcerror_system_copy_string_from_error_number(
 	          NULL,
 	          128,
-	          0 );
+	          22 );
 
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "result",
@@ -343,7 +391,7 @@ int cerror_test_system_copy_string_from_error_number(
 	result = libcerror_system_copy_string_from_error_number(
 	          string,
 	          (size_t) INT_MAX + 1,
-	          0 );
+	          22 );
 
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "result",
@@ -365,7 +413,7 @@ int cerror_test_system_copy_string_from_error_number(
 	result = libcerror_system_copy_string_from_error_number(
 	          string,
 	          128,
-	          0 );
+	          22 );
 
 	if( cerror_test_strerror_r_attempts_before_fail != -1 )
 	{
@@ -392,7 +440,7 @@ int cerror_test_system_copy_string_from_error_number(
 	result = libcerror_system_copy_string_from_error_number(
 	          string,
 	          128,
-	          0 );
+	          22 );
 
 	if( cerror_test_strerror_attempts_before_fail != -1 )
 	{
@@ -424,10 +472,11 @@ on_error:
 int cerror_test_system_set_error(
      void )
 {
-	libcerror_error_t *error = NULL;
-	uint32_t error_code      = 0;
+	libcerror_error_t *error         = NULL;
+	system_character_t *error_string = NULL;
+	uint32_t error_code              = 0;
 
-	/* Test libcerror_system_set_error
+	/* Test regular cases
 	 */
 	libcerror_system_set_error(
 	 &error,
@@ -509,6 +558,46 @@ int cerror_test_system_set_error(
 	 "error",
 	 error );
 
+	/* Test libcerror_system_set_error multiple times
+	 */
+	libcerror_system_set_error(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 error_code,
+	 "Test error 1." );
+
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	error_string = ( (libcerror_internal_error_t *) error )->messages[ 0 ];
+
+	( (libcerror_internal_error_t *) error )->messages[ 0 ] = NULL;
+
+	memory_free(
+	 error_string );
+
+	error_string = NULL;
+
+	libcerror_system_set_error(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 error_code,
+	 "Test error 2." );
+
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	  &error );
+
+	CERROR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	/* Test error cases
 	 */
 	libcerror_system_set_error(
@@ -531,14 +620,33 @@ int cerror_test_system_set_error(
 
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 
-	/* TODO test libcerror_error_get_system_format_string failing */
+	/* TODO test libcerror_system_set_error with libcerror_error_get_system_format_string failing */
 
 #endif /* defined( HAVE_WIDE_SYSTEM_CHARACTER ) */
 
-	/* TODO test libcerror_error_get_system_format_string with libcerror_error_initialize failing */
-
 #if defined( HAVE_CERROR_TEST_MEMORY )
 
+	/* Test libcerror_system_set_error with libcerror_error_initialize failing
+	 */
+	cerror_test_malloc_attempts_before_fail = 0;
+
+	libcerror_system_set_error(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 error_code,
+	 "Test error." );
+
+	if( cerror_test_malloc_attempts_before_fail != -1 )
+	{
+		cerror_test_malloc_attempts_before_fail = -1;
+	}
+	else
+	{
+		CERROR_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+	}
 	/* Test libcerror_system_set_error with libcerror_error_resize failing
 	 */
 	cerror_test_realloc_attempts_before_fail = 0;

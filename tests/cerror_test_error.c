@@ -1276,11 +1276,12 @@ int cerror_test_error_sprint(
 {
 	char string[ 128 ];
 
-	libcerror_error_t *error      = NULL;
-	system_character_t **messages = NULL;
-	size_t *sizes                 = NULL;
-	int print_count               = 0;
-	int result                    = 1;
+	libcerror_error_t *error         = NULL;
+	system_character_t *error_string = NULL;
+	system_character_t **messages    = NULL;
+	size_t *sizes                    = NULL;
+	int print_count                  = 0;
+	int result                       = 1;
 
 	/* Initialize test
 	 */
@@ -1314,32 +1315,61 @@ int cerror_test_error_sprint(
 	 result,
 	 0 );
 
+	error_string = ( (libcerror_internal_error_t *) error )->messages[ 0 ];
+
+	( (libcerror_internal_error_t *) error )->messages[ 0 ] = NULL;
+
+	print_count = libcerror_error_sprint(
+	               error,
+	               string,
+	               128 );
+
+	( (libcerror_internal_error_t *) error )->messages[ 0 ] = error_string;
+
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "print_count",
+	 print_count,
+	 0 )
+
+	libcerror_system_set_error(
+	 &error,
+	 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+	 LIBCERROR_RUNTIME_ERROR_GENERIC,
+	 0,
+	 "Test error." );
+
+	CERROR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	print_count = libcerror_error_sprint(
+	               error,
+	               string,
+	               128 );
+
+	CERROR_TEST_ASSERT_GREATER_THAN_INT(
+	 "print_count",
+	 print_count,
+	 24 )
+
+	/* Note that the rest of the error message is system dependent.
+	 */
+	result = narrow_string_compare(
+	          string,
+	          "Test error with error: ",
+	          23 );
+
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 0 );
+
 	/* Test error cases
 	 */
 	print_count = libcerror_error_sprint(
 	               NULL,
 	               string,
 	               128 );
-
-	CERROR_TEST_ASSERT_EQUAL_INT(
-	 "print_count",
-	 print_count,
-	 -1 )
-
-	print_count = libcerror_error_sprint(
-	               error,
-	               NULL,
-	               128 );
-
-	CERROR_TEST_ASSERT_EQUAL_INT(
-	 "print_count",
-	 print_count,
-	 -1 )
-
-	print_count = libcerror_error_sprint(
-	               error,
-	               string,
-	               (size_t) SSIZE_MAX + 1 );
 
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
@@ -1380,6 +1410,26 @@ int cerror_test_error_sprint(
 
 	print_count = libcerror_error_sprint(
 	               error,
+	               NULL,
+	               128 );
+
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "print_count",
+	 print_count,
+	 -1 )
+
+	print_count = libcerror_error_sprint(
+	               error,
+	               string,
+	               (size_t) SSIZE_MAX + 1 );
+
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "print_count",
+	 print_count,
+	 -1 )
+
+	print_count = libcerror_error_sprint(
+	               error,
 	               string,
 	               10 );
 
@@ -1388,7 +1438,7 @@ int cerror_test_error_sprint(
 	 print_count,
 	 -1 )
 
-#if defined( HAVE_CERROR_TEST_MEMORY ) && defined( OPTIMIZATION_DISABLED )
+#if defined( HAVE_CERROR_TEST_MEMORY ) && defined( OPTIMIZATION_DISABLED ) && defined( HAVE_NO_BUILTIN_MEMCPY )
 
 	/* Test libcerror_error_sprint with memcpy returning NULL
 	 */
@@ -1413,7 +1463,7 @@ int cerror_test_error_sprint(
 	libcerror_error_free(
 	  &error );
 
-#endif /* defined( HAVE_CERROR_TEST_MEMORY ) && defined( OPTIMIZATION_DISABLED ) */
+#endif /* defined( HAVE_CERROR_TEST_MEMORY ) && defined( OPTIMIZATION_DISABLED ) && defined( HAVE_NO_BUILTIN_MEMCPY ) */
 
 	/* Clean up
 	 */
@@ -1443,13 +1493,14 @@ int cerror_test_error_backtrace_sprint(
 {
 	char string[ 128 ];
 
-	libcerror_error_t *error      = NULL;
-	system_character_t **messages = NULL;
-	size_t *sizes                 = NULL;
-	const char *expected_string   = NULL;
-	int expected_print_count      = 0;
-	int print_count               = 0;
-	int result                    = 1;
+	libcerror_error_t *error         = NULL;
+	system_character_t *error_string = NULL;
+	system_character_t **messages    = NULL;
+	size_t *sizes                    = NULL;
+	const char *expected_string      = NULL;
+	int expected_print_count         = 0;
+	int print_count                  = 0;
+	int result                       = 1;
 
 	/* Initialize test
 	 */
@@ -1485,6 +1536,35 @@ int cerror_test_error_backtrace_sprint(
 	expected_string      = "Test error 1.\nTest error 2.";
 	expected_print_count = 28;
 #endif
+
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "print_count",
+	 print_count,
+	 expected_print_count )
+
+	result = narrow_string_compare(
+	          string,
+	          expected_string,
+	          expected_print_count - 1 );
+
+	CERROR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 0 );
+
+	error_string = ( (libcerror_internal_error_t *) error )->messages[ 0 ];
+
+	( (libcerror_internal_error_t *) error )->messages[ 0 ] = NULL;
+
+	print_count = libcerror_error_backtrace_sprint(
+	               error,
+	               string,
+	               128 );
+
+	( (libcerror_internal_error_t *) error )->messages[ 0 ] = error_string;
+
+	expected_string      = "Test error 2.";
+	expected_print_count = 14;
 
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
@@ -1578,14 +1658,14 @@ int cerror_test_error_backtrace_sprint(
 	print_count = libcerror_error_backtrace_sprint(
 	               error,
 	               string,
-	               14 );
+	               13 );
 
 	CERROR_TEST_ASSERT_EQUAL_INT(
 	 "print_count",
 	 print_count,
 	 -1 )
 
-#if defined( HAVE_CERROR_TEST_MEMORY ) && defined( OPTIMIZATION_DISABLED )
+#if defined( HAVE_CERROR_TEST_MEMORY ) && defined( OPTIMIZATION_DISABLED ) && defined( HAVE_NO_BUILTIN_MEMCPY )
 
 	/* Test libcerror_error_backtrace_sprint with memcpy returning NULL
 	 */
@@ -1610,7 +1690,7 @@ int cerror_test_error_backtrace_sprint(
 	libcerror_error_free(
 	  &error );
 
-#endif /* defined( HAVE_CERROR_TEST_MEMORY ) && defined( OPTIMIZATION_DISABLED ) */
+#endif /* defined( HAVE_CERROR_TEST_MEMORY ) && defined( OPTIMIZATION_DISABLED ) && defined( HAVE_NO_BUILTIN_MEMCPY ) */
 
 	/* Clean up
 	 */

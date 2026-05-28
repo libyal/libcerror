@@ -1,6 +1,6 @@
 dnl Functions for type definitions
 dnl
-dnl Version: 20180727
+dnl Version: 20260527
 
 dnl Function to detect if type definitions are available
 AC_DEFUN([AX_TYPES_CHECK_LOCAL],
@@ -13,7 +13,7 @@ AC_DEFUN([AX_TYPES_CHECK_LOCAL],
   [AC_DEFINE(
    [HAVE_WIDE_CHARACTER_TYPE],
    [1],
-   [Define to 1 if wide character type should be used.])
+   [Define to 1 if wide character type should be used])
   AC_SUBST(
    [HAVE_WIDE_CHARACTER_TYPE],
    [1]) ],

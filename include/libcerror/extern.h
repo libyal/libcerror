@@ -31,14 +31,17 @@
  */
 #if defined( LIBCERROR_DLL_EXPORT )
 #define LIBCERROR_EXTERN __declspec(dllexport)
+#define LIBCERROR_EXTERN_VARIABLE extern __declspec(dllexport)
 
 #elif defined( LIBCERROR_DLL_IMPORT )
-#define LIBCERROR_EXTERN extern __declspec(dllimport)
+#define LIBCERROR_EXTERN __declspec(dllimport)
+#define LIBCERROR_EXTERN_VARIABLE extern __declspec(dllimport)
 
 #else
 #define LIBCERROR_EXTERN extern
+#define LIBCERROR_EXTERN_VARIABLE extern
 
-#endif
+#endif /* defined( LIBCERROR_DLL_EXPORT ) */
 
 #endif /* !defined( _LIBCERROR_EXTERN_H ) */
 
