@@ -1,6 +1,6 @@
 dnl Checks for common headers and functions
 dnl
-dnl Version: 20260528
+dnl Version: 20260529
 
 dnl Function to test if a certain feature was disabled
 AC_DEFUN([AX_COMMON_ARG_DISABLE],
@@ -79,7 +79,7 @@ AC_DEFUN([AX_COMMON_CHECK_DISABLE_SHARED_LIBS],
   [AX_COMMON_ARG_DISABLE(
     [shared-libs],
     [shared_libs],
-    [disable shared library support])
+    [shared library support])
   ])
 
 dnl Function to detect whether debug output should be enabled
@@ -95,7 +95,7 @@ AC_DEFUN([AX_COMMON_CHECK_ENABLE_DEBUG_OUTPUT],
     [AC_DEFINE(
       [HAVE_DEBUG_OUTPUT],
       [1],
-      [Define to 1 if debug output should be used])
+      [Define to 1 if debug output should be used.])
 
     ac_cv_enable_debug_output=yes])
   ])
@@ -132,7 +132,7 @@ AC_DEFUN([AX_COMMON_CHECK_ENABLE_VERBOSE_OUTPUT],
     [AC_DEFINE(
       [HAVE_VERBOSE_OUTPUT],
       [1],
-      [Define to 1 if verbose output should be used])
+      [Define to 1 if verbose output should be used.])
 
     ac_cv_enable_verbose_output=yes])
   ])
@@ -151,7 +151,7 @@ AC_DEFUN([AX_COMMON_CHECK_ENABLE_WINAPI],
   [AX_COMMON_ARG_ENABLE(
     [winapi],
     [winapi],
-    [enable WINAPI support for cross-compilation],
+    [WINAPI support for cross-compilation],
     [auto-detect])
 
   AS_IF(
@@ -228,7 +228,7 @@ if( ( string[ 0 ] != '1' ) || ( string[ 1 ] != '0' ) ) return( 1 ); ]] )],
     AC_DEFINE(
       [HAVE_PRINTF_JD],
       [1],
-      [Define to 1 whether printf supports the conversion specifier "%jd"]) ],
+      [Define to 1 whether printf supports the conversion specifier "%jd".]) ],
     [AC_MSG_RESULT(
       [$ac_cv_have_printf_jd])
     ])
@@ -288,7 +288,7 @@ if( ( string[ 0 ] != '1' ) || ( string[ 1 ] != '0' ) ) return( 1 ); ]] )],
     AC_DEFINE(
       [HAVE_PRINTF_ZD],
       [1],
-      [Define to 1 whether printf supports the conversion specifier "%zd"]) ],
+      [Define to 1 whether printf supports the conversion specifier "%zd".]) ],
     [AC_MSG_RESULT(
       [$ac_cv_have_printf_zd])
     ])

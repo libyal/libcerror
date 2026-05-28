@@ -1,6 +1,6 @@
 dnl Functions for testing
 dnl
-dnl Version: 20260527
+dnl Version: 20260529
 
 dnl Function to check whether libasan is functional
 AC_DEFUN([AX_TESTS_CHECK_LIBASAN],
@@ -22,7 +22,7 @@ AC_DEFUN([AX_TESTS_CHECK_LIBASAN],
       [[#include <stdlib.h>]],
       [[char *array = (char *) malloc(10 * sizeof(char));
 if (array == NULL) { return 0; }
-array[10] = 42; 
+array[10] = 42;
 free(array);]] )],
       [ac_cv_have_asan=no],
       [ac_cv_have_asan=yes],
@@ -76,7 +76,7 @@ AC_DEFUN([AX_TESTS_CHECK_ENABLE_ASAN],
   [AX_COMMON_ARG_ENABLE(
     [asan],
     [asan],
-    [build with asan)],
+    [build with asan],
     [no])
 
   AS_IF(
@@ -101,7 +101,7 @@ AC_DEFUN([AX_TESTS_CHECK_ENABLE_UBSAN],
   [AX_COMMON_ARG_ENABLE(
     [ubsan],
     [ubsan],
-    [build with ubsan)],
+    [build with ubsan],
     [no])
 
   AS_IF(
@@ -137,7 +137,7 @@ AC_DEFUN([AX_TESTS_CHECK_ENABLE_CODE_COVERAGE],
       [AC_DEFINE(
         [HAVE_NO_BUILTIN_MEMCPY],
         [1],
-        [Define to 1 if the compiler supports -fno-builtin-memcpy])
+        [Define to 1 if the compiler supports -fno-builtin-memcpy.])
 
       CFLAGS="$CFLAGS --coverage -fno-builtin-memcpy -O0"],
       [CFLAGS="$CFLAGS --coverage -O0"])
@@ -163,7 +163,7 @@ AC_DEFUN([AX_TESTS_CHECK_LOCAL],
     [AC_DEFINE(
       [HAVE_GNU_DL_DLSYM],
       [1],
-      [Define to 1 if dlsym function is available in GNU dl])
+      [Define to 1 if dlsym function is available in GNU dl.])
     ])
   ])
 

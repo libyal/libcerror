@@ -151,8 +151,12 @@ run_configure_make_check_with_ubsan()
 
 run_configure_make_check_with_coverage()
 {
+	export CPPFLAGS="-DHAVE_MEMORY_TEST"
+
 	run_configure_make_check --enable-code-coverage
 	RESULT=$?
+
+	export CPPFLAGS=""
 
 	return ${RESULT}
 }
