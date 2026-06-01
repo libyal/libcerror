@@ -3,6 +3,9 @@ AM_CPPFLAGS = \
 	-I../common -I$(top_srcdir)/common \
 	@LIBCERROR_DLL_IMPORT@
 
+AM_TESTS_ENVIRONMENT = \
+	export TESTS_USE_WINAPI="@TESTS_USE_WINAPI@";
+
 TESTS = \
 	test_library.sh
 
