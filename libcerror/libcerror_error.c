@@ -497,7 +497,7 @@ int libcerror_error_fprint(
 	int message_index                          = 0;
 	int print_count                            = 0;
 
-#if defined( WINAPI )
+#if defined( WINAPI ) || defined( __MINGW32__ )
 	const char *format_string                  = "%" PRIs_SYSTEM "\r\n";
 #else
 	const char *format_string                  = "%" PRIs_SYSTEM "\n";
@@ -649,7 +649,7 @@ int libcerror_error_backtrace_fprint(
 	int print_count                            = 0;
 	int total_print_count                      = 0;
 
-#if defined( WINAPI )
+#if defined( WINAPI ) || defined( __MINGW32__ )
 	const char *format_string                  = "%" PRIs_SYSTEM "\r\n";
 #else
 	const char *format_string                  = "%" PRIs_SYSTEM "\n";
@@ -748,7 +748,7 @@ int libcerror_error_backtrace_sprint(
 		{
 			if( string_index > 0 )
 			{
-#if defined( WINAPI )
+#if defined( WINAPI ) || defined( __MINGW32__ )
 				if( ( string_index + 2 ) >= size )
 				{
 					return( -1 );
@@ -759,7 +759,7 @@ int libcerror_error_backtrace_sprint(
 				{
 					return( -1 );
 				}
-#endif /* defined( WINAPI ) */
+#endif /* defined( WINAPI ) || defined( __MINGW32__ ) */
 
 				string[ string_index++ ] = (system_character_t) '\n';
 				string[ string_index ]   = (system_character_t) 0;
