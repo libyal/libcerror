@@ -2,7 +2,7 @@ man_MANS = \
 	libcerror.3
 
 EXTRA_DIST = \
-	libcerror.3
+	$(man_MANS)
 
 DISTCLEANFILES = \
 	Makefile \

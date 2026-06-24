@@ -2,7 +2,7 @@ AC_PREREQ([2.71])
 
 AC_INIT(
   [libcerror],
-  [20260621],
+  [20260624],
   [https://github.com/libyal/libcerror/issues])
 
 AC_CONFIG_SRCDIR(
